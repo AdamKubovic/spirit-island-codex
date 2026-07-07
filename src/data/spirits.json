@@ -9,7 +9,8 @@
     "summary": "A full-attack, hit-fast spirit that punishes Invaders the turn they land.",
     "tags": ["fast-tempo", "aggressive"],
     "aspects": [
-      { "name": "Pandemonium", "delta": "Trades some damage for extra Fear generation.", "shiftsToward": "+fear" }
+      { "name": "Pandemonium", "delta": "Trades some damage for extra Fear generation.", "shiftsToward": "+fear" },
+      { "name": "Sunshower", "delta": "Adds Plant-based growth and healing to the kit.", "shiftsToward": "+utility" }
     ],
     "notes": "Strong from turn one; less impactful late-game."
   },
@@ -22,7 +23,10 @@
     "elements": ["Water", "Sun"],
     "summary": "Synergizes with Dahan to repel and push back Invaders before they can build up.",
     "tags": ["dahan-synergy", "board-control"],
-    "aspects": [],
+    "aspects": [
+      { "name": "Sunshine", "delta": "Leans harder into Sun element and direct damage.", "shiftsToward": "+offense" },
+      { "name": "Travel", "delta": "Gains extra range and movement instead of raw push power.", "shiftsToward": "+utility" }
+    ],
     "notes": "Shines with high Dahan counts."
   },
   {
@@ -32,23 +36,425 @@
     "complexity": "Low",
     "ratings": { "offense": 2, "control": 3, "fear": 1, "defense": 5, "utility": 3 },
     "elements": ["Earth", "Plant"],
-    "summary": "A slow-growing, defensive spirit with few playable Powers early but a strong late game.",
+    "summary": "Ramps up slowly with few early Powers, but grows into a durable defensive powerhouse.",
     "tags": ["ramping-economy", "board-control"],
-    "aspects": [],
+    "aspects": [
+      { "name": "Resilience", "delta": "Trades some growth speed for sturdier Presence.", "shiftsToward": "+defense" },
+      { "name": "Regrowth", "delta": "Speeds up the early ramp at the cost of raw power later.", "shiftsToward": "+utility" }
+    ],
     "notes": "Weak opening hand; needs patience."
+  },
+  {
+    "id": "shadows-flicker-like-flame",
+    "name": "Shadows Flicker Like Flame",
+    "expansion": "Base",
+    "complexity": "Low",
+    "ratings": { "offense": 4, "control": 3, "fear": 5, "defense": 1, "utility": 1 },
+    "elements": ["Moon", "Fire"],
+    "summary": "Generates heavy Fear at relatively low damage, especially effective against Explorers.",
+    "tags": ["fear-focused"],
+    "aspects": [
+      { "name": "Amorphous", "delta": "Becomes more mobile and reactive across the board.", "shiftsToward": "+utility" },
+      { "name": "Reach", "delta": "Extends range to threaten more of the board at once.", "shiftsToward": "+control" }
+    ],
+    "notes": "Best against low-terror-track adversaries early on."
+  },
+  {
+    "id": "thunderspeaker",
+    "name": "Thunderspeaker",
+    "expansion": "Base",
+    "complexity": "Moderate",
+    "ratings": { "offense": 4, "control": 5, "fear": 3, "defense": 2, "utility": 1 },
+    "elements": ["Air", "Fire", "Animal"],
+    "summary": "Leans on a large Dahan army for damage and control, alternating War and Growth turns.",
+    "tags": ["dahan-synergy", "aggressive"],
+    "aspects": [
+      { "name": "Tactician", "delta": "Sharpens Dahan coordination for bigger single-turn swings.", "shiftsToward": "+control" },
+      { "name": "Warrior", "delta": "Pushes harder into raw offense at the cost of setup turns.", "shiftsToward": "+offense" }
+    ],
+    "notes": "Needs Dahan-dense boards to shine."
+  },
+  {
+    "id": "a-spread-of-rampant-green",
+    "name": "A Spread of Rampant Green",
+    "expansion": "Base",
+    "complexity": "Moderate",
+    "ratings": { "offense": 4, "control": 3, "fear": 2, "defense": 5, "utility": 4 },
+    "elements": ["Earth", "Plant", "Animal"],
+    "summary": "Grows fast and hits Towns hard while also holding the line as a solid all-around defender.",
+    "tags": ["ramping-economy", "board-control"],
+    "aspects": [
+      { "name": "Entangling", "delta": "Trades damage for stronger Invader-slowing effects.", "shiftsToward": "+control" }
+    ]
+  },
+  {
+    "id": "oceans-hungry-grasp",
+    "name": "Ocean's Hungry Grasp",
+    "expansion": "Base",
+    "complexity": "High",
+    "ratings": { "offense": 5, "control": 4, "fear": 4, "defense": 3, "utility": 2 },
+    "elements": ["Water", "Moon"],
+    "summary": "A powerful coastal attacker that devastates Towns and Cities but struggles far inland.",
+    "tags": ["coastal", "aggressive"],
+    "aspects": [
+      { "name": "Deeps", "delta": "Reaches further inland at some cost to peak coastal damage.", "shiftsToward": "+control" },
+      { "name": "Wrath", "delta": "Pushes damage output even higher along the coast.", "shiftsToward": "+offense" }
+    ],
+    "notes": "Weak on inland-heavy boards."
   },
   {
     "id": "bringer-of-dreams-and-nightmares",
     "name": "Bringer of Dreams and Nightmares",
-    "expansion": "Branch & Claw",
+    "expansion": "Base",
     "complexity": "High",
     "ratings": { "offense": 1, "control": 2, "fear": 5, "defense": 2, "utility": 2 },
     "elements": ["Moon", "Air"],
     "summary": "Transforms damage into Fear and plays entirely on the terror level track.",
     "tags": ["fear-focused", "token-heavy"],
     "aspects": [
-      { "name": "Violence", "delta": "Leans into direct damage over Fear generation.", "shiftsToward": "+offense" }
+      { "name": "Violence", "delta": "Leans into direct damage over Fear generation.", "shiftsToward": "+offense" },
+      { "name": "Reverie", "delta": "Slows the terror track for a steadier, more forgiving ramp.", "shiftsToward": "+utility" }
     ],
     "notes": "Rewards table-wide Fear coordination."
+  },
+  {
+    "id": "sharp-fangs-behind-the-leaves",
+    "name": "Sharp Fangs Behind the Leaves",
+    "expansion": "Branch & Claw",
+    "complexity": "Moderate",
+    "ratings": { "offense": 3, "control": 3, "fear": 4, "defense": 2, "utility": 1 },
+    "elements": ["Plant", "Animal"],
+    "summary": "Relies on Beast tokens to strike and generate Fear, but weakens as Blight piles up.",
+    "tags": ["token-heavy", "fear-focused", "blight-sensitive"],
+    "aspects": []
+  },
+  {
+    "id": "keeper-of-the-forbidden-wilds",
+    "name": "Keeper of the Forbidden Wilds",
+    "expansion": "Branch & Claw",
+    "complexity": "Moderate",
+    "ratings": { "offense": 5, "control": 2, "fear": 1, "defense": 4, "utility": 3 },
+    "elements": ["Earth", "Plant", "Animal"],
+    "summary": "Uses Wilds tokens to choke Explorer progress while still hitting decently hard.",
+    "tags": ["token-heavy", "board-control"],
+    "aspects": []
+  },
+  {
+    "id": "heart-of-the-wildfire",
+    "name": "Heart of the Wildfire",
+    "expansion": "Promo",
+    "complexity": "High",
+    "ratings": { "offense": 5, "control": 3, "fear": 4, "defense": 1, "utility": 2 },
+    "elements": ["Fire", "Earth"],
+    "summary": "An aggressive spirit that feeds on Blight to grow stronger over time.",
+    "tags": ["blight-positive", "aggressive"],
+    "aspects": []
+  },
+  {
+    "id": "serpent-slumbering-beneath-the-island",
+    "name": "Serpent Slumbering Beneath the Island",
+    "expansion": "Promo",
+    "complexity": "High",
+    "ratings": { "offense": 2, "control": 2, "fear": 2, "defense": 4, "utility": 5 },
+    "elements": ["Earth", "Water", "Animal"],
+    "summary": "Starts glacially slow but becomes an unstoppable, versatile force late-game.",
+    "tags": ["ramping-economy"],
+    "aspects": [],
+    "notes": "Very weak opening; needs a patient player and a forgiving early game."
+  },
+  {
+    "id": "stones-unyielding-defiance",
+    "name": "Stone's Unyielding Defiance",
+    "expansion": "Jagged Earth",
+    "complexity": "Moderate",
+    "ratings": { "offense": 4, "control": 2, "fear": 1, "defense": 5, "utility": 2 },
+    "elements": ["Earth", "Air"],
+    "summary": "Builds Badlands tokens to fortify mountain lands and shrug off Blight effects.",
+    "tags": ["token-heavy", "board-control"],
+    "aspects": []
+  },
+  {
+    "id": "shifting-memory-of-ages",
+    "name": "Shifting Memory of Ages",
+    "expansion": "Jagged Earth",
+    "complexity": "Moderate",
+    "ratings": { "offense": 1, "control": 2, "fear": 2, "defense": 4, "utility": 5 },
+    "elements": ["Moon", "Air", "Water"],
+    "summary": "A defensive, Power-hoarding spirit that accumulates elemental tokens and Major Powers over time.",
+    "tags": ["ramping-economy", "token-heavy"],
+    "aspects": []
+  },
+  {
+    "id": "grinning-trickster-stirs-up-trouble",
+    "name": "Grinning Trickster Stirs Up Trouble",
+    "expansion": "Jagged Earth",
+    "complexity": "Moderate",
+    "ratings": { "offense": 4, "control": 3, "fear": 2, "defense": 5, "utility": 4 },
+    "elements": ["Moon", "Animal"],
+    "summary": "Spreads Strife and Beast tokens, thriving on the randomness of Minor Powers.",
+    "tags": ["token-heavy", "board-control"],
+    "aspects": []
+  },
+  {
+    "id": "lure-of-the-deep-wilderness",
+    "name": "Lure of the Deep Wilderness",
+    "expansion": "Jagged Earth",
+    "complexity": "Moderate",
+    "ratings": { "offense": 4, "control": 4, "fear": 4, "defense": 2, "utility": 1 },
+    "elements": ["Earth", "Plant", "Animal"],
+    "summary": "Piles Beast, Disease, Wilds, and Badlands tokens to strangle Explorer progress inland.",
+    "tags": ["token-heavy"],
+    "aspects": []
+  },
+  {
+    "id": "many-minds-move-as-one",
+    "name": "Many Minds Move as One",
+    "expansion": "Jagged Earth",
+    "complexity": "Moderate",
+    "ratings": { "offense": 1, "control": 5, "fear": 5, "defense": 5, "utility": 1 },
+    "elements": ["Animal", "Sun"],
+    "summary": "A strong all-around defender that leans on heavy Beast tokens and generates real Fear.",
+    "tags": ["token-heavy", "board-control", "fear-focused"],
+    "aspects": []
+  },
+  {
+    "id": "volcano-looming-high",
+    "name": "Volcano Looming High",
+    "expansion": "Jagged Earth",
+    "complexity": "Moderate",
+    "ratings": { "offense": 5, "control": 1, "fear": 2, "defense": 1, "utility": 3 },
+    "elements": ["Fire", "Earth", "Air"],
+    "summary": "A slow-building offensive spirit that leans on heavy Presence in mountain lands.",
+    "tags": ["ramping-economy", "aggressive"],
+    "aspects": [],
+    "reviewNeeded": true,
+    "notes": "TODO(review): complexity cell was blank on the owner's reference sheet; provisionally set to Moderate, verify against print."
+  },
+  {
+    "id": "shroud-of-silent-mist",
+    "name": "Shroud of Silent Mist",
+    "expansion": "Jagged Earth",
+    "complexity": "High",
+    "ratings": { "offense": 4, "control": 4, "fear": 5, "defense": 2, "utility": 1 },
+    "elements": ["Air", "Moon", "Water"],
+    "summary": "Places Presence broadly to strain Invaders and prevent their healing.",
+    "tags": ["fear-focused", "token-heavy"],
+    "aspects": []
+  },
+  {
+    "id": "vengeance-as-a-burning-plague",
+    "name": "Vengeance as a Burning Plague",
+    "expansion": "Jagged Earth",
+    "complexity": "High",
+    "ratings": { "offense": 5, "control": 2, "fear": 3, "defense": 1, "utility": 1 },
+    "elements": ["Earth", "Animal", "Moon"],
+    "summary": "Exploits Disease and Badlands to punish Towns and Cities as Blight accumulates.",
+    "tags": ["blight-positive", "aggressive", "token-heavy"],
+    "aspects": []
+  },
+  {
+    "id": "starlight-seeks-its-form",
+    "name": "Starlight Seeks Its Form",
+    "expansion": "Jagged Earth",
+    "complexity": "Very High",
+    "ratings": { "offense": 1, "control": 1, "fear": 1, "defense": 2, "utility": 2 },
+    "elements": ["Moon", "Sun"],
+    "summary": "A sandbox spirit with an extremely open-ended, build-your-own-Powers playstyle.",
+    "tags": ["incarnate"],
+    "aspects": [],
+    "notes": "Not recommended for newcomers; very high setup and decision overhead."
+  },
+  {
+    "id": "fractured-days-split-the-sky",
+    "name": "Fractured Days Split the Sky",
+    "expansion": "Jagged Earth",
+    "complexity": "Very High",
+    "ratings": { "offense": 1, "control": 2, "fear": 1, "defense": 3, "utility": 5 },
+    "elements": ["Moon", "Air"],
+    "summary": "Plays a careful long game around a shared Powers-and-Presence track with very few Presence tokens.",
+    "tags": ["ramping-economy"],
+    "aspects": [],
+    "notes": "Blight-sensitive due to a low Presence count."
+  },
+  {
+    "id": "downpour-drenches-the-world",
+    "name": "Downpour Drenches the World",
+    "expansion": "Promo",
+    "complexity": "High",
+    "ratings": { "offense": 2, "control": 1, "fear": 3, "defense": 5, "utility": 3 },
+    "elements": ["Water", "Air"],
+    "summary": "An anti-Blight defensive spirit that can repeat the same Power multiple times per turn.",
+    "tags": ["board-control"],
+    "aspects": []
+  },
+  {
+    "id": "finder-of-paths-unseen",
+    "name": "Finder of Paths Unseen",
+    "expansion": "Feather & Flame",
+    "complexity": "Very High",
+    "ratings": { "offense": 1, "control": 5, "fear": 1, "defense": 2, "utility": 2 },
+    "elements": ["Air", "Animal"],
+    "summary": "Wins through positioning, isolating lands and shuffling Invaders, Dahan, and tokens around the board.",
+    "tags": ["board-control"],
+    "aspects": []
+  },
+  {
+    "id": "hearth-vigil",
+    "name": "Hearth-Vigil",
+    "expansion": "Feather & Flame",
+    "complexity": "Moderate",
+    "ratings": { "offense": 3, "control": 2, "fear": 3, "defense": 4, "utility": 4 },
+    "elements": ["Fire", "Sun", "Animal"],
+    "summary": "Boosts and protects a growing Dahan population across the board.",
+    "tags": ["dahan-synergy"],
+    "aspects": []
+  },
+  {
+    "id": "towering-roots-of-the-jungle",
+    "name": "Towering Roots of the Jungle",
+    "expansion": "Nature Incarnate",
+    "complexity": "Moderate",
+    "ratings": { "offense": 1, "control": 3, "fear": 3, "defense": 5, "utility": 2 },
+    "elements": ["Plant", "Earth"],
+    "summary": "Protects the land it occupies and slowly grows an Incarnate presence there.",
+    "tags": ["incarnate", "board-control"],
+    "aspects": [],
+    "reviewNeeded": true,
+    "notes": "TODO(review): HANDOFF icon interpretation marked uncertain (\"[Vitality?]\"); verify against wiki."
+  },
+  {
+    "id": "ember-eyed-behemoth",
+    "name": "Ember-Eyed Behemoth",
+    "expansion": "Nature Incarnate",
+    "complexity": "Moderate",
+    "ratings": { "offense": 6, "control": 1, "fear": 1, "defense": 1, "utility": 2 },
+    "elements": ["Fire", "Animal"],
+    "summary": "An extremely mobile, high-damage Incarnate spirit built around token generation.",
+    "tags": ["incarnate", "aggressive"],
+    "aspects": [],
+    "reviewNeeded": true,
+    "notes": "TODO(review): HANDOFF icon interpretation marked uncertain (\"[Wilds?]\"); verify against wiki."
+  },
+  {
+    "id": "relentless-gaze-of-the-sun",
+    "name": "Relentless Gaze of the Sun",
+    "expansion": "Nature Incarnate",
+    "complexity": "High",
+    "ratings": { "offense": 6, "control": 1, "fear": 4, "defense": 2, "utility": 4 },
+    "elements": ["Sun", "Fire"],
+    "summary": "An aggressive spirit that punishes lands already thick with Presence.",
+    "tags": ["aggressive"],
+    "aspects": []
+  },
+  {
+    "id": "wandering-voice-keens-delirium",
+    "name": "Wandering Voice Keens Delirium",
+    "expansion": "Nature Incarnate",
+    "complexity": "High",
+    "ratings": { "offense": 3, "control": 5, "fear": 4, "defense": 2, "utility": 3 },
+    "elements": ["Air", "Moon", "Animal"],
+    "summary": "A mobile, Strife-spreading Incarnate spirit that darts around the board.",
+    "tags": ["incarnate", "token-heavy"],
+    "aspects": []
+  },
+  {
+    "id": "wounded-waters-bleeding",
+    "name": "Wounded Waters Bleeding",
+    "expansion": "Nature Incarnate",
+    "complexity": "High",
+    "ratings": { "offense": 4, "control": 6, "fear": 2, "defense": 1, "utility": 1 },
+    "elements": ["Water", "Animal"],
+    "summary": "Moves Beast tokens and itself around the board to control where the fight happens.",
+    "tags": ["board-control", "token-heavy"],
+    "aspects": []
+  },
+  {
+    "id": "breath-of-darkness-down-your-spine",
+    "name": "Breath of Darkness Down Your Spine",
+    "expansion": "Nature Incarnate",
+    "complexity": "High",
+    "ratings": { "offense": 2, "control": 4, "fear": 5, "defense": 1, "utility": 2 },
+    "elements": ["Moon", "Air"],
+    "summary": "Captures Invaders into an Endless Dark zone, especially strong against Explorers.",
+    "tags": ["incarnate", "fear-focused"],
+    "aspects": []
+  },
+  {
+    "id": "dances-up-earthquakes",
+    "name": "Dances Up Earthquakes",
+    "expansion": "Nature Incarnate",
+    "complexity": "Very High",
+    "ratings": { "offense": 4, "control": 1, "fear": 1, "defense": 2, "utility": 3 },
+    "elements": ["Earth", "Fire"],
+    "summary": "A slow-building, anticipation-based spirit that detonates delayed Quake-token effects.",
+    "tags": ["incarnate", "token-heavy"],
+    "aspects": [],
+    "reviewNeeded": true,
+    "notes": "TODO(review): HANDOFF icon interpretation marked uncertain (\"[Quake?]\"); verify against wiki."
+  },
+  {
+    "id": "devouring-teeth-lurk-underfoot",
+    "name": "Devouring Teeth Lurk Underfoot",
+    "expansion": "Horizons",
+    "complexity": "Low",
+    "ratings": { "offense": 4, "control": 2, "fear": 2, "defense": 3, "utility": 2 },
+    "elements": ["Earth", "Animal"],
+    "summary": "Wants to share lands with Invaders, punishing them with cheap short-range Powers and a permanent damage boost.",
+    "tags": ["aggressive"],
+    "aspects": [],
+    "reviewNeeded": true,
+    "notes": "TODO(review): OCFDU estimated from wiki strategy text, not the physical reference sheet (Horizons spirit, not in HANDOFF table) — verify."
+  },
+  {
+    "id": "eyes-watch-from-the-trees",
+    "name": "Eyes Watch From the Trees",
+    "expansion": "Horizons",
+    "complexity": "Low",
+    "ratings": { "offense": 2, "control": 4, "fear": 3, "defense": 2, "utility": 3 },
+    "elements": ["Air", "Animal"],
+    "summary": "Sees Invader plans coming and redirects or punishes them before they land.",
+    "tags": ["board-control"],
+    "aspects": [],
+    "reviewNeeded": true,
+    "notes": "TODO(review): OCFDU estimated, not sourced from official print (Horizons spirit, not in HANDOFF table) — verify."
+  },
+  {
+    "id": "fathomless-mud-of-the-swamp",
+    "name": "Fathomless Mud of the Swamp",
+    "expansion": "Horizons",
+    "complexity": "Low",
+    "ratings": { "offense": 2, "control": 3, "fear": 1, "defense": 5, "utility": 2 },
+    "elements": ["Water", "Earth"],
+    "summary": "A slow, defensive spirit that mires Invaders in place, spreading a defensive mud across the island.",
+    "tags": ["board-control"],
+    "aspects": [],
+    "reviewNeeded": true,
+    "notes": "TODO(review): OCFDU estimated, not sourced from official print (Horizons spirit, not in HANDOFF table) — verify."
+  },
+  {
+    "id": "rising-heat-of-stone-and-sand",
+    "name": "Rising Heat of Stone and Sand",
+    "expansion": "Horizons",
+    "complexity": "Low",
+    "ratings": { "offense": 5, "control": 1, "fear": 2, "defense": 2, "utility": 2 },
+    "elements": ["Fire", "Earth"],
+    "summary": "A straightforward offensive spirit that bakes lands with heat, dealing steady damage.",
+    "tags": ["aggressive"],
+    "aspects": [],
+    "reviewNeeded": true,
+    "notes": "TODO(review): OCFDU estimated, not sourced from official print (Horizons spirit, not in HANDOFF table) — verify."
+  },
+  {
+    "id": "sun-bright-whirlwind",
+    "name": "Sun-Bright Whirlwind",
+    "expansion": "Horizons",
+    "complexity": "Low",
+    "ratings": { "offense": 2, "control": 4, "fear": 1, "defense": 2, "utility": 3 },
+    "elements": ["Sun", "Air"],
+    "summary": "A highly mobile spirit that pushes and repositions Invaders rather than destroying them outright.",
+    "tags": ["board-control"],
+    "aspects": [],
+    "reviewNeeded": true,
+    "notes": "TODO(review): OCFDU estimated, not sourced from official print (Horizons spirit, not in HANDOFF table) — verify."
   }
 ]
