@@ -1,0 +1,54 @@
+[
+  {
+    "id": "lightnings-swift-strike",
+    "name": "Lightning's Swift Strike",
+    "expansion": "Base",
+    "complexity": "Low",
+    "ratings": { "offense": 5, "control": 2, "fear": 3, "defense": 1, "utility": 2 },
+    "elements": ["Air", "Fire"],
+    "summary": "A full-attack, hit-fast spirit that punishes Invaders the turn they land.",
+    "tags": ["fast-tempo", "aggressive"],
+    "aspects": [
+      { "name": "Pandemonium", "delta": "Trades some damage for extra Fear generation.", "shiftsToward": "+fear" }
+    ],
+    "notes": "Strong from turn one; less impactful late-game."
+  },
+  {
+    "id": "river-surges-in-sunlight",
+    "name": "River Surges in Sunlight",
+    "expansion": "Base",
+    "complexity": "Low",
+    "ratings": { "offense": 4, "control": 5, "fear": 1, "defense": 1, "utility": 4 },
+    "elements": ["Water", "Sun"],
+    "summary": "Synergizes with Dahan to repel and push back Invaders before they can build up.",
+    "tags": ["dahan-synergy", "board-control"],
+    "aspects": [],
+    "notes": "Shines with high Dahan counts."
+  },
+  {
+    "id": "vital-strength-of-the-earth",
+    "name": "Vital Strength of the Earth",
+    "expansion": "Base",
+    "complexity": "Low",
+    "ratings": { "offense": 2, "control": 3, "fear": 1, "defense": 5, "utility": 3 },
+    "elements": ["Earth", "Plant"],
+    "summary": "A slow-growing, defensive spirit with few playable Powers early but a strong late game.",
+    "tags": ["ramping-economy", "board-control"],
+    "aspects": [],
+    "notes": "Weak opening hand; needs patience."
+  },
+  {
+    "id": "bringer-of-dreams-and-nightmares",
+    "name": "Bringer of Dreams and Nightmares",
+    "expansion": "Branch & Claw",
+    "complexity": "High",
+    "ratings": { "offense": 1, "control": 2, "fear": 5, "defense": 2, "utility": 2 },
+    "elements": ["Moon", "Air"],
+    "summary": "Transforms damage into Fear and plays entirely on the terror level track.",
+    "tags": ["fear-focused", "token-heavy"],
+    "aspects": [
+      { "name": "Violence", "delta": "Leans into direct damage over Fear generation.", "shiftsToward": "+offense" }
+    ],
+    "notes": "Rewards table-wide Fear coordination."
+  }
+]
