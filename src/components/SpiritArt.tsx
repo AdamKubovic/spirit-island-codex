@@ -6,14 +6,14 @@ import { PlaceholderArt } from './PlaceholderArt'
  * Real spirit artwork, keyed off the spirit's slug (its id) unless an `image` override is set.
  * Falls back to the element-colored placeholder if the file is missing or fails to load.
  */
-export function SpiritArt({ spirit }: { spirit: Spirit }) {
+export function SpiritArt({ spirit, className = 'spirit-art' }: { spirit: Spirit; className?: string }) {
   const [failed, setFailed] = useState(false)
 
-  if (failed) return <PlaceholderArt spirit={spirit} />
+  if (failed) return <PlaceholderArt spirit={spirit} className={className} />
 
   return (
     <img
-      className="spirit-art"
+      className={className}
       src={`${import.meta.env.BASE_URL}spirits/${spirit.image ?? spirit.id}.webp`}
       alt={spirit.name}
       width={256}

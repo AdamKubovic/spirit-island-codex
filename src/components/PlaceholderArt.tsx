@@ -12,8 +12,8 @@ const ELEMENT_COLOR: Record<string, string> = {
 }
 const DEFAULT_COLOR = '#777'
 
-/** Element-colored placeholder tile used until real spirit artwork (#13) lands. */
-export function PlaceholderArt({ spirit }: { spirit: Spirit }) {
+/** Element-colored fallback tile, used when a spirit's artwork is missing or fails to load. */
+export function PlaceholderArt({ spirit, className = 'placeholder-art' }: { spirit: Spirit; className?: string }) {
   const color = ELEMENT_COLOR[spirit.elements[0]] ?? DEFAULT_COLOR
   const initials = spirit.name
     .split(' ')
@@ -22,7 +22,7 @@ export function PlaceholderArt({ spirit }: { spirit: Spirit }) {
     .join('')
 
   return (
-    <div className="placeholder-art" style={{ backgroundColor: color }} aria-hidden="true">
+    <div className={className} style={{ backgroundColor: color }} aria-hidden="true">
       {initials}
     </div>
   )

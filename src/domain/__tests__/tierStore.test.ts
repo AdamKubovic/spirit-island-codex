@@ -49,4 +49,38 @@ describe('tierStore', () => {
     expect(all[LIGHTNING]).toBe(override)
     expect(all[RIVER]).toBe(seedOf(RIVER))
   })
+
+  it('discards overrides saved against a different seed', () => {
+    // A saved edit from an older shipped tier list must not silently shadow the new seed.
+    const storage = memoryStorage()
+    storage.setItem(
+      'spirit-island:tier-overrides',
+      JSON.stringify({ seed: 'a-stale-fingerprint', overrides: { [LIGHTNING]: 'F' } }),
+    )
+    const store = createTierStore(storage)
+    expect(store.getTier(LIGHTNING)).toBe(seedOf(LIGHTNING))
+    expect(store.isCustomised()).toBe(false)
+  })
+
+  it('discards overrides stored in the pre-versioning format', () => {
+    const storage = memoryStorage()
+    storage.setItem('spirit-island:tier-overrides', JSON.stringify({ [LIGHTNING]: 'F' }))
+    const store = createTierStore(storage)
+    expect(store.getTier(LIGHTNING)).toBe(seedOf(LIGHTNING))
+  })
+
+  it('survives corrupt stored JSON', () => {
+    const storage = memoryStorage()
+    storage.setItem('spirit-island:tier-overrides', '{not json')
+    expect(createTierStore(storage).getTier(LIGHTNING)).toBe(seedOf(LIGHTNING))
+  })
+
+  it('reports whether the user has customised the list', () => {
+    const store = createTierStore(memoryStorage())
+    expect(store.isCustomised()).toBe(false)
+    store.setTier(LIGHTNING, notSeedOf(LIGHTNING))
+    expect(store.isCustomised()).toBe(true)
+    store.reset()
+    expect(store.isCustomised()).toBe(false)
+  })
 })

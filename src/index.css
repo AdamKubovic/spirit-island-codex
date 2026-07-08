@@ -128,3 +128,96 @@ code {
   letter-spacing: 0.05em;
   color: #fff;
 }
+
+/* --- Tier board (read-only visual, mirrors the TierMaker layout) --- */
+.tier-board {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: #111;
+  padding: 3px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.tier-row {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 3px;
+  align-items: stretch;
+}
+
+.tier-label {
+  display: grid;
+  place-items: center;
+  min-height: 84px;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  border-radius: 6px;
+}
+
+.tier-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  padding: 3px;
+  background: #1c1c1c;
+  border-radius: 6px;
+  align-content: flex-start;
+}
+
+.tier-tile {
+  position: relative;
+  width: 84px;
+  margin: 0;
+}
+
+.tier-tile-art {
+  display: block;
+  width: 84px;
+  height: 84px;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #222;
+}
+
+.tier-tile figcaption {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 2px 3px;
+  font-size: 0.55rem;
+  line-height: 1.2;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.72);
+  border-radius: 0 0 4px 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tier-empty {
+  margin: 0;
+  padding: 0.5rem;
+  color: #777;
+  font-size: 0.8rem;
+}
+
+.tier-chip {
+  display: inline-grid;
+  place-items: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border-radius: 5px;
+  color: #1a1a1a;
+  font-weight: 800;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
