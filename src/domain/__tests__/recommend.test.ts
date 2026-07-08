@@ -1,208 +1,157 @@
 import { describe, expect, it } from 'vitest'
+import type { Configuration } from '../configurations'
 import { recommend } from '../recommend'
-import type { Spirit } from '../types'
+import type { Complexity, Spirit } from '../types'
 
-const fixtureSpirits: Spirit[] = [
-  {
-    id: 'high-offense',
-    name: 'High Offense',
+let nextId = 0
+function spirit(overrides: Partial<Spirit> = {}): Spirit {
+  nextId += 1
+  return {
+    id: `spirit-${nextId}`,
+    name: `Spirit ${nextId}`,
     expansion: 'Base',
     complexity: 'Low',
-    ratings: { offense: 5, control: 1, fear: 1, defense: 1, utility: 1 },
+    ratings: { offense: 1, control: 1, fear: 1, defense: 1, utility: 1 },
     elements: [],
     summary: '',
     tags: [],
     aspects: [],
-  },
-  {
-    id: 'high-defense',
-    name: 'High Defense',
-    expansion: 'Base',
-    complexity: 'Low',
-    ratings: { offense: 1, control: 1, fear: 1, defense: 5, utility: 1 },
-    elements: [],
-    summary: '',
-    tags: [],
-    aspects: [],
-  },
-]
+    ...overrides,
+  }
+}
 
-const tempoFixtureSpirits: Spirit[] = [
-  {
-    id: 'fast-spirit',
-    name: 'Fast Spirit',
-    expansion: 'Base',
-    complexity: 'Low',
-    ratings: { offense: 3, control: 3, fear: 3, defense: 3, utility: 3 },
-    elements: [],
-    summary: '',
-    tags: ['fast-tempo'],
-    aspects: [],
-  },
-  {
-    id: 'slow-spirit',
-    name: 'Slow Spirit',
-    expansion: 'Base',
-    complexity: 'Low',
-    ratings: { offense: 3, control: 3, fear: 3, defense: 3, utility: 3 },
-    elements: [],
-    summary: '',
-    tags: ['ramping-economy'],
-    aspects: [],
-  },
-]
+function baseConfig(s: Spirit): Configuration {
+  return { configId: s.id, spirit: s, isBase: true, effectiveComplexity: s.complexity }
+}
+
+function aspectConfig(s: Spirit, aspectName: string, effectiveComplexity: Complexity): Configuration {
+  return {
+    configId: `${s.id}::${aspectName}`,
+    spirit: s,
+    aspect: { name: aspectName },
+    isBase: false,
+    effectiveComplexity,
+  }
+}
 
 describe('recommend', () => {
-  it('ranks the high-offense spirit first when offense is weighted', () => {
-    const ranked = recommend(fixtureSpirits, { offense: 1 })
-    expect(ranked[0].spirit.id).toBe('high-offense')
+  it('ranks the high-offense configuration first when offense is weighted', () => {
+    const highOffense = spirit({ ratings: { offense: 5, control: 1, fear: 1, defense: 1, utility: 1 } })
+    const highDefense = spirit({ ratings: { offense: 1, control: 1, fear: 1, defense: 5, utility: 1 } })
+    const ranked = recommend([baseConfig(highOffense), baseConfig(highDefense)], { offense: 1 })
+    expect(ranked[0].config.configId).toBe(highOffense.id)
   })
 
   it('is deterministic across repeated calls', () => {
-    const a = recommend(fixtureSpirits, { offense: 1 })
-    const b = recommend(fixtureSpirits, { offense: 1 })
-    expect(a.map((r) => r.spirit.id)).toEqual(b.map((r) => r.spirit.id))
+    const configs = [baseConfig(spirit()), baseConfig(spirit())]
+    const a = recommend(configs, { offense: 1 })
+    const b = recommend(configs, { offense: 1 })
+    expect(a.map((r) => r.config.configId)).toEqual(b.map((r) => r.config.configId))
   })
 
   it('does not penalize surplus capability in un-asked dimensions', () => {
-    const sameWeightedAxis: Spirit[] = [
-      { ...fixtureSpirits[0], id: 'low-surplus', ratings: { ...fixtureSpirits[0].ratings, offense: 3, defense: 1 } },
-      { ...fixtureSpirits[0], id: 'high-surplus', ratings: { ...fixtureSpirits[0].ratings, offense: 3, defense: 5 } },
-    ]
-    const ranked = recommend(sameWeightedAxis, { offense: 1 })
-    // identical weighted axis (offense=3) but very different un-asked defense stat -> identical score
+    const lowSurplus = spirit({ ratings: { offense: 3, control: 1, fear: 1, defense: 1, utility: 1 } })
+    const highSurplus = spirit({ ratings: { offense: 3, control: 1, fear: 1, defense: 5, utility: 1 } })
+    const ranked = recommend([baseConfig(lowSurplus), baseConfig(highSurplus)], { offense: 1 })
     expect(ranked[0].score).toBe(ranked[1].score)
   })
 
-  it('boosts fast-tempo spirits when tempo preference is positive', () => {
-    const ranked = recommend(tempoFixtureSpirits, {}, { tempo: 2 })
-    expect(ranked[0].spirit.id).toBe('fast-spirit')
+  it('boosts fast-tempo configurations when tempo preference is positive', () => {
+    const fast = spirit({ tags: ['fast-tempo'] })
+    const slow = spirit({ tags: ['ramping-economy'] })
+    const ranked = recommend([baseConfig(fast), baseConfig(slow)], {}, { tempo: 2 })
+    expect(ranked[0].config.configId).toBe(fast.id)
   })
 
-  it('boosts ramping-economy spirits when tempo preference is negative', () => {
-    const ranked = recommend(tempoFixtureSpirits, {}, { tempo: -2 })
-    expect(ranked[0].spirit.id).toBe('slow-spirit')
+  it('boosts ramping-economy configurations when tempo preference is negative', () => {
+    const fast = spirit({ tags: ['fast-tempo'] })
+    const slow = spirit({ tags: ['ramping-economy'] })
+    const ranked = recommend([baseConfig(fast), baseConfig(slow)], {}, { tempo: -2 })
+    expect(ranked[0].config.configId).toBe(slow.id)
   })
 
   describe('complexity penalty', () => {
-    const complexityFixture: Spirit[] = [
-      {
-        id: 'simple-low-offense',
-        name: 'Simple Low Offense',
-        expansion: 'Base',
-        complexity: 'Low',
-        ratings: { offense: 3, control: 1, fear: 1, defense: 1, utility: 1 },
-        elements: [],
-        summary: '',
-        tags: [],
-        aspects: [],
-      },
-      {
-        id: 'very-high-offense',
-        name: 'Very High Offense',
-        expansion: 'Base',
-        complexity: 'Very High',
-        ratings: { offense: 6, control: 1, fear: 1, defense: 1, utility: 1 },
-        elements: [],
-        summary: '',
-        tags: [],
-        aspects: [],
-      },
-    ]
+    const simple = spirit({ complexity: 'Low', ratings: { offense: 3, control: 1, fear: 1, defense: 1, utility: 1 } })
+    const veryHigh = spirit({ complexity: 'Very High', ratings: { offense: 6, control: 1, fear: 1, defense: 1, utility: 1 } })
+    const configs = [baseConfig(simple), baseConfig(veryHigh)]
 
-    it("buries a Very-High spirit for a first-timer despite its higher raw fit", () => {
-      const ranked = recommend(complexityFixture, { offense: 1 }, {
-        complexityImportance: 1,
-        complexityCeiling: 'Low',
-      })
-      expect(ranked[0].spirit.id).toBe('simple-low-offense')
+    it('buries a Very-High configuration for a first-timer despite its higher raw fit', () => {
+      const ranked = recommend(configs, { offense: 1 }, { complexityImportance: 1, complexityCeiling: 'Low' })
+      expect(ranked[0].config.configId).toBe(simple.id)
     })
 
-    it('never removes the over-complexity spirit from the pool (soft penalty only)', () => {
-      const ranked = recommend(complexityFixture, { offense: 1 }, {
-        complexityImportance: 1,
-        complexityCeiling: 'Low',
-      })
-      expect(ranked).toHaveLength(complexityFixture.length)
-      expect(ranked.some((r) => r.spirit.id === 'very-high-offense')).toBe(true)
+    it('never removes the over-complexity configuration from the pool (soft penalty only)', () => {
+      const ranked = recommend(configs, { offense: 1 }, { complexityImportance: 1, complexityCeiling: 'Low' })
+      expect(ranked).toHaveLength(configs.length)
+      expect(ranked.some((r) => r.config.configId === veryHigh.id)).toBe(true)
     })
 
     it('applies no penalty when complexityImportance is 0', () => {
-      const ranked = recommend(complexityFixture, { offense: 1 }, {
-        complexityImportance: 0,
-        complexityCeiling: 'Low',
-      })
-      expect(ranked[0].spirit.id).toBe('very-high-offense')
+      const ranked = recommend(configs, { offense: 1 }, { complexityImportance: 0, complexityCeiling: 'Low' })
+      expect(ranked[0].config.configId).toBe(veryHigh.id)
+    })
+  })
+
+  describe('effective complexity (issue #03)', () => {
+    it('a complexity-lowering configuration outranks its identical-fit base for a first-timer', () => {
+      const s = spirit({ complexity: 'High', ratings: { offense: 3, control: 1, fear: 1, defense: 1, utility: 1 } })
+      const base = baseConfig(s)
+      const lowered = aspectConfig(s, 'Simplifying Aspect', 'Moderate')
+      const ranked = recommend([base, lowered], { offense: 1 }, { complexityImportance: 1, complexityCeiling: 'Low' })
+      expect(ranked[0].config.configId).toBe(lowered.configId)
+    })
+
+    it('a complexity-raising configuration is buried below its identical-fit base for a first-timer', () => {
+      const s = spirit({ complexity: 'Moderate', ratings: { offense: 3, control: 1, fear: 1, defense: 1, utility: 1 } })
+      const base = baseConfig(s)
+      const raised = aspectConfig(s, 'Harder Aspect', 'High')
+      const ranked = recommend([base, raised], { offense: 1 }, { complexityImportance: 1, complexityCeiling: 'Low' })
+      expect(ranked[0].config.configId).toBe(base.configId)
+    })
+
+    it('with complexity importance at 0, effective complexity changes no ranking', () => {
+      const s = spirit({ complexity: 'Moderate', ratings: { offense: 3, control: 1, fear: 1, defense: 1, utility: 1 } })
+      const base = baseConfig(s)
+      const raised = aspectConfig(s, 'Harder Aspect', 'Very High')
+      const ranked = recommend([base, raised], { offense: 1 }, { complexityImportance: 0, complexityCeiling: 'Low' })
+      expect(ranked[0].score).toBe(ranked[1].score)
     })
   })
 
   describe('tier prior', () => {
-    const tierFixture: Spirit[] = [
-      {
-        id: 'filler',
-        name: 'Filler',
-        expansion: 'Base',
-        complexity: 'Low',
-        ratings: { offense: 10, control: 1, fear: 1, defense: 1, utility: 1 },
-        elements: [],
-        summary: '',
-        tags: [],
-        aspects: [],
-      },
-      {
-        id: 'higher-fit-lower-tier',
-        name: 'Higher Fit Lower Tier',
-        expansion: 'Base',
-        complexity: 'Low',
-        ratings: { offense: 5, control: 1, fear: 1, defense: 1, utility: 1 },
-        elements: [],
-        summary: '',
-        tags: [],
-        aspects: [],
-      },
-      {
-        id: 'lower-fit-higher-tier',
-        name: 'Lower Fit Higher Tier',
-        expansion: 'Base',
-        complexity: 'Low',
-        ratings: { offense: 4.5, control: 1, fear: 1, defense: 1, utility: 1 },
-        elements: [],
-        summary: '',
-        tags: [],
-        aspects: [],
-      },
-    ]
-    const tierPrior = { 'higher-fit-lower-tier': 'D', 'lower-fit-higher-tier': 'S' } as const
+    const filler = spirit({ ratings: { offense: 10, control: 1, fear: 1, defense: 1, utility: 1 } })
+    const higherFitLowerTier = spirit({ ratings: { offense: 5, control: 1, fear: 1, defense: 1, utility: 1 } })
+    const lowerFitHigherTier = spirit({ ratings: { offense: 4.5, control: 1, fear: 1, defense: 1, utility: 1 } })
+    const configs = [baseConfig(filler), baseConfig(higherFitLowerTier), baseConfig(lowerFitHigherTier)]
+    const tierPrior = { [higherFitLowerTier.id]: 'D', [lowerFitHigherTier.id]: 'S' } as const
 
     it('alpha=0 (tierKnob=0) reproduces the pure-fit ranking', () => {
-      const withTier = recommend(tierFixture, { offense: 1 }, { tierPrior, tierKnob: 0 })
-      const withoutTier = recommend(tierFixture, { offense: 1 })
-      expect(withTier.map((r) => r.spirit.id)).toEqual(withoutTier.map((r) => r.spirit.id))
+      const withTier = recommend(configs, { offense: 1 }, { tierPrior, tierKnob: 0 })
+      const withoutTier = recommend(configs, { offense: 1 })
+      expect(withTier.map((r) => r.config.configId)).toEqual(withoutTier.map((r) => r.config.configId))
     })
 
-    it('higher tierKnob promotes the higher-tier spirit', () => {
-      const low = recommend(tierFixture, { offense: 1 }, { tierPrior, tierKnob: 0 })
-      const high = recommend(tierFixture, { offense: 1 }, { tierPrior, tierKnob: 1 })
-      expect(low[1].spirit.id).toBe('higher-fit-lower-tier')
-      expect(high[1].spirit.id).toBe('lower-fit-higher-tier')
+    it('higher tierKnob promotes the higher-tier configuration', () => {
+      const low = recommend(configs, { offense: 1 }, { tierPrior, tierKnob: 0 })
+      const high = recommend(configs, { offense: 1 }, { tierPrior, tierKnob: 1 })
+      expect(low[1].config.configId).toBe(higherFitLowerTier.id)
+      expect(high[1].config.configId).toBe(lowerFitHigherTier.id)
     })
 
     it('max tierKnob never lets tier override a dominant fit advantage', () => {
-      const dominant: Spirit[] = [
-        { ...tierFixture[0], id: 'best-fit-worst-tier', ratings: { ...tierFixture[0].ratings, offense: 10 } },
-        { ...tierFixture[0], id: 'worst-fit-best-tier', ratings: { ...tierFixture[0].ratings, offense: 1 } },
-      ]
-      const ranked = recommend(dominant, { offense: 1 }, {
-        tierPrior: { 'best-fit-worst-tier': 'D', 'worst-fit-best-tier': 'S' },
+      const bestFit = spirit({ ratings: { offense: 10, control: 1, fear: 1, defense: 1, utility: 1 } })
+      const worstFit = spirit({ ratings: { offense: 1, control: 1, fear: 1, defense: 1, utility: 1 } })
+      const ranked = recommend([baseConfig(bestFit), baseConfig(worstFit)], { offense: 1 }, {
+        tierPrior: { [bestFit.id]: 'D', [worstFit.id]: 'S' },
         tierKnob: 1,
       })
-      expect(ranked[0].spirit.id).toBe('best-fit-worst-tier')
+      expect(ranked[0].config.configId).toBe(bestFit.id)
     })
 
-    it('falls back to a neutral prior when a spirit has no tier entry', () => {
-      const ranked = recommend(tierFixture, { offense: 1 }, { tierPrior: {}, tierKnob: 1 })
-      expect(ranked.map((r) => r.spirit.id)).toEqual(
-        recommend(tierFixture, { offense: 1 }).map((r) => r.spirit.id),
+    it('falls back to a neutral prior when a configuration has no tier entry', () => {
+      const ranked = recommend(configs, { offense: 1 }, { tierPrior: {}, tierKnob: 1 })
+      expect(ranked.map((r) => r.config.configId)).toEqual(
+        recommend(configs, { offense: 1 }).map((r) => r.config.configId),
       )
     })
   })

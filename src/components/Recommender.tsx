@@ -3,6 +3,7 @@ import spiritsData from '../data/spirits.json'
 import { answersStore } from '../domain/answersStore'
 import { answersToWeights, type Answers } from '../domain/answersToWeights'
 import { findAspectNudge } from '../domain/aspectNudge'
+import { expand, type Configuration } from '../domain/configurations'
 import { QUESTIONS } from '../domain/questionnaire'
 import { drawRandom } from '../domain/randomChoose'
 import { recommend, type Weights } from '../domain/recommend'
@@ -15,6 +16,7 @@ import { OcfduRadar } from './OcfduRadar'
 import { SpiritArt } from './SpiritArt'
 
 const spirits = spiritsData as Spirit[]
+const configurations = expand(spirits)
 const COMPLEXITIES: Complexity[] = ['Low', 'Moderate', 'High', 'Very High']
 const AXES: (keyof OCFDU)[] = ['offense', 'control', 'fear', 'defense', 'utility']
 /** Deliberately narrow: three picks plus a wildcard, not a menu to agonise over. */
@@ -107,7 +109,7 @@ function useRanking() {
   )
   const ranked = useMemo(
     () =>
-      recommend(spirits, weights, {
+      recommend(configurations, weights, {
         tempo: prefs.tempo,
         boardControl: prefs.boardControl,
         complexityImportance: prefs.complexityImportance,
@@ -197,17 +199,18 @@ function HeatStrip({ ratings, weights }: { ratings: OCFDU; weights: Weights }) {
 }
 
 function ResultRow({
-  spirit,
+  config,
   score,
   rank,
   weights,
 }: {
-  spirit: Spirit
+  config: Configuration
   score: number
   rank: number
   weights: Weights
 }) {
   const [open, setOpen] = useState(false)
+  const { spirit, aspect } = config
   const nudge = findAspectNudge(spirit, weights)
 
   return (
@@ -216,7 +219,10 @@ function ResultRow({
         <span className="deck-rank">{rank}</span>
         <SpiritArt spirit={spirit} className="deck-thumb" />
         <span className="deck-row-text">
-          <span className="deck-name">{spirit.name}</span>
+          <span className="deck-name">
+            {spirit.name}
+            {aspect ? <> — play the <strong>{aspect.name}</strong> aspect</> : null}
+          </span>
           <span className="deck-why">{whyYou(spirit, weights)}</span>
         </span>
         <HeatStrip ratings={spirit.ratings} weights={weights} />
@@ -265,8 +271,8 @@ function ResultsBoard() {
       </div>
 
       <ol className="deck-rows">
-        {shortlist.map(({ spirit, score }, i) => (
-          <ResultRow key={spirit.id} spirit={spirit} score={score} rank={i + 1} weights={weights} />
+        {shortlist.map(({ config, score }, i) => (
+          <ResultRow key={config.configId} config={config} score={score} rank={i + 1} weights={weights} />
         ))}
       </ol>
       <p className="deck-hint">Change an answer in the sidebar — the ranking recomputes immediately.</p>
@@ -274,10 +280,13 @@ function ResultsBoard() {
       {wildcard && (
         <div className="deck-wild">
           <div className="deck-wild-tag">Wildcard</div>
-          <SpiritArt spirit={wildcard} className="deck-thumb" />
+          <SpiritArt spirit={wildcard.spirit} className="deck-thumb" />
           <div>
-            <div className="deck-name">{wildcard.name}</div>
-            <div className="deck-why">{wildcard.summary}</div>
+            <div className="deck-name">
+              {wildcard.spirit.name}
+              {wildcard.aspect ? <> — play the <strong>{wildcard.aspect.name}</strong> aspect</> : null}
+            </div>
+            <div className="deck-why">{wildcard.spirit.summary}</div>
           </div>
           <button type="button" className="deck-ghost" onClick={rerollWildcard}>
             Reroll
