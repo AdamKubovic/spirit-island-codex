@@ -5,6 +5,9 @@ import { answersToWeights, type Answers } from '../domain/answersToWeights'
 import { QUESTIONS } from '../domain/questionnaire'
 import { recommend } from '../domain/recommend'
 import type { Spirit, Tier } from '../domain/types'
+import { selectWildcard } from '../domain/wildcard'
+import { whyYou } from '../domain/whyYou'
+import { OcfduRadar } from './OcfduRadar'
 
 const spirits = spiritsData as Spirit[]
 const tierPrior = tiersData.tiers as Record<string, Tier>
@@ -91,6 +94,8 @@ function ResultsBoard({
   onAnswer: (questionId: string, value: string) => void
   onRestart: () => void
 }) {
+  const [wildcardOffset, setWildcardOffset] = useState(0)
+
   const prefs = useMemo(() => answersToWeights(answers), [answers])
   const ranked = useMemo(
     () =>
@@ -105,6 +110,10 @@ function ResultsBoard({
     [prefs],
   )
   const shortlist = ranked.slice(0, 5)
+  const wildcard = useMemo(
+    () => selectWildcard(ranked, prefs.weights, prefs.complexityCeiling, wildcardOffset),
+    [ranked, prefs, wildcardOffset],
+  )
 
   return (
     <section>
@@ -112,11 +121,29 @@ function ResultsBoard({
       <ol>
         {shortlist.map(({ spirit, score }, i) => (
           <li key={spirit.id} className={i < 3 ? 'emphasized' : undefined}>
-            {spirit.name} — score {score.toFixed(1)}
-            {spirit.notes && <p className="notes">{spirit.notes}</p>}
+            <OcfduRadar ratings={spirit.ratings} />
+            <div>
+              <p>
+                {spirit.name} — score {score.toFixed(1)}
+              </p>
+              {i < 3 && <p className="why-you">{whyYou(spirit, prefs.weights)}</p>}
+              {spirit.notes && <p className="notes">{spirit.notes}</p>}
+            </div>
           </li>
         ))}
       </ol>
+
+      {wildcard && (
+        <div className="wildcard">
+          <h3>Wildcard</h3>
+          <OcfduRadar ratings={wildcard.ratings} />
+          <p>{wildcard.name}</p>
+          <p>{wildcard.summary}</p>
+          <button type="button" onClick={() => setWildcardOffset((n) => n + 1)}>
+            Reroll wildcard
+          </button>
+        </div>
+      )}
 
       <h3>Tweak your answers</h3>
       {QUESTIONS.map((question) => (
