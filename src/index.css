@@ -110,14 +110,17 @@ code {
   background: var(--code-bg);
 }
 
+/* Spirit art is landscape 480x218 — the source illustrations are wide, and squaring
+   them destroyed the composition. Containers crop with object-fit, never the asset. */
 .spirit-art,
 .placeholder-art {
   display: block;
   width: 100%;
-  max-width: 256px;
-  aspect-ratio: 1;
+  max-width: 480px;
+  aspect-ratio: 480 / 218;
   border-radius: 8px;
   object-fit: cover;
+  object-position: center;
   background: #222;
 }
 
@@ -150,7 +153,7 @@ code {
 .tier-label {
   display: grid;
   place-items: center;
-  min-height: 84px;
+  min-height: 59px;
   font-size: 1.5rem;
   font-weight: 800;
   color: #1a1a1a;
@@ -169,14 +172,14 @@ code {
 
 .tier-tile {
   position: relative;
-  width: 84px;
+  width: 116px;
   margin: 0;
 }
 
 .tier-tile-art {
   display: block;
-  width: 84px;
-  height: 84px;
+  width: 116px;
+  height: 53px;
   object-fit: cover;
   border-radius: 4px;
   background: #222;
@@ -233,7 +236,7 @@ code {
 
 .rec-card {
   display: grid;
-  grid-template-columns: 128px 1fr;
+  grid-template-columns: 200px 1fr;
   gap: 1rem;
   align-items: start;
   padding: 0.85rem;
@@ -244,8 +247,8 @@ code {
 
 .rec-card-art {
   display: block;
-  width: 128px;
-  height: 128px;
+  width: 200px;
+  height: 91px;
   object-fit: cover;
   border-radius: 8px;
   background: #222;
@@ -271,6 +274,6 @@ code {
   .rec-card-art {
     width: 100%;
     height: auto;
-    aspect-ratio: 1;
+    aspect-ratio: 480 / 218;
   }
 }

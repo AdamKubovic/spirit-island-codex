@@ -16,8 +16,8 @@ export function SpiritArt({ spirit, className = 'spirit-art' }: { spirit: Spirit
       className={className}
       src={`${import.meta.env.BASE_URL}spirits/${spirit.image ?? spirit.id}.webp`}
       alt={spirit.name}
-      width={256}
-      height={256}
+      width={480}
+      height={218}
       loading="lazy"
       decoding="async"
       onError={() => setFailed(true)}
