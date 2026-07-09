@@ -1,6 +1,6 @@
 # 12 — Panel and card images in the detail view
 
-Status: ready-for-agent
+Status: done (cards only — panels still render `PlaceholderArt`, see Comments)
 
 ## Parent
 
@@ -48,3 +48,24 @@ fabrication opportunity this repo has already paid for three times. They are leg
 - #10 (there is no detail view to put images in)
 - #11 (four images on one page need four alt texts, and there is no filename mapping without the
   names)
+
+## Comments
+
+Resolved 2026-07-09, cards side. `SpiritDetail.tsx` renders panel front/back (always
+`PlaceholderArt` right now — no panel assets exist yet, see #11) and, when `startingCards` is
+present, a card grid with each image's alt/label set from the card name. Clicking a card opens a
+full-size overlay (`.card-enlarge-backdrop`); clicking that overlay dismisses just the enlarged
+card, not the whole detail view (verified: the detail modal stays open underneath). A spirit with
+no `startingCards` renders no card row at all — no placeholder cards, no empty heading.
+
+Verified with a real headless-browser pass, not just the test suite: clicking a spirit tile opens
+the modal with real card art, enlarging works and is dismissible, and at a 375px viewport the
+page has zero horizontal overflow (`scrollWidth === clientWidth`). `appSmoke.test.tsx` covers the
+no-throw and no-`startingCards` cases; `dataIntegrity.test.ts` asserts a card image file exists on
+disk for every `startingCards` entry.
+
+**Not addressed:** the aspect-configuration acceptance criterion. Browse has no aspect-level
+selection UI (only base spirits are clickable), so there is no path that reaches "an aspect
+configuration's detail view" yet — the detail view always shows a spirit's own images plus *all*
+of its aspects' `delta` text (already true, unchanged from #10), which is the only aspect-facing
+behaviour there currently is to verify.

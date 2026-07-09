@@ -1,6 +1,6 @@
 # 11 — Retrieve panel and card images, transcribe `startingCards` from them
 
-Status: ready-for-agent
+Status: done (cards only — panels remain unsourced, see Comments)
 
 ## Parent
 
@@ -82,6 +82,34 @@ names and one illegible one gets no key. Partial data here is worse than none �
   Proceed with retrieval. Do not block on this.
 
 ## Comments
+
+**Cards: completed 2026-07-09, all 37 spirits.** Source: `spiritislandwiki.com`'s "Unique Power
+Cards" section per spirit page — the same site used for v2's aspect transcriptions. Every name
+was read from the `title` attribute on that section's card links (the clean, canonical name;
+not the alt text, which carries a filename-derived origin tag like "(base).png"), verified
+against the real fetched markup, never recalled. Images are the full-resolution originals
+(`/images/X/YY/Name.png`), not the wiki's thumbnail variants. Converted to webp (`cwebp -q 85`)
+at `public/cards/<spiritId>-<n>.webp`. Pinned by `startingCardsCanon.test.ts` (all 37, all 4 per
+spirit, in the order the wiki's Unique Power Cards section lists them) and by
+`dataIntegrity.test.ts`'s asset-existence and shape checks. Paced at 2.5–3.5s between requests
+after the CAPTCHA gate cleared; one image (Volcano Looming High's first card) needed a solo
+retry after a single transient failure, everything else succeeded on the first pass.
+
+One name worth flagging so a future reader doesn't mistake it for a transcription error:
+Relentless Gaze of the Sun's fourth card is genuinely titled "Wither Bodies, Scar Stones" (comma
+included) — verified against the raw wiki markup and the image filename
+(`Wither_Bodies%2C_Scar_Stones`), not a parsing artifact.
+
+**Panels: still not sourced.** Checked two spirits from different expansions (Lightning's Swift
+Strike, Starlight Seeks Its Form) after the CAPTCHA cleared — same result as the first pass,
+confirmed rather than re-guessed: the wiki's Gallery section holds only a small "Home" icon per
+spirit, no board/panel scan under any of the naming conventions checked. Not re-attempted this
+pass. The `spirit-island-builder` lead from the first pass (real official per-spirit layout data,
+but needs actual browser automation to export a PNG) is still the most promising lead; unattempted.
+
+---
+
+**Earlier pass (2026-07-09, superseded above for cards):**
 
 **Not completed this session — research done, zero assets landed, nothing in the repo touched.**
 Status left as `ready-for-agent`. Findings, so the next attempt doesn't re-derive them:

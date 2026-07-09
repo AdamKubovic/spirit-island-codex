@@ -92,4 +92,9 @@ export interface Spirit {
   /** Absent means the OCFDU came off the printed reference sheet. "estimate" means nobody has verified them. */
   ratingsSource?: 'estimate'
   reviewNeeded?: boolean
+  /** The four starting Unique Power Card names, in panel order, read off the spirit's panel
+   * front. Nothing else about a card (cost, speed, range, target, element, effect) is recorded
+   * here - see #11. Absent means the panel could not be sourced; a partial array is never
+   * shipped, so #12 can safely map card image n to this array's index n. */
+  startingCards?: string[]
 }

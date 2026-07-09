@@ -80,6 +80,21 @@ describe('spirits.json integrity', () => {
       }
     }
   })
+
+  it('gives every spirit with startingCards exactly four, each non-empty and unique (#11)', () => {
+    // A shape test, not a truth test - it cannot know whether the names are the right ones.
+    // #12 maps card image n to startingCards[n] by index, so a partial array would silently
+    // mislabel a card; startingCards is optional precisely so a spirit whose panel could not
+    // be sourced has no key at all rather than a short array.
+    for (const spirit of spirits) {
+      if (spirit.startingCards === undefined) continue
+      expect(spirit.startingCards, `${spirit.name} startingCards is not exactly 4`).toHaveLength(4)
+      for (const name of spirit.startingCards) {
+        expect(name.trim().length, `${spirit.name} has an empty startingCards entry`).toBeGreaterThan(0)
+      }
+      expect(new Set(spirit.startingCards).size, `${spirit.name} repeats a startingCards name`).toBe(4)
+    }
+  })
 })
 
 describe('spirit artwork', () => {
@@ -90,6 +105,16 @@ describe('spirit artwork', () => {
       const slug = spirit.image ?? spirit.id
       const path = new URL(`../../../public/spirits/${slug}.webp`, import.meta.url)
       expect(existsSync(path), `${spirit.name} has no artwork at public/spirits/${slug}.webp`).toBe(true)
+    }
+  })
+
+  it('ships a card image for every startingCards entry, at the path #12 expects', () => {
+    for (const spirit of spirits) {
+      if (!spirit.startingCards) continue
+      spirit.startingCards.forEach((_, i) => {
+        const path = new URL(`../../../public/cards/${spirit.id}-${i}.webp`, import.meta.url)
+        expect(existsSync(path), `${spirit.name} has no card image at public/cards/${spirit.id}-${i}.webp`).toBe(true)
+      })
     }
   })
 })

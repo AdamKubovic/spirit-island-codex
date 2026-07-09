@@ -55,4 +55,10 @@ describe('app smoke', () => {
     const html = renderToStaticMarkup(<SpiritDetail spirit={unrated} onClose={() => {}} />)
     expect(html).toContain('not rated by this list')
   })
+
+  it('omits the card row entirely for a spirit with no startingCards, rather than rendering placeholders', () => {
+    const noCards: Spirit = { ...spirits[0], startingCards: undefined }
+    const html = renderToStaticMarkup(<SpiritDetail spirit={noCards} onClose={() => {}} />)
+    expect(html).not.toContain('Starting cards')
+  })
 })

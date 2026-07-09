@@ -24,15 +24,25 @@ marks six base spirits with a dash (rates their aspects individually but decline
 the plain base) — mapped to **absent**, not a literal `"None"` tier. Pinned in
 `tierListCanon.test.ts`.
 
-**#11 research (2026-07-09, still not landed):** starting cards are sourceable from
-`spiritislandwiki.com`'s "Unique Power Cards" section (name + full-res image per card, confirmed
-for one spirit) but the site started CAPTCHA-gating requests after ~5 hits mid-session — pace
-requests further apart next time. Panels do **not** exist as static images on that wiki at all
-(checked, not just unfound). A promising real-data source for panels exists —
-`github.com/spirit-island-builder/spirit-island-builder` ships an official per-spirit template
-for all 37 spirits — but extracting a PNG from it needs actual browser automation (their renderer
-is client-side JS, no image export API), which this session didn't have. Full detail in issue
-#11's Comments.
+**#11/#12 (cards): landed 2026-07-09**, once the wiki's rate-limit gate cleared. All 37 spirits'
+`startingCards` sourced from `spiritislandwiki.com`, images downloaded and converted to webp
+under `public/cards/`, wired into `SpiritDetail.tsx` with click-to-enlarge. Pinned by
+`startingCardsCanon.test.ts` and `dataIntegrity.test.ts`'s asset-existence check. Verified with a
+real headless-browser pass (not just tests): modal opens correctly, cards enlarge and dismiss,
+no horizontal overflow at 375px. 224 tests pass.
+
+**Panels: still unsourced.** Re-checked two spirits from different expansions after the gate
+cleared — confirmed again, not re-guessed: `spiritislandwiki.com` has no board/panel scans for
+any spirit, just a small "Home" icon. They render as `PlaceholderArt` throughout the detail view,
+which is the designed fallback, not a bug. `github.com/spirit-island-builder/spirit-island-builder`
+remains the most promising lead (real official per-spirit layout data) but needs actual browser
+automation to export a PNG — unattempted. Full detail in issue #11's Comments.
+
+**A real bug found and fixed along the way:** the v3 UI components (`TierListControls`,
+`SpiritDetail`, the clickable spirit tile) had zero CSS when first shipped — functionally
+correct and test-covered, but the detail modal rendered in normal document flow instead of as an
+overlay, which read as "clicking a spirit does nothing." Fixed in `src/deck.css`; verified with
+Playwright, not just by reading the diff.
 
 ```
 01 entity ─┬─ 02 unrated ─┬─ 03 rank ──────────┐

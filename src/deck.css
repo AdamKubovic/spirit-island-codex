@@ -755,7 +755,8 @@ button:disabled {
   border-radius: 6px;
   object-fit: cover;
 }
-.spirit-detail-card figcaption {
+.spirit-detail-card-name {
+  display: block;
   margin-top: 0.25rem;
   font-size: 11px;
   color: var(--deck-body);

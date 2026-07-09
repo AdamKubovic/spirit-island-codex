@@ -14,7 +14,8 @@
       { "name": "Immense", "delta": "Your top Presence track pays double Energy, but Power Cards cost 2 Card Plays; unused plays convert to Elements.", "complexityDelta": "up" },
       { "name": "Sparking", "delta": "Replaces Thundering Destruction; its innate lets any target Spirit damage Invaders, gain a Minor Power, or play a card. (Card 2 of 2 is not on the wiki.)", "complexityDelta": "up", "shiftsToward": "+utility" }
     ],
-    "notes": "Strong from turn one; less impactful late-game."
+    "notes": "Strong from turn one; less impactful late-game.",
+    "startingCards": ["Harbingers of the Lightning", "Lightning's Boon", "Raging Storm", "Shatter Homesteads"]
   },
   {
     "id": "river-surges-in-sunlight",
@@ -30,7 +31,8 @@
       { "name": "Travel", "delta": "Replaces River's Domain; moves Dahan along your Presence and turns 4-Dahan lands into Sacred Sites with Defend 1.", "complexityDelta": "up", "shiftsToward": "+utility" },
       { "name": "Haven", "delta": "Replaces Massive Flooding with an innate that Defends, gathers Dahan and removes Invader Health.", "complexityDelta": "up", "shiftsToward": "+defense" }
     ],
-    "notes": "Shines with high Dahan counts."
+    "notes": "Shines with high Dahan counts.",
+    "startingCards": ["Boon of Vigor", "Flash Floods", "River's Bounty", "Wash Away"]
   },
   {
     "id": "vital-strength-of-the-earth",
@@ -46,7 +48,8 @@
       { "name": "Might", "delta": "Its innate grants an extra Power Card play, +1 Damage on damage-dealing Powers, and a Power Card.", "complexityDelta": "up", "shiftsToward": "+offense" },
       { "name": "Nourishing", "delta": "Gain a Minor Power after each Major; its innate gathers Dahan and gives them +2 Health.", "complexityDelta": "up", "shiftsToward": "+defense" }
     ],
-    "notes": "Weak opening hand; needs patience."
+    "notes": "Weak opening hand; needs patience.",
+    "startingCards": ["A Year of Perfect Stillness", "Draw of the Fruitful Earth", "Guard the Healing Land", "Rituals of Destruction"]
   },
   {
     "id": "shadows-flicker-like-flame",
@@ -64,7 +67,8 @@
       { "name": "Foreboding", "delta": "Its innate lets your other Powers ignore Range there, and turns Fear generated in the land into Pushes.", "complexityDelta": "up", "shiftsToward": "+control" },
       { "name": "Dark Fire", "delta": "Treat Moon as Fire and vice versa; the first Action each turn that would destroy your Presence Pushes it instead.", "complexityDelta": "up", "shiftsToward": "+utility" }
     ],
-    "notes": "Best against low-terror-track adversaries early on."
+    "notes": "Best against low-terror-track adversaries early on.",
+    "startingCards": ["Concealing Shadows", "Crops Wither and Fade", "Favors Called Due", "Mantle of Dread"]
   },
   {
     "id": "thunderspeaker",
@@ -79,7 +83,8 @@
       { "name": "Tactician", "delta": "Replaces the third Growth option with a flexible choice: a Power Card, Presence, Energy, or Sun/Fire.", "complexityDelta": "same", "shiftsToward": "+utility" },
       { "name": "Warrior", "delta": "Dahan moved by your Actions deal Damage, and its innate damages per Dahan present.", "complexityDelta": "up", "shiftsToward": "+offense" }
     ],
-    "notes": "Needs Dahan-dense boards to shine."
+    "notes": "Needs Dahan-dense boards to shine.",
+    "startingCards": ["Manifestation of Power and Glory", "Sudden Ambush", "Voice of Thunder", "Words of Warning"]
   },
   {
     "id": "a-spread-of-rampant-green",
@@ -93,7 +98,8 @@
     "aspects": [
       { "name": "Regrowth", "delta": "Replaces Steady Regenerations and All-Enveloping Green with an innate that adds Presence, even to adjacent lands.", "complexityDelta": "up" },
       { "name": "Tangles", "delta": "Replaces Creepers Tear Into Mortar; its innate Pushes Dahan, Isolates the land and Downgrades a City. (Card 2 of 2 is not on the wiki.)", "complexityDelta": "up", "shiftsToward": "+control" }
-    ]
+    ],
+    "startingCards": ["Fields Choked with Growth", "Gift of Proliferation", "Overgrow in a Night", "Stem the Flow of Fresh Water"]
   },
   {
     "id": "oceans-hungry-grasp",
@@ -107,7 +113,8 @@
     "aspects": [
       { "name": "Deeps", "delta": "Adds Ocean tokens to Coastal lands on any board; they damage Towns and Cities and can drown a land into the Ocean permanently.", "complexityDelta": "up", "shiftsToward": "+control" }
     ],
-    "notes": "Weak on inland-heavy boards."
+    "notes": "Weak on inland-heavy boards.",
+    "startingCards": ["Call of the Deeps", "Grasping Tide", "Swallow the Land-Dwellers", "Tidal Boon"]
   },
   {
     "id": "bringer-of-dreams-and-nightmares",
@@ -122,7 +129,8 @@
       { "name": "Enticing", "delta": "Its innate makes Invaders and Dahan deal 1 less Damage in the target land, and gathers them in.", "complexityDelta": "same", "shiftsToward": "+defense" },
       { "name": "Violence", "delta": "Bottom-track Card Plays double for Damage/Destroy Powers, and Fear scales with what they hit. Makes the game simpler for everyone else.", "complexityDelta": "up", "shiftsToward": "+offense" }
     ],
-    "notes": "Rewards table-wide Fear coordination."
+    "notes": "Rewards table-wide Fear coordination.",
+    "startingCards": ["Call on Midnight's Dream", "Dread Apparitions", "Dreams of the Dahan", "Predatory Nightmares"]
   },
   {
     "id": "sharp-fangs-behind-the-leaves",
@@ -136,7 +144,8 @@
     "aspects": [
       { "name": "Encircle", "delta": "Your Powers get +1 when targeting lands with Beasts; its innate gathers Beasts and deals Damage.", "complexityDelta": "same", "shiftsToward": "+offense" },
       { "name": "Unconstrained", "delta": "Ranging Hunt may target Blighted lands, and Beasts can be prepared each Spirit phase.", "complexityDelta": "down" }
-    ]
+    ],
+    "startingCards": ["Prey on the Builders", "Teeth Gleam from Darkness", "Terrifying Chase", "Too Near the Jungle"]
   },
   {
     "id": "keeper-of-the-forbidden-wilds",
@@ -149,7 +158,8 @@
     "tags": ["token-heavy", "board-control"],
     "aspects": [
       { "name": "Spreading Hostility", "delta": "Sacred Sites also count as Wilds, top-track Energy is halved, and the last Growth option becomes Fire, move Presence and Damage.", "complexityDelta": "up" }
-    ]
+    ],
+    "startingCards": ["Boon of Growing Power", "Regrow from Roots", "Sacrosanct Wilderness", "Towering Wrath"]
   },
   {
     "id": "heart-of-the-wildfire",
@@ -162,7 +172,8 @@
     "tags": ["blight-positive", "aggressive"],
     "aspects": [
       { "name": "Transforming", "delta": "Destroying a Town or City instead Downgrades and Pushes it; its innate helps another Spirit swap Blight and cards.", "complexityDelta": "up", "shiftsToward": "+control" }
-    ]
+    ],
+    "startingCards": ["Asphyxiating Smoke", "Flame's Fury", "Flash-Fires", "Threatening Flames"]
   },
   {
     "id": "serpent-slumbering-beneath-the-island",
@@ -176,7 +187,8 @@
     "aspects": [
       { "name": "Locus", "delta": "An Incarna that other Spirits can target through, and that repeats their land-targeting Power Cards.", "complexityDelta": "up", "shiftsToward": "+utility" }
     ],
-    "notes": "Very weak opening; needs a patient player and a forgiving early game."
+    "notes": "Very weak opening; needs a patient player and a forgiving early game.",
+    "startingCards": ["Absorb Essence", "Elemental Aegis", "Gift of Flowing Power", "Gift of the Primordial Deeps"]
   },
   {
     "id": "stones-unyielding-defiance",
@@ -187,7 +199,8 @@
     "elements": ["Earth", "Air"],
     "summary": "Builds Badlands tokens to fortify mountain lands and shrug off Blight effects.",
     "tags": ["token-heavy", "board-control"],
-    "aspects": []
+    "aspects": [],
+    "startingCards": ["Jagged Shards Push from the Earth", "Plows Shatter on Rocky Ground", "Scarred and Stony Land", "Stubborn Solidity"]
   },
   {
     "id": "shifting-memory-of-ages",
@@ -201,7 +214,8 @@
     "aspects": [
       { "name": "Intensify", "delta": "Spend Element Markers to modify your Actions: extra Damage, Defend, movement, or a Minor Power.", "complexityDelta": "up", "shiftsToward": "+utility" },
       { "name": "Mentor", "delta": "Draw fewer Power Cards but keep more; its innate hands cards to another Spirit and lets them play or repeat them.", "complexityDelta": "up", "shiftsToward": "+utility" }
-    ]
+    ],
+    "startingCards": ["Boon of Ancient Memories", "Elemental Teachings", "Share Secrets of Survival", "Study the Invaders' Fears"]
   },
   {
     "id": "grinning-trickster-stirs-up-trouble",
@@ -212,7 +226,8 @@
     "elements": ["Moon", "Animal"],
     "summary": "Spreads Strife and Beast tokens, thriving on the randomness of Minor Powers.",
     "tags": ["token-heavy", "board-control"],
-    "aspects": []
+    "aspects": [],
+    "startingCards": ["Impersonate Authority", "Incite the Mob", "Overenthusiastic Arson", "Unexpected Tigers"]
   },
   {
     "id": "lure-of-the-deep-wilderness",
@@ -225,7 +240,8 @@
     "tags": ["token-heavy"],
     "aspects": [
       { "name": "Lair", "delta": "An Incarna Lair where Invaders and Dahan cannot move, and large Invader stacks do not Ravage.", "complexityDelta": "up", "shiftsToward": "+control" }
-    ]
+    ],
+    "startingCards": ["Gift of the Untamed Wild", "Perils of the Deepest Island", "Softly Beckon Ever Inward", "Swallowed by the Wilderness"]
   },
   {
     "id": "many-minds-move-as-one",
@@ -236,7 +252,8 @@
     "elements": ["Animal", "Sun"],
     "summary": "A strong all-around defender that leans on heavy Beast tokens and generates real Fear.",
     "tags": ["token-heavy", "board-control", "fear-focused"],
-    "aspects": []
+    "aspects": [],
+    "startingCards": ["A Dreadful Tide of Scurrying Flesh", "Boon of Swarming Bedevilment", "Ever-Multiplying Swarm", "Guide the Way on Feathered Wings"]
   },
   {
     "id": "volcano-looming-high",
@@ -248,7 +265,8 @@
     "summary": "Builds heavy Presence in mountain lands, then destroys it to erupt for damage and Fear — at the risk of spreading Blight.",
     "tags": ["ramping-economy", "aggressive"],
     "aspects": [],
-    "notes": "Complexity confirmed Moderate against the Spirit Island wiki (the cell was blank on the owner's reference sheet)."
+    "notes": "Complexity confirmed Moderate against the Spirit Island wiki (the cell was blank on the owner's reference sheet).",
+    "startingCards": ["Exaltation of Molten Stone", "Lava Flows", "Pyroclastic Bombardment", "Rain of Ash"]
   },
   {
     "id": "shroud-of-silent-mist",
@@ -261,7 +279,8 @@
     "tags": ["fear-focused", "token-heavy"],
     "aspects": [
       { "name": "Stranded", "delta": "Push your Presence twice each Fast and Slow phase, and Isolate one of your lands each Fast phase.", "complexityDelta": "down", "shiftsToward": "+control" }
-    ]
+    ],
+    "startingCards": ["Dissolving Vapors", "Flowing and Silent Forms Dart By", "The Fog Closes In", "Unnerving Pall"]
   },
   {
     "id": "vengeance-as-a-burning-plague",
@@ -272,7 +291,8 @@
     "elements": ["Earth", "Animal", "Moon"],
     "summary": "Exploits Disease and Badlands to punish Towns and Cities as Blight accumulates.",
     "tags": ["blight-positive", "aggressive", "token-heavy"],
-    "aspects": []
+    "aspects": [],
+    "startingCards": ["Fetid Breath Spreads Infection", "Fiery Vengeance", "Plaguebearers", "Strike Low with Sudden Fevers"]
   },
   {
     "id": "starlight-seeks-its-form",
@@ -284,7 +304,8 @@
     "summary": "A sandbox spirit with an extremely open-ended, build-your-own-Powers playstyle.",
     "tags": ["incarnate"],
     "aspects": [],
-    "notes": "Not recommended for newcomers; very high setup and decision overhead."
+    "notes": "Not recommended for newcomers; very high setup and decision overhead.",
+    "startingCards": ["Boon of Reimagining", "Gather the Scattered Light of Stars", "Peace of the Nighttime Sky", "Shape the Self Anew"]
   },
   {
     "id": "fractured-days-split-the-sky",
@@ -296,7 +317,8 @@
     "summary": "Plays a careful long game around a shared Powers-and-Presence track with very few Presence tokens.",
     "tags": ["ramping-economy"],
     "aspects": [],
-    "notes": "Blight-sensitive due to a low Presence count."
+    "notes": "Blight-sensitive due to a low Presence count.",
+    "startingCards": ["Absolute Stasis", "Blur the Arc of Years", "Pour Time Sideways", "The Past Returns Again"]
   },
   {
     "id": "downpour-drenches-the-world",
@@ -307,7 +329,8 @@
     "elements": ["Water", "Air"],
     "summary": "An anti-Blight defensive spirit that can repeat the same Power multiple times per turn.",
     "tags": ["board-control"],
-    "aspects": []
+    "aspects": [],
+    "startingCards": ["Dark Skies Loose a Stinging Rain", "Foundations Sink into Mud", "Gift of Abundance", "Unbearable Deluge"]
   },
   {
     "id": "finder-of-paths-unseen",
@@ -318,7 +341,8 @@
     "elements": ["Air", "Animal"],
     "summary": "Wins through positioning, isolating lands and shuffling Invaders, Dahan, and tokens around the board.",
     "tags": ["board-control"],
-    "aspects": []
+    "aspects": [],
+    "startingCards": ["A Circuitous and Wending Journey", "Aid from the Spirit-Speakers", "Offer Passage Between Worlds", "Paths Tied by Nature"]
   },
   {
     "id": "hearth-vigil",
@@ -329,7 +353,8 @@
     "elements": ["Fire", "Sun", "Animal"],
     "summary": "Boosts and protects a growing Dahan population across the board.",
     "tags": ["dahan-synergy"],
-    "aspects": []
+    "aspects": [],
+    "startingCards": ["Call to Vigilance", "Coordinated Raid", "Favors of Story and Season", "Surrounded by the Dahan"]
   },
   {
     "id": "towering-roots-of-the-jungle",
@@ -341,7 +366,8 @@
     "summary": "Guards its lands with Vitality tokens that soak up Blight, growing an Incarna that anchors the defense.",
     "tags": ["incarnate", "board-control"],
     "aspects": [],
-    "notes": "Vitality tokens confirmed against the wiki (each prevents 1 Blight, then is removed)."
+    "notes": "Vitality tokens confirmed against the wiki (each prevents 1 Blight, then is removed).",
+    "startingCards": ["Blooming of the Rocks and Trees", "Boon of Resilient Power", "Entwine the Fates of All", "Radiant and Hallowed Grove"]
   },
   {
     "id": "ember-eyed-behemoth",
@@ -353,7 +379,8 @@
     "summary": "Stomps the island as a highly mobile Incarna, flattening whatever it reaches with raw damage.",
     "tags": ["incarnate", "aggressive"],
     "aspects": [],
-    "notes": "Uses no Wilds tokens — the reference sheet's \"[Wilds?]\" reading was wrong. Its mechanic is Incarna mobility (wiki-verified)."
+    "notes": "Uses no Wilds tokens — the reference sheet's \"[Wilds?]\" reading was wrong. Its mechanic is Incarna mobility (wiki-verified).",
+    "startingCards": ["Blazing Intimidation", "Exaltation of Grasping Roots", "Surging Lahar", "Terrifying Rampage"]
   },
   {
     "id": "relentless-gaze-of-the-sun",
@@ -364,7 +391,8 @@
     "elements": ["Sun", "Fire"],
     "summary": "An aggressive spirit that punishes lands already thick with Presence.",
     "tags": ["aggressive"],
-    "aspects": []
+    "aspects": [],
+    "startingCards": ["Blinding Glare", "Focus the Sun's Rays", "Unbearable Gaze", "Wither Bodies, Scar Stones"]
   },
   {
     "id": "wandering-voice-keens-delirium",
@@ -375,7 +403,8 @@
     "elements": ["Air", "Moon", "Animal"],
     "summary": "A mobile, Strife-spreading Incarnate spirit that darts around the board.",
     "tags": ["incarnate", "token-heavy"],
-    "aspects": []
+    "aspects": [],
+    "startingCards": ["Exhale Confusion and Delirium", "Frightful Keening", "Turmoil's Touch", "Twist Perceptions"]
   },
   {
     "id": "wounded-waters-bleeding",
@@ -386,7 +415,8 @@
     "elements": ["Water", "Animal"],
     "summary": "Moves Beast tokens and itself around the board to control where the fight happens.",
     "tags": ["board-control", "token-heavy"],
-    "aspects": []
+    "aspects": [],
+    "startingCards": ["Blood Water and Bloodlust", "Boon of Corrupted Blood", "Draw to the Water's Edge", "Wrack with Pain and Grief"]
   },
   {
     "id": "breath-of-darkness-down-your-spine",
@@ -397,7 +427,8 @@
     "elements": ["Moon", "Air"],
     "summary": "Captures Invaders into an Endless Dark zone, especially strong against Explorers.",
     "tags": ["incarnate", "fear-focused"],
-    "aspects": []
+    "aspects": [],
+    "startingCards": ["Emerge from the Dread Night Wind", "Reach from the Infinite Darkness", "Swallowed by the Endless Dark", "Terror of the Hunted"]
   },
   {
     "id": "dances-up-earthquakes",
@@ -409,7 +440,8 @@
     "summary": "A slow-building, anticipation-based spirit that detonates delayed Quake-token effects.",
     "tags": ["incarnate", "token-heavy"],
     "aspects": [],
-    "notes": "Quake tokens confirmed against the wiki."
+    "notes": "Quake tokens confirmed against the wiki.",
+    "startingCards": ["Exaltation of Echoed Steps", "Gift of Seismic Energy", "Inspire a Winding Dance", "Radiating Tremors"]
   },
   {
     "id": "devouring-teeth-lurk-underfoot",
@@ -422,7 +454,8 @@
     "tags": ["aggressive"],
     "aspects": [],
     "ratingsSource": "estimate",
-    "notes": "OCFDU are estimates. No numeric ratings exist on the wiki or the owner's reference sheet; verify against the physical Horizons panel."
+    "notes": "OCFDU are estimates. No numeric ratings exist on the wiki or the owner's reference sheet; verify against the physical Horizons panel.",
+    "startingCards": ["Ferocious Rampage", "Gift of Furious Might", "Herd Towards the Lurking Maw", "Mark Territory with Scars and Teeth"]
   },
   {
     "id": "eyes-watch-from-the-trees",
@@ -435,7 +468,8 @@
     "tags": ["board-control"],
     "aspects": [],
     "ratingsSource": "estimate",
-    "notes": "OCFDU are estimates. No numeric ratings exist on the wiki or the owner's reference sheet; verify against the physical Horizons panel."
+    "notes": "OCFDU are estimates. No numeric ratings exist on the wiki or the owner's reference sheet; verify against the physical Horizons panel.",
+    "startingCards": ["Boon of Watchful Guarding", "Eerie Noises and Moving Trees", "Mysterious Abductions", "Whispered Guidance Through the Night"]
   },
   {
     "id": "fathomless-mud-of-the-swamp",
@@ -448,7 +482,8 @@
     "tags": ["board-control"],
     "aspects": [],
     "ratingsSource": "estimate",
-    "notes": "OCFDU are estimates. No numeric ratings exist on the wiki or the owner's reference sheet; verify against the physical Horizons panel."
+    "notes": "OCFDU are estimates. No numeric ratings exist on the wiki or the owner's reference sheet; verify against the physical Horizons panel.",
+    "startingCards": ["Exaltation of Tangled Growth", "Foul Vapors and Fetid Muck", "Intractable Thickets and Thorns", "Open Shifting Waterways"]
   },
   {
     "id": "rising-heat-of-stone-and-sand",
@@ -461,7 +496,8 @@
     "tags": ["aggressive"],
     "aspects": [],
     "ratingsSource": "estimate",
-    "notes": "OCFDU are estimates. No numeric ratings exist on the wiki or the owner's reference sheet; verify against the physical Horizons panel. Elements wiki-confirmed."
+    "notes": "OCFDU are estimates. No numeric ratings exist on the wiki or the owner's reference sheet; verify against the physical Horizons panel. Elements wiki-confirmed.",
+    "startingCards": ["Call on Herders for Aid", "Gift of Searing Heat", "Stinging Sandstorm", "Sweltering Exhaustion"]
   },
   {
     "id": "sun-bright-whirlwind",
@@ -474,6 +510,7 @@
     "tags": ["board-control"],
     "aspects": [],
     "ratingsSource": "estimate",
-    "notes": "OCFDU are estimates. No numeric ratings exist on the wiki or the owner's reference sheet; verify against the physical Horizons panel. Elements wiki-confirmed."
+    "notes": "OCFDU are estimates. No numeric ratings exist on the wiki or the owner's reference sheet; verify against the physical Horizons panel. Elements wiki-confirmed.",
+    "startingCards": ["Gift of the Sunlit Air", "Gift of Wind-Sped Steps", "Scatter to the Winds", "Tempest of Leaves and Branches"]
   }
 ]
