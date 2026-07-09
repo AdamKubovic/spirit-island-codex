@@ -6,6 +6,7 @@ import { findAspectNudge } from '../domain/aspectNudge'
 import { complexityStore } from '../domain/complexityStore'
 import { expand, type Configuration } from '../domain/configurations'
 import { gameLog } from '../domain/gameLog'
+import { isRelevantToPlayerCount } from '../domain/noteRelevance'
 import { QUESTIONS } from '../domain/questionnaire'
 import { drawRandom } from '../domain/randomChoose'
 import { dedupeBySpirit, recommend, type Weights } from '../domain/recommend'
@@ -223,9 +224,11 @@ function ResultRow({
   tiers: Record<string, Tier>
 }) {
   const [open, setOpen] = useState(false)
+  const { playerCount } = useRecommender()
   const { spirit, aspect } = config
   const nudge = findAspectNudge(spirit, weights)
   const siblings = CONFIGS_BY_SPIRIT[spirit.id].filter((c) => c.configId !== config.configId)
+  const noteIsRelevant = spirit.notes ? isRelevantToPlayerCount(spirit.notes, playerCount) : false
 
   return (
     <li className="deck-row">
@@ -250,7 +253,12 @@ function ResultRow({
               {spirit.expansion} · {spirit.complexity} · {spirit.elements.join(', ')}
             </p>
             <p>{spirit.summary}</p>
-            {spirit.notes && <p className="notes">{spirit.notes}</p>}
+            {spirit.notes && (
+              <p className={noteIsRelevant ? 'notes notes-relevant' : 'notes'}>
+                {noteIsRelevant ? <strong>At this table size: </strong> : null}
+                {spirit.notes}
+              </p>
+            )}
             {nudge && <p className="aspect-nudge">{nudge.message}</p>}
             {spirit.aspects.length > 0 && (
               <ul className="aspects">
