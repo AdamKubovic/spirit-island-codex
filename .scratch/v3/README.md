@@ -17,6 +17,23 @@ sourced one spirit at a time (WebFetch + read, the way v2's aspect transcription
 37 spirits — a large, slow retrieval job better run as its own pass. #12 is blocked on #11's
 `startingCards` data. All three remain `ready-for-agent`.
 
+**A second cited list landed later the same day (not one of the twelve, but built on #01–#09's
+machinery): `sia-favorites-fun-solo-2026.json`**, a fun/solo ranking from Spirit Island Archive,
+supplied by the owner. It exercises a real edge case the owner deliberately picked: the source
+marks six base spirits with a dash (rates their aspects individually but declines an opinion on
+the plain base) — mapped to **absent**, not a literal `"None"` tier. Pinned in
+`tierListCanon.test.ts`.
+
+**#11 research (2026-07-09, still not landed):** starting cards are sourceable from
+`spiritislandwiki.com`'s "Unique Power Cards" section (name + full-res image per card, confirmed
+for one spirit) but the site started CAPTCHA-gating requests after ~5 hits mid-session — pace
+requests further apart next time. Panels do **not** exist as static images on that wiki at all
+(checked, not just unfound). A promising real-data source for panels exists —
+`github.com/spirit-island-builder/spirit-island-builder` ships an official per-spirit template
+for all 37 spirits — but extracting a PNG from it needs actual browser automation (their renderer
+is client-side JS, no image export API), which this session didn't have. Full detail in issue
+#11's Comments.
+
 ```
 01 entity ─┬─ 02 unrated ─┬─ 03 rank ──────────┐
            │              │                    ├─ 06 player count ─┐

@@ -83,5 +83,40 @@ names and one illegible one gets no key. Partial data here is worse than none â€
 
 ## Comments
 
-<!-- The implementing agent records here: the image source used, how many spirits were completed,
-     and every spirit whose panel or card names could not be read. -->
+**Not completed this session â€” research done, zero assets landed, nothing in the repo touched.**
+Status left as `ready-for-agent`. Findings, so the next attempt doesn't re-derive them:
+
+**Starting cards: sourceable, blocked mid-session by rate limiting, not by data availability.**
+`spiritislandwiki.com` has a "Unique Power Cards" section per spirit page (MediaWiki, page title
+= spirit name with `'` percent-encoded as `%27`) containing exactly the four starting cards'
+names (as the `title` attribute on each card's `<a>`) and full-resolution images (`/images/X/YY/
+Name.png`, not the `/images/thumb/...` variant). Confirmed end-to-end for Lightning's Swift
+Strike: Harbingers of the Lightning, Lightning's Boon, Raging Storm, Shatter Homesteads. After
+~5 automated requests the site started returning a CAPTCHA challenge
+(`/.well-known/sgcaptcha/...`) for *every* request, including plain image URLs - not just page
+fetches. Did not attempt to work around it. Next attempt: space requests several seconds apart
+from the start, expect to need multiple sessions across several days if the block re-triggers,
+and stop immediately (don't retry-loop) if the captcha page reappears.
+
+**Panels: no static images exist on spiritislandwiki.com at all** (checked before hitting the
+rate limit) - no Gallery entry, no `File:<Spirit>_Panel.png`/`_Board.png` naming, nothing under
+`Special:ListFiles` beyond a couple of generic component templates. Do not re-check this; it was
+verified absent, not merely unfound.
+
+**A second, promising source for panels: github.com/spirit-island-builder/spirit-island-builder**
+(spiritislandbuilder.com's repo) ships an "OFFICIAL_<spirit name>.html" file for every one of the
+37 spirits under `static/template/MyCustomContent/MySpirit/` - real official panel data (growth
+track, presence track, innate power text), not a fabrication risk. **But it is not a static
+image**: each file is a `<board spirit-image="data:...">` custom element meant to be rendered by
+the site's own SvelteKit client JS (there's a client-side screenshot tool at
+`src/lib/preview-frame/take-screenshot.js`, no server-side image export API). Getting a PNG out
+of it requires either (a) running their dev server locally and driving a real browser through
+their UI to trigger the export, or (b) the owner exporting the 37 panels himself via
+spiritislandbuilder.com's built-in tool and handing the files over. Neither was attempted this
+session - (a) needs browser-automation tooling this session didn't have; (b) is the owner's call
+on his own time, not something to delegate back silently.
+
+**Recommendation for the next attempt:** land cards first (bounded, already half-verified, just
+needs pacing). Treat panels as a separate hand-off: ask the owner to export via
+spiritislandbuilder.com, or equip a future session with real browser automation before attempting
+route (a).
