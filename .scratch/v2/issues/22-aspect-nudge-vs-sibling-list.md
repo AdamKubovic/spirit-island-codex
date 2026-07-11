@@ -1,6 +1,6 @@
 # 22 — The aspect nudge and the sibling list argue about the same aspects
 
-Status: needs-triage
+Status: done
 
 ## Parent
 
@@ -54,3 +54,24 @@ setup or growth rather than pointing at an axis. Any change here must leave that
 ## Blocked by
 
 - None
+
+## Comments
+
+**Triaged 2026-07-11: fold the hint into the sibling list.** Owner's decision. A sibling whose
+`shiftsToward` matches a high-weighted axis gets marked in the sibling list; the standalone
+`findAspectNudge` message goes. The second and third lists (`spirit.aspects` with effects, siblings
+with tiers) merge into one list either way. The test pinning the four aspects without
+`shiftsToward` (Immense, Regrowth, Unconstrained, Spreading Hostility) must keep passing.
+
+**Implemented 2026-07-11.** `aspectNudge.ts`'s `findAspectNudge` replaced with `topWeightedLowAxis`,
+which returns just the axis (if any) that's top-weighted and the base spirit rates low on -
+message assembly moved to the sibling list itself. `ResultRow` in `Recommender.tsx` now renders one
+merged "Other configurations of X" list (was two: `spirit.aspects` with effects, and siblings with
+tiers); the sibling whose `shiftsToward` matches that axis gets an inline hint and the
+`.aspect-hint` highlight (renamed from `.aspect-nudge`). The row's own aspect (if the config being
+viewed is one) still shows its transcribed effect, just inline rather than duplicated in a
+side-list. The four-aspects-without-`shiftsToward` data test (`aspectCanon.test.ts`) is untouched
+and still passes. `aspectShiftsToward(aspect, axis)` owns the `+axis` string match (code review
+flagged the first pass for inlining that domain check straight into the component, untested); it
+now lives in and is tested by `aspectNudge.ts`/`aspectNudge.test.ts`. 236 tests pass,
+`tsc -b`/`oxlint` clean.

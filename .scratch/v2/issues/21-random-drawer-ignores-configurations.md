@@ -1,6 +1,6 @@
 # 21 — The random drawer still draws spirits, not configurations
 
-Status: needs-triage
+Status: done
 
 ## Parent
 
@@ -42,3 +42,15 @@ newcomer safeguard's cousin, and the split rule applies to it too.
 ## Blocked by
 
 - None
+
+## Comments
+
+**Triaged 2026-07-11: yes, the drawer draws configurations.** Owner's decision. The pool becomes
+the 68 configurations, consistent with everything else in v2. Per the note above, `eligiblePool`'s
+complexity ceiling reads `effectiveComplexity` (printed base + aspect arrow), **not**
+`personalEffectiveComplexity`.
+
+**Implemented 2026-07-11.** `randomChoose.ts`'s `eligiblePool`/`drawRandom` now take
+`Configuration[]` and filter on `effectiveComplexity`. `RandomChooser` in `Recommender.tsx` draws
+from the 68-configuration pool and renders the aspect name when one is drawn. Tests updated;
+232 tests pass, `tsc -b`/`oxlint` clean.

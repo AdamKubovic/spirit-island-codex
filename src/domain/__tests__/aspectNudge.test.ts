@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { findAspectNudge } from '../aspectNudge'
+import { aspectShiftsToward, topWeightedLowAxis } from '../aspectNudge'
 import type { Spirit } from '../types'
 
 const lightningLike: Spirit = {
@@ -14,51 +14,46 @@ const lightningLike: Spirit = {
   aspects: [{ name: 'Wind', delta: 'Leans supportive instead of pure offense.', shiftsToward: '+utility' }],
 }
 
-describe('findAspectNudge — untranscribed aspects', () => {
-  it('stays silent for an aspect with no shiftsToward hint', () => {
-    // Real aspect, effect not yet read off the card. Silence beats guessing a direction.
-    const spirit = {
-      id: 's',
-      name: 'S',
-      expansion: 'Base',
-      complexity: 'Low',
-      ratings: { offense: 5, control: 1, fear: 1, defense: 1, utility: 1 },
-      elements: ['Fire'],
-      summary: '',
-      tags: [],
-      aspects: [{ name: 'Sparking', reviewNeeded: true }],
-    } as unknown as Parameters<typeof findAspectNudge>[0]
-    expect(findAspectNudge(spirit, { utility: 5 })).toBeUndefined()
+describe('topWeightedLowAxis', () => {
+  it('returns the axis when it is both top-weighted and the spirit rates low there', () => {
+    expect(topWeightedLowAxis(lightningLike, { utility: 5 })).toBe('utility')
+  })
+
+  it("returns undefined when the weighted axis is not the base spirit's low point", () => {
+    // offense is the max weight, but the spirit rates high (5) on offense -> not "low there"
+    expect(topWeightedLowAxis(lightningLike, { offense: 5 })).toBeUndefined()
+  })
+
+  it("returns undefined when the low axis is not the user's top-weighted one", () => {
+    // utility (rated low) is weighted, but offense is weighted higher -> utility isn't "high importance"
+    expect(topWeightedLowAxis(lightningLike, { offense: 5, utility: 1 })).toBeUndefined()
+  })
+
+  it('returns undefined when nothing is weighted', () => {
+    expect(topWeightedLowAxis(lightningLike, {})).toBeUndefined()
   })
 })
 
-describe('findAspectNudge', () => {
-  it('fires when the base spirit is low on the top-weighted axis and a matching aspect exists', () => {
-    const nudge = findAspectNudge(lightningLike, { utility: 5 })
-    expect(nudge?.aspect.name).toBe('Wind')
-    expect(nudge?.axis).toBe('utility')
-    expect(nudge?.message).toContain('Wind')
+describe('aspectShiftsToward', () => {
+  const [wind] = lightningLike.aspects
+
+  it('is true when the aspect\'s hint points at the given axis', () => {
+    expect(aspectShiftsToward(wind, 'utility')).toBe(true)
   })
 
-  it('does not fire when the weighted axis is not the base spirit\'s low point', () => {
-    // offense is the max weight, but the spirit rates high (5) on offense -> not "low there"
-    const nudge = findAspectNudge(lightningLike, { offense: 5 })
-    expect(nudge).toBeUndefined()
+  it('is false when the aspect\'s hint points at a different axis', () => {
+    expect(aspectShiftsToward(wind, 'offense')).toBe(false)
   })
 
-  it('does not fire when the low axis is not the user\'s top-weighted one', () => {
-    // utility (rated low) is weighted, but offense is weighted higher -> utility isn't "high importance"
-    const nudge = findAspectNudge(lightningLike, { offense: 5, utility: 1 })
-    expect(nudge).toBeUndefined()
+  it('is false when there is no axis to match', () => {
+    expect(aspectShiftsToward(wind, undefined)).toBe(false)
   })
 
-  it('does not fire when no aspect shifts toward the relevant axis', () => {
-    const noMatchingAspect: Spirit = { ...lightningLike, aspects: [] }
-    const nudge = findAspectNudge(noMatchingAspect, { utility: 5 })
-    expect(nudge).toBeUndefined()
+  it('is false when there is no aspect (a base configuration)', () => {
+    expect(aspectShiftsToward(undefined, 'utility')).toBe(false)
   })
 
-  it('does not fire when nothing is weighted', () => {
-    expect(findAspectNudge(lightningLike, {})).toBeUndefined()
+  it('is false for an aspect with no shiftsToward hint at all', () => {
+    expect(aspectShiftsToward({ name: 'Sparking' }, 'utility')).toBe(false)
   })
 })

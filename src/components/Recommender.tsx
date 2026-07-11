@@ -2,7 +2,8 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import spiritsData from '../data/spirits.json'
 import { answersStore } from '../domain/answersStore'
 import { answersToWeights, type Answers } from '../domain/answersToWeights'
-import { findAspectNudge } from '../domain/aspectNudge'
+import { aspectShiftsToward, topWeightedLowAxis } from '../domain/aspectNudge'
+import { AXIS_LABEL } from '../domain/axisLabels'
 import { complexityStore } from '../domain/complexityStore'
 import { expand, type Configuration } from '../domain/configurations'
 import { gameLog } from '../domain/gameLog'
@@ -254,7 +255,7 @@ function ResultRow({
   const [open, setOpen] = useState(false)
   const { playerCount } = useRecommender()
   const { spirit, aspect } = config
-  const nudge = findAspectNudge(spirit, weights)
+  const hintAxis = topWeightedLowAxis(spirit, weights)
   const siblings = CONFIGS_BY_SPIRIT[spirit.id].filter((c) => c.configId !== config.configId)
   const noteIsRelevant = spirit.notes ? isRelevantToPlayerCount(spirit.notes, playerCount) : false
 
@@ -281,33 +282,39 @@ function ResultRow({
               {spirit.expansion} · {config.effectiveComplexity} · {spirit.elements.join(', ')}
             </p>
             <p>{spirit.summary}</p>
+            {aspect && (
+              <p>
+                <strong>{aspect.name}:</strong>{' '}
+                {aspect.delta ?? <em className="meta">effect not transcribed yet</em>}
+              </p>
+            )}
             {spirit.notes && (
               <p className={noteIsRelevant ? 'notes notes-relevant' : 'notes'}>
                 {noteIsRelevant ? <strong>At this table size: </strong> : null}
                 {spirit.notes}
               </p>
             )}
-            {nudge && <p className="aspect-nudge">{nudge.message}</p>}
-            {spirit.aspects.length > 0 && (
-              <ul className="aspects">
-                {spirit.aspects.map((aspect) => (
-                  <li key={aspect.name}>
-                    <strong>{aspect.name}:</strong>{' '}
-                    {aspect.delta ?? <em className="meta">effect not transcribed yet</em>}
-                  </li>
-                ))}
-              </ul>
-            )}
             {siblings.length > 0 && (
               <>
                 <p className="meta">Other configurations of {spirit.name}:</p>
                 <ul className="aspects">
-                  {siblings.map((sibling) => (
-                    <li key={sibling.configId}>
-                      {sibling.aspect ? sibling.aspect.name : 'Base'} — tier{' '}
-                      {tiers[sibling.configId] ?? 'not rated by this list'} · {sibling.effectiveComplexity}
-                    </li>
-                  ))}
+                  {siblings.map((sibling) => {
+                    const leansTowardHint = aspectShiftsToward(sibling.aspect, hintAxis)
+                    return (
+                      <li key={sibling.configId} className={leansTowardHint ? 'aspect-hint' : undefined}>
+                        <strong>{sibling.aspect ? sibling.aspect.name : 'Base'}:</strong>{' '}
+                        {sibling.aspect?.delta ?? (sibling.aspect ? <em className="meta">effect not transcribed yet</em> : null)}
+                        {' — tier '}
+                        {tiers[sibling.configId] ?? 'not rated by this list'} · {sibling.effectiveComplexity}
+                        {leansTowardHint && hintAxis && (
+                          <>
+                            {' '}
+                            <em>leans {AXIS_LABEL[hintAxis]}, which you weighted highly</em>
+                          </>
+                        )}
+                      </li>
+                    )
+                  })}
                 </ul>
               </>
             )}
@@ -488,7 +495,7 @@ function RandomChooser() {
   const [drawKey, setDrawKey] = useState(0)
   // drawKey is a deliberate re-run trigger for the reroll button, not a real dependency.
   const drawn = useMemo(
-    () => drawRandom(spirits, { complexityCeiling: complexityCeiling || undefined }),
+    () => drawRandom(configurations, { complexityCeiling: complexityCeiling || undefined }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [complexityCeiling, drawKey],
   )
@@ -510,12 +517,20 @@ function RandomChooser() {
 
       {drawn ? (
         <div className="deck-drawn">
-          <SpiritArt spirit={drawn} />
-          <h3>{drawn.name}</h3>
-          <p>{drawn.summary}</p>
+          <SpiritArt spirit={drawn.spirit} />
+          <h3>
+            {drawn.spirit.name}
+            {drawn.aspect ? (
+              <>
+                {' '}
+                — play the <strong>{drawn.aspect.name}</strong> aspect
+              </>
+            ) : null}
+          </h3>
+          <p>{drawn.spirit.summary}</p>
         </div>
       ) : (
-        <p>No spirits match that constraint.</p>
+        <p>No configurations match that constraint.</p>
       )}
 
       <div className="deck-wizard-actions">
