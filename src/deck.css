@@ -301,6 +301,34 @@ button:disabled {
   padding-left: 1rem;
   font-size: 12px;
 }
+.spirit-detail-aspects {
+  list-style: none;
+  padding-left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+.spirit-detail-aspects li {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+}
+.spirit-detail-aspect-card {
+  all: unset;
+  cursor: pointer;
+  display: block;
+  flex: 0 0 90px;
+}
+.spirit-detail-aspect-card img,
+.spirit-detail-aspect-card .placeholder-art {
+  width: 90px;
+  aspect-ratio: 5 / 7;
+  border-radius: 6px;
+  object-fit: cover;
+}
+.spirit-detail-aspect-text {
+  flex: 1 1 auto;
+}
 
 /* --- wildcard --- */
 .deck-wild {

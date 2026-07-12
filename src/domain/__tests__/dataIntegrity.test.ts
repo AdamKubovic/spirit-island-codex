@@ -129,6 +129,24 @@ describe('spirit artwork', () => {
       }
     }
   })
+
+  it('ships an aspect card image for every aspect, at the path SpiritDetail expects', () => {
+    // asset-archive #03 found all 31 aspect cards with no gaps, so unconditional like panels above.
+    // Slug rule mirrors SpiritDetail.tsx's aspectSlug (kept in sync there, not imported, since
+    // the component owns the presentation-layer slug and this test owns the asset guarantee).
+    for (const spirit of spirits) {
+      for (const aspect of spirit.aspects) {
+        const slug = aspect.name
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, '_')
+          .replace(/^_+|_+$/g, '')
+        const path = new URL(`../../../public/aspects/${spirit.id}-${slug}.webp`, import.meta.url)
+        expect(existsSync(path), `${spirit.name}/${aspect.name} has no aspect image at public/aspects/${spirit.id}-${slug}.webp`).toBe(
+          true,
+        )
+      }
+    }
+  })
 })
 
 describe("owner's board integrity", () => {

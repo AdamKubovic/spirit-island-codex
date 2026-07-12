@@ -7,6 +7,15 @@ import { SpiritArt } from './SpiritArt'
 
 const ARROW: Record<string, string> = { up: '↑ more complex', down: '↓ simpler', same: '→ same complexity' }
 
+/** Matches the slug asset-archive #03/#07 used when naming aspect card derivatives
+ * (`public/aspects/<spiritId>-<slug>.webp`): lowercase, non-alphanumeric runs collapsed to `_`. */
+function aspectSlug(name: string): string {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+}
+
 /** An image at a conventional path, falling back to the spirit's placeholder tile on a missing
  * file or load failure - #12's hard requirement that 259 assets need not all arrive at once. */
 function DetailImage({
@@ -116,15 +125,27 @@ export function SpiritDetail({ spirit, onClose }: { spirit: Spirit; onClose: () 
         {spirit.aspects.length > 0 && (
           <>
             <h3>Aspects</h3>
-            <ul className="aspects">
-              {spirit.aspects.map((aspect) => (
-                <li key={aspect.name}>
-                  <strong>{aspect.name}</strong>
-                  {aspect.complexityDelta && <span className="meta"> · {ARROW[aspect.complexityDelta]}</span>}
-                  {' — '}
-                  {aspect.delta ?? <em className="meta">effect not transcribed yet</em>}
-                </li>
-              ))}
+            <ul className="aspects spirit-detail-aspects">
+              {spirit.aspects.map((aspect) => {
+                const src = `${base}aspects/${spirit.id}-${aspectSlug(aspect.name)}.webp`
+                return (
+                  <li key={aspect.name}>
+                    <button
+                      type="button"
+                      className="spirit-detail-aspect-card"
+                      onClick={() => setEnlarged({ src, alt: `${spirit.name} (${aspect.name})` })}
+                    >
+                      <DetailImage spirit={spirit} src={src} alt={`${spirit.name} (${aspect.name}) aspect card`} />
+                    </button>
+                    <div className="spirit-detail-aspect-text">
+                      <strong>{aspect.name}</strong>
+                      {aspect.complexityDelta && <span className="meta"> · {ARROW[aspect.complexityDelta]}</span>}
+                      {' — '}
+                      {aspect.delta ?? <em className="meta">effect not transcribed yet</em>}
+                    </div>
+                  </li>
+                )
+              })}
             </ul>
           </>
         )}
