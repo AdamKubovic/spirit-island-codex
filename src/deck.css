@@ -859,6 +859,62 @@ button:disabled {
   border-radius: 8px;
 }
 
+/* --- Cards tab filters (v4 #12) --- */
+.card-filters {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+.card-filters-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.card-filters-label {
+  font: 11px/1 var(--deck-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--deck-dim);
+}
+.card-filters-elements,
+.card-filters-kinds {
+  display: flex;
+  gap: 0.3rem;
+}
+.card-filters-element {
+  all: unset;
+  cursor: pointer;
+  display: block;
+  padding: 4px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+.card-filters-element img {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+.card-filters-element[aria-pressed='true'] {
+  border-color: var(--deck-text);
+  background: var(--deck-panel);
+}
+.card-filters-kinds button {
+  background: var(--deck-panel);
+  border: 1px solid var(--deck-line);
+  color: var(--deck-text);
+  border-radius: 999px;
+  padding: 0.25rem 0.7rem;
+  font: 600 11px/1 var(--deck-mono);
+  text-transform: capitalize;
+  cursor: pointer;
+}
+.card-filters-kinds button[aria-pressed='true'] {
+  background: var(--deck-text);
+  color: var(--deck-panel-2);
+}
+
 /* --- Cards tab (v4 #11), lifted from the v4 #04 prototype's variants A and B --- */
 .card-view-switch {
   display: flex;

@@ -98,6 +98,12 @@ anyone can open on their phone:
   control. See [issues/03](issues/03-the-filter-set.md#comments) for the full spec #12/#13 build
   from.
 
+- **#12** — Powers filter bar ships: elements (AND, floor semantics, legible in the UI), cost (≤),
+  speed, kind (OR), expansion, composing by AND via a pure `filterPowerCards()` in the domain
+  layer. Live-verified in real Chromium: Fire 332→128, +Sun 128→38 (AND confirmed live), +cost≤2
+  →26, Clear resets. The other three type segments (Fear/Events/Blight) wait for #13's dataset —
+  not scaffolded ahead of it. See [issues/12](issues/12-the-power-filters.md#comments).
+
 ## Not yet specified
 
 - **Whether variant A (the image grid) also gets element icon overlays**, or keeps to card art only
@@ -143,5 +149,5 @@ decide                             build
 09 the name and the URL  (independent, HITL)
 ```
 
-Frontier right now: **12** (power filters, AFK, unblocked now that #03 is done). #13 stays blocked
-until #12 ships. #01/#03/#04/#07/#08/#09/#10/#11/#14 are all done.
+Frontier right now: **13** (fear/event/blight, AFK, unblocked now that #12 is done).
+#01/#03/#04/#07/#08/#09/#10/#11/#12/#14 are all done.
