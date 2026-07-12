@@ -89,6 +89,15 @@ anyone can open on their phone:
   desktop against a production build — 332 tiles/rows, no overflow. See
   [issues/11](issues/11-power-cards-end-to-end.md#comments).
 
+- **#03** — owner's filter spec: elements are **AND** (a floor, not an exact match — a selected set
+  of elements must all be present, a card may carry more), and that AND composes across every
+  control, not just elements (elements + cost + speed all intersect). Card type is a **segmented
+  switch** (Powers | Fear | Events | Blight), each showing only the controls its cards actually
+  carry — not a single bar with dead greyed-out controls. Cost is a **range** (≤ N), not exact
+  values. Default view stays unfiltered (as #11 already ships); sort stays fixed alphabetical, no
+  control. See [issues/03](issues/03-the-filter-set.md#comments) for the full spec #12/#13 build
+  from.
+
 ## Not yet specified
 
 - **Whether variant A (the image grid) also gets element icon overlays**, or keeps to card art only
@@ -134,5 +143,5 @@ decide                             build
 09 the name and the URL  (independent, HITL)
 ```
 
-Frontier right now: **03** (needs the owner — the filter set's semantics) and **12** (power filters,
-AFK, blocked on 03). #01/#04/#07/#08/#09/#10/#11/#14 are all done.
+Frontier right now: **12** (power filters, AFK, unblocked now that #03 is done). #13 stays blocked
+until #12 ships. #01/#03/#04/#07/#08/#09/#10/#11/#14 are all done.
