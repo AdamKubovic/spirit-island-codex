@@ -1,6 +1,6 @@
 # 05a — Adversaries browse
 
-Status: needs-triage
+Status: done
 Type: wayfinder:task (AFK)
 Parent: [v5 map](../MAP.md) · Spec: [PRD.md](../PRD.md)
 
@@ -35,12 +35,35 @@ it doesn't have yet.
 
 ## Acceptance criteria
 
-- [ ] An Adversaries segment renders all 8 adversaries, in the shape #04 chose.
-- [ ] The data comes from the existing `adversaries.json`. No second adversary dataset exists in the repo.
-- [ ] `adversaryCanon.test.ts` still passes, unmodified. This is the proof of the point above.
-- [ ] A test asserts the count against `images/manifest.json`'s 8 `adversary_panel` entries, so a missing
+- [x] An Adversaries segment renders all 8 adversaries, in the shape #04 chose.
+- [x] The data comes from the existing `adversaries.json`. No second adversary dataset exists in the repo.
+- [x] `adversaryCanon.test.ts` still passes, unmodified. This is the proof of the point above.
+- [x] A test asserts the count against `images/manifest.json`'s 8 `adversary_panel` entries, so a missing
       image fails the build rather than rendering a hole in the grid.
-- [ ] Enlarging an adversary opens the same `CardViewer` the card segments use.
-- [ ] Verified in a real browser at 375px and desktop, against a production build.
+- [x] Enlarging an adversary opens the same `CardViewer` the card segments use.
+- [x] Verified in a real browser at 375px and desktop, against a production build.
 
 ## Comments
+
+Built alongside [#05b](05b-scenarios-and-the-rename.md) in one pass, per #04's grilled shape
+(image + `adversaries.json`'s existing level range). `adversaryImage(name)` in
+`src/domain/adversaries.ts` derives the panel path from the name via a shared `slugify()`
+(`src/domain/slug.ts`, also used by #05b's extraction script so the two joins against
+`images/manifest.json`'s filenames can't drift apart) — no field was added to `adversaries.json`,
+so `adversaryCanon.test.ts` needed zero changes.
+
+New components: `AdversaryGrid.tsx` (image + a `Lv min–max` badge, the "genuinely different
+surface" #04 asked for) and `AdversaryRows.tsx` (name, expansion, level range). Both reuse the
+existing `CardViewer` for enlarging. `src/domain/__tests__/archiveIntegrity.test.ts` asserts the
+adversary count against a live read of `images/manifest.json` (not a hardcoded number), plus an
+`existsSync` check per adversary's derivative image at `public/adversaries/<slug>.webp`.
+
+A code-review pass (standards + spec agents) caught: an unsound `as` cast in `CardsTab.tsx`'s
+segment-branching that has since been removed in favor of a narrowly-typed `shownCards` variable;
+a duplicate/inconsistent slugify implementation (fixed by extracting the shared `slug.ts`); and
+the count-assertion test hardcoding `8`/`16` instead of reading the manifest live (fixed). A
+stray debug script left over from browser verification was also deleted before commit.
+Browser-verified (Playwright, production build, 375px + desktop): all 8 tiles render with real
+artwork (`naturalWidth > 0`), the level badge and rows data are correct, enlarge/close works, no
+console errors. That pass also caught and fixed a real regression: the segmented switch overflowed
+375px once it grew from 4 to 6 buttons (`flex-wrap: wrap` added to `.card-view-switch`).

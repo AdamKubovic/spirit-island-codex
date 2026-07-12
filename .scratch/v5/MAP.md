@@ -93,6 +93,19 @@ scenarios browse alongside the cards.
   dataset scale; card segments and Scenarios stay pure image galleries, no rules-text detail view
   (explicitly not on this map). No filters beyond the expansion filter every segment gets from #06.
   #05a and #05b unblocked.
+- **[#05a](issues/05a-adversaries-browse.md) and [#05b](issues/05b-scenarios-and-the-rename.md)
+  done** (2026-07-12), built together: the Cards tab is renamed **"Archive"** everywhere (nav,
+  heading) and gains Adversaries (8, joined from the existing canon-tested `adversaries.json` -
+  `adversaryCanon.test.ts` untouched) and Scenarios (16, newly derived from
+  `images/manifest.json` via `scripts/extract-scenarios.mjs` since no upstream source has a
+  scenario concept - no expansion field, honestly absent). Adversary image paths are derived from
+  the name via a shared `slug.ts`, not stored on the record, so the canon-tested dataset stays
+  single-source. Varied Terrains (the one scenario with no back) is named in a test but moot for
+  rendering, since #04 made scenario tiles front-only. A code-review pass caught an unsound type
+  cast, a duplicate slugify implementation, and count-assertion tests pinned to hardcoded numbers
+  instead of a live manifest read - all fixed before commit. Browser verification (production
+  build, 375px + desktop) caught and fixed a real regression: the segmented switch overflowed
+  375px once it grew from 4 to 6 buttons.
 
 Two calls were made while charting, ahead of any ticket:
 
@@ -152,7 +165,7 @@ fix                      decide                      build
                          08 the tag colour scheme ── 09 coloured tags everywhere
 ```
 
-Frontier (updated 2026-07-12): **#05a, #07b, #07c, #08.** #01/#02/#03/#04/#06/#07a are done.
+Frontier (updated 2026-07-12): **#07b, #07c, #08.** #01/#02/#03/#04/#05a/#05b/#06/#07a are done.
 
 **On the re-cut (2026-07-12):** the original #05 and #07 were each too big for one context window and
 were split into tracer-bullet slices, each demoable alone. #05 split because adversaries and scenarios

@@ -1,0 +1,69 @@
+{
+  "_note": "Derived from images/manifest.json's scenario_front rows (v5 #05b). No expansion field: the manifest does not carry one and no other source in this repo knows what a scenario is. One scenario, Varied Terrains, has no scenario_back in the manifest - the tile only ever shows the front (#04), so that absence has no effect here.",
+  "scenarios": [
+    {
+      "name": "A Diversity of Spirits",
+      "image": "scenarios/a-diversity-of-spirits.webp"
+    },
+    {
+      "name": "Blitz",
+      "image": "scenarios/blitz.webp"
+    },
+    {
+      "name": "Dahan Insurrection",
+      "image": "scenarios/dahan-insurrection.webp"
+    },
+    {
+      "name": "Despicable Theft",
+      "image": "scenarios/despicable-theft.webp"
+    },
+    {
+      "name": "Destiny Unfolds",
+      "image": "scenarios/destiny-unfolds.webp"
+    },
+    {
+      "name": "Elemental Invocation",
+      "image": "scenarios/elemental-invocation.webp"
+    },
+    {
+      "name": "Guard the Isle's Heart",
+      "image": "scenarios/guard-the-isle-s-heart.webp"
+    },
+    {
+      "name": "Powers Long Forgotten",
+      "image": "scenarios/powers-long-forgotten.webp"
+    },
+    {
+      "name": "Rituals of Terror",
+      "image": "scenarios/rituals-of-terror.webp"
+    },
+    {
+      "name": "Rituals of the Destroying Flame",
+      "image": "scenarios/rituals-of-the-destroying-flame.webp"
+    },
+    {
+      "name": "Second Wave",
+      "image": "scenarios/second-wave.webp"
+    },
+    {
+      "name": "Surges of Colonization (Larger Surges)",
+      "image": "scenarios/surges-of-colonization-larger-surges.webp"
+    },
+    {
+      "name": "Surges of Colonization (Normal Surges)",
+      "image": "scenarios/surges-of-colonization-normal-surges.webp"
+    },
+    {
+      "name": "The Great River",
+      "image": "scenarios/the-great-river.webp"
+    },
+    {
+      "name": "Varied Terrains",
+      "image": "scenarios/varied-terrains.webp"
+    },
+    {
+      "name": "Ward the Shores",
+      "image": "scenarios/ward-the-shores.webp"
+    }
+  ]
+}

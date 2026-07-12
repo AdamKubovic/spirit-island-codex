@@ -12,7 +12,7 @@ type Tab = 'recommender' | 'browser' | 'cards' | 'tiers' | 'customise' | 'log'
 const NAV: NavItem<Tab>[] = [
   { id: 'recommender', label: 'Recommend' },
   { id: 'browser', label: 'Browse' },
-  { id: 'cards', label: 'Cards' },
+  { id: 'cards', label: 'Archive' },
   { id: 'tiers', label: 'Tier list' },
   { id: 'customise', label: 'Customise tiers' },
   { id: 'log', label: 'Log' },
