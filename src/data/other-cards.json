@@ -1,0 +1,836 @@
+[
+  {
+    "name": "A Pall upon the Land",
+    "expansion": "Branch & Claw",
+    "kind": "blight",
+    "image": "cards/blight/a_pall_upon_the_land.webp"
+  },
+  {
+    "name": "A Strange Madness among the Beasts",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/a_strange_madness_among_the_beasts.webp"
+  },
+  {
+    "name": "Accumulated Devastation",
+    "expansion": "Nature Incarnate",
+    "kind": "event",
+    "image": "cards/event/accumulated_devastation.webp"
+  },
+  {
+    "name": "Aid from Lesser Spirits",
+    "expansion": "Branch & Claw",
+    "kind": "blight",
+    "image": "cards/blight/aid_from_lesser_spirits.webp"
+  },
+  {
+    "name": "All Things Weaken",
+    "expansion": "Jagged Earth",
+    "kind": "blight",
+    "image": "cards/blight/all_things_weaken.webp"
+  },
+  {
+    "name": "An Ominous Dawn",
+    "expansion": "Nature Incarnate",
+    "kind": "event",
+    "image": "cards/event/an_ominous_dawn.webp"
+  },
+  {
+    "name": "Angry Mobs",
+    "expansion": "Promo2",
+    "kind": "fear",
+    "image": "cards/fear/angry_mobs.webp"
+  },
+  {
+    "name": "Attenuated Essence",
+    "expansion": "Nature Incarnate",
+    "kind": "blight",
+    "image": "cards/blight/attenuated_essence.webp"
+  },
+  {
+    "name": "Avoid the Dahan",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/avoid_the_dahan.webp"
+  },
+  {
+    "name": "Back Against the Wall",
+    "expansion": "Branch & Claw",
+    "kind": "blight",
+    "image": "cards/blight/back_against_the_wall.webp"
+  },
+  {
+    "name": "Belief Takes Root",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/belief_takes_root.webp"
+  },
+  {
+    "name": "Beset by Many Troubles",
+    "expansion": "Jagged Earth",
+    "kind": "fear",
+    "image": "cards/fear/beset_by_many_troubles.webp"
+  },
+  {
+    "name": "Blight Corrodes the Spirit",
+    "expansion": "Nature Incarnate",
+    "kind": "blight",
+    "image": "cards/blight/blight_corrodes_the_spirit.webp"
+  },
+  {
+    "name": "Bureaucrats Adjust Funding",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/bureaucrats_adjust_funding.webp"
+  },
+  {
+    "name": "Burn Brightest Before the End",
+    "expansion": "Nature Incarnate",
+    "kind": "blight",
+    "image": "cards/blight/burn_brightest_before_the_end.webp"
+  },
+  {
+    "name": "Cities Rise",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/cities_rise.webp"
+  },
+  {
+    "name": "Civic Engagement",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/civic_engagement.webp"
+  },
+  {
+    "name": "Civil Unrest",
+    "expansion": "Nature Incarnate",
+    "kind": "fear",
+    "image": "cards/fear/civil_unrest.webp"
+  },
+  {
+    "name": "Coastal Towns Multiply",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/coastal_towns_multiply.webp"
+  },
+  {
+    "name": "Communities in Disarray",
+    "expansion": "Promo2",
+    "kind": "fear",
+    "image": "cards/fear/communities_in_disarray.webp"
+  },
+  {
+    "name": "Cultural Assimilation",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/cultural_assimilation.webp"
+  },
+  {
+    "name": "Dahan Attack",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/dahan_attack.webp"
+  },
+  {
+    "name": "Dahan Enheartened",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/dahan_enheartened.webp"
+  },
+  {
+    "name": "Dahan Gain the Edge",
+    "expansion": "Nature Incarnate",
+    "kind": "fear",
+    "image": "cards/fear/dahan_gain_the_edge.webp"
+  },
+  {
+    "name": "Dahan on their Guard",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/dahan_on_their_guard.webp"
+  },
+  {
+    "name": "Dahan Raid",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/dahan_raid.webp"
+  },
+  {
+    "name": "Dahan Reclaim Fishing Grounds",
+    "expansion": "Jagged Earth",
+    "kind": "fear",
+    "image": "cards/fear/dahan_reclaim_fishing_grounds.webp"
+  },
+  {
+    "name": "Dahan Threaten",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/dahan_threaten.webp"
+  },
+  {
+    "name": "Dahan Trade with the Invaders",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/dahan_trade_with_the_invaders.webp"
+  },
+  {
+    "name": "Daunted by the Dahan",
+    "expansion": "Nature Incarnate",
+    "kind": "fear",
+    "image": "cards/fear/daunted_by_the_dahan.webp"
+  },
+  {
+    "name": "Demoralized",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/demoralized.webp"
+  },
+  {
+    "name": "Depart the Dangerous Land",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/depart_the_dangerous_land.webp"
+  },
+  {
+    "name": "Depopulation",
+    "expansion": "Promo2",
+    "kind": "fear",
+    "image": "cards/fear/depopulation.webp"
+  },
+  {
+    "name": "Discord",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/discord.webp"
+  },
+  {
+    "name": "Disintegrating Ecosystem",
+    "expansion": "Branch & Claw",
+    "kind": "blight",
+    "image": "cards/blight/disintegrating_ecosystem.webp"
+  },
+  {
+    "name": "Distant Exploration",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/distant_exploration.webp"
+  },
+  {
+    "name": "Distracted by Local Troubles",
+    "expansion": "Nature Incarnate",
+    "kind": "fear",
+    "image": "cards/fear/distracted_by_local_troubles.webp"
+  },
+  {
+    "name": "Downward Spiral",
+    "expansion": "Basegame",
+    "kind": "blight",
+    "image": "cards/blight/downward_spiral.webp"
+  },
+  {
+    "name": "Eager Explorers",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/eager_explorers.webp"
+  },
+  {
+    "name": "Emigration Accelerates",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/emigration_accelerates.webp"
+  },
+  {
+    "name": "Erosion of Will",
+    "expansion": "Branch & Claw",
+    "kind": "blight",
+    "image": "cards/blight/erosion_of_will.webp"
+  },
+  {
+    "name": "Ethereal Conjunction",
+    "expansion": "Nature Incarnate",
+    "kind": "event",
+    "image": "cards/event/ethereal_conjunction.webp"
+  },
+  {
+    "name": "Explorers are Reluctant",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/explorers_are_reluctant.webp"
+  },
+  {
+    "name": "Far-Off Wars Touch the Island",
+    "expansion": "Nature Incarnate",
+    "kind": "event",
+    "image": "cards/event/far_off_wars_touch_the_island.webp"
+  },
+  {
+    "name": "Farmers Seek the Dahan for Aid",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/farmers_seek_the_dahan_for_aid.webp"
+  },
+  {
+    "name": "Fear of the Unseen",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/fear_of_the_unseen.webp"
+  },
+  {
+    "name": "Flee from Dangerous Lands",
+    "expansion": "Jagged Earth",
+    "kind": "fear",
+    "image": "cards/fear/flee_from_dangerous_lands.webp"
+  },
+  {
+    "name": "Flee the Pestilent Land",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/flee_the_pestilent_land.webp"
+  },
+  {
+    "name": "Focused Farming",
+    "expansion": "Nature Incarnate",
+    "kind": "event",
+    "image": "cards/event/focused_farming.webp"
+  },
+  {
+    "name": "Fortune-Seekers",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/fortune_seekers.webp"
+  },
+  {
+    "name": "Gradual Corruption",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/gradual_corruption.webp"
+  },
+  {
+    "name": "Hard-Working Settlers",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/hard_working_settlers.webp"
+  },
+  {
+    "name": "Harvest Bounty, Harvest Dust",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/harvest_bounty_harvest_dust.webp"
+  },
+  {
+    "name": "Heavy Farming",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/heavy_farming.webp"
+  },
+  {
+    "name": "Immigration Slows",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/immigration_slows.webp"
+  },
+  {
+    "name": "Influx of Settlers",
+    "expansion": "Nature Incarnate",
+    "kind": "event",
+    "image": "cards/event/influx_of_settlers.webp"
+  },
+  {
+    "name": "Intensifying Exploitation",
+    "expansion": "Nature Incarnate",
+    "kind": "blight",
+    "image": "cards/blight/intensifying_exploitation.webp"
+  },
+  {
+    "name": "Interesting Discoveries",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/interesting_discoveries.webp"
+  },
+  {
+    "name": "Invaders find the Land to their Liking",
+    "expansion": "Jagged Earth",
+    "kind": "blight",
+    "image": "cards/blight/invaders_find_the_land_to_their_liking.webp"
+  },
+  {
+    "name": "Invaders Surge Inland",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/invaders_surge_inland.webp"
+  },
+  {
+    "name": "Invested Aristocracy",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/invested_aristocracy.webp"
+  },
+  {
+    "name": "Investigation of Dangers",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/investigation_of_dangers.webp"
+  },
+  {
+    "name": "Isolation",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/isolation.webp"
+  },
+  {
+    "name": "Lesser Spirits Imperiled",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/lesser_spirits_imperiled.webp"
+  },
+  {
+    "name": "Life's Balance Tilts",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/life_s_balance_tilts.webp"
+  },
+  {
+    "name": "Mapmakers Chart the Wild",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/mapmakers_chart_the_wild.webp"
+  },
+  {
+    "name": "Memory Fades to Dust",
+    "expansion": "Basegame",
+    "kind": "blight",
+    "image": "cards/blight/memory_fades_to_dust.webp"
+  },
+  {
+    "name": "Mimic the Dahan",
+    "expansion": "Promo2",
+    "kind": "fear",
+    "image": "cards/fear/mimic_the_dahan.webp"
+  },
+  {
+    "name": "Missionaries Arrive",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/missionaries_arrive.webp"
+  },
+  {
+    "name": "Nerves Fray",
+    "expansion": "Jagged Earth",
+    "kind": "fear",
+    "image": "cards/fear/nerves_fray.webp"
+  },
+  {
+    "name": "New Species Spread",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/new_species_spread.webp"
+  },
+  {
+    "name": "No Bravery without Numbers",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/no_bravery_without_numbers.webp"
+  },
+  {
+    "name": "Numinous Crisis",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/numinous_crisis.webp"
+  },
+  {
+    "name": "Outpaced",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/outpaced.webp"
+  },
+  {
+    "name": "Overconfidence",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/overconfidence.webp"
+  },
+  {
+    "name": "Overseas Trade Seem Safer",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/overseas_trade_seem_safer.webp"
+  },
+  {
+    "name": "Panic",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/panic.webp"
+  },
+  {
+    "name": "Panicked by Wild Beasts",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/panicked_by_wild_beasts.webp"
+  },
+  {
+    "name": "Plan for Departure",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/plan_for_departure.webp"
+  },
+  {
+    "name": "Population Rises",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/population_rises.webp"
+  },
+  {
+    "name": "Power Corrodes the Spirit",
+    "expansion": "Jagged Earth",
+    "kind": "blight",
+    "image": "cards/blight/power_corrodes_the_spirit.webp"
+  },
+  {
+    "name": "Promising Farmland",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/promising_farmland.webp"
+  },
+  {
+    "name": "Promising Farmlands",
+    "expansion": "Branch & Claw",
+    "kind": "blight",
+    "image": "cards/blight/promising_farmlands.webp"
+  },
+  {
+    "name": "Provincial Seat",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/provincial_seat.webp"
+  },
+  {
+    "name": "Pull Together in Adversity",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/pull_together_in_adversity.webp"
+  },
+  {
+    "name": "Putting down Roots",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/putting_down_roots.webp"
+  },
+  {
+    "name": "Quarantine",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/quarantine.webp"
+  },
+  {
+    "name": "Relentless Optimism",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/relentless_optimism.webp"
+  },
+  {
+    "name": "Remnants of a Spirit's Heart",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/remnants_of_a_spirit_s_heart.webp"
+  },
+  {
+    "name": "Resourceful Populace",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/resourceful_populace.webp"
+  },
+  {
+    "name": "Restlessness",
+    "expansion": "Nature Incarnate",
+    "kind": "fear",
+    "image": "cards/fear/restlessness.webp"
+  },
+  {
+    "name": "Retreat!",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/retreat.webp"
+  },
+  {
+    "name": "Rising Interest in the Island",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/rising_interest_in_the_island.webp"
+  },
+  {
+    "name": "Sacred Sites under Threat",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/sacred_sites_under_threat.webp"
+  },
+  {
+    "name": "Scapegoats",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/scapegoats.webp"
+  },
+  {
+    "name": "Search for new Lands",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/search_for_new_lands.webp"
+  },
+  {
+    "name": "Search for Unclaimed Land",
+    "expansion": "Nature Incarnate",
+    "kind": "event",
+    "image": "cards/event/search_for_unclaimed_land.webp"
+  },
+  {
+    "name": "Seek Company",
+    "expansion": "Nature Incarnate",
+    "kind": "fear",
+    "image": "cards/fear/seek_company.webp"
+  },
+  {
+    "name": "Seek New Farmland",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/seek_new_farmland.webp"
+  },
+  {
+    "name": "Seek Safety",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/seek_safety.webp"
+  },
+  {
+    "name": "Seeking the Interior",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/seeking_the_interior.webp"
+  },
+  {
+    "name": "Sense of Dread",
+    "expansion": "Jagged Earth",
+    "kind": "fear",
+    "image": "cards/fear/sense_of_dread.webp"
+  },
+  {
+    "name": "Shattered Fragments of Power",
+    "expansion": "Nature Incarnate",
+    "kind": "blight",
+    "image": "cards/blight/shattered_fragments_of_power.webp"
+  },
+  {
+    "name": "Slave Rebellion",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/slave_rebellion.webp"
+  },
+  {
+    "name": "Slow Dissolution of Will",
+    "expansion": "Nature Incarnate",
+    "kind": "blight",
+    "image": "cards/blight/slow_dissolution_of_will.webp"
+  },
+  {
+    "name": "Smaller Ports Spring Up",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/smaller_ports_spring_up.webp"
+  },
+  {
+    "name": "Sprawl Contained by the Wilds",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/sprawl_contained_by_the_wilds.webp"
+  },
+  {
+    "name": "Spreading Timidity",
+    "expansion": "Promo2",
+    "kind": "fear",
+    "image": "cards/fear/spreading_timidity.webp"
+  },
+  {
+    "name": "Strange Tales attract Explorers",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/strange_tales_attract_explorers.webp"
+  },
+  {
+    "name": "Strong Earth Shatters Slowly",
+    "expansion": "Jagged Earth",
+    "kind": "blight",
+    "image": "cards/blight/strong_earth_shatters_slowly.webp"
+  },
+  {
+    "name": "Struggles over Farmland",
+    "expansion": "Nature Incarnate",
+    "kind": "fear",
+    "image": "cards/fear/struggles_over_farmland.webp"
+  },
+  {
+    "name": "Supply Chains Abandoned",
+    "expansion": "Nature Incarnate",
+    "kind": "fear",
+    "image": "cards/fear/supply_chains_abandoned.webp"
+  },
+  {
+    "name": "Tall Tales of Savagery",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/tall_tales_of_savagery.webp"
+  },
+  {
+    "name": "Temporary Truce",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/temporary_truce.webp"
+  },
+  {
+    "name": "Terror Spikes Upwards",
+    "expansion": "Nature Incarnate",
+    "kind": "event",
+    "image": "cards/event/terror_spikes_upwards.webp"
+  },
+  {
+    "name": "The Border of Life and Death",
+    "expansion": "Nature Incarnate",
+    "kind": "blight",
+    "image": "cards/blight/the_border_of_life_and_death.webp"
+  },
+  {
+    "name": "The Frontier Calls",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/the_frontier_calls.webp"
+  },
+  {
+    "name": "The Struggles of Growth",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/the_struggles_of_growth.webp"
+  },
+  {
+    "name": "Theological Strife",
+    "expansion": "Jagged Earth",
+    "kind": "fear",
+    "image": "cards/fear/theological_strife.webp"
+  },
+  {
+    "name": "Thriving Communities",
+    "expansion": "Jagged Earth",
+    "kind": "blight",
+    "image": "cards/blight/thriving_communities.webp"
+  },
+  {
+    "name": "Thriving Crops",
+    "expansion": "Nature Incarnate",
+    "kind": "blight",
+    "image": "cards/blight/thriving_crops.webp"
+  },
+  {
+    "name": "Thriving Trade",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/thriving_trade.webp"
+  },
+  {
+    "name": "Tight-Knit Communities",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/tight_knit_communities.webp"
+  },
+  {
+    "name": "Tipping Point",
+    "expansion": "Branch & Claw",
+    "kind": "blight",
+    "image": "cards/blight/tipping_point.webp"
+  },
+  {
+    "name": "Too Many Monsters",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/too_many_monsters.webp"
+  },
+  {
+    "name": "Trade Suffers",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/trade_suffers.webp"
+  },
+  {
+    "name": "Tread Carefully",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/tread_carefully.webp"
+  },
+  {
+    "name": "Unnatural Proliferation",
+    "expansion": "Jagged Earth",
+    "kind": "blight",
+    "image": "cards/blight/unnatural_proliferation.webp"
+  },
+  {
+    "name": "Unrest",
+    "expansion": "Branch & Claw",
+    "kind": "fear",
+    "image": "cards/fear/unrest.webp"
+  },
+  {
+    "name": "Unsettled",
+    "expansion": "Nature Incarnate",
+    "kind": "fear",
+    "image": "cards/fear/unsettled.webp"
+  },
+  {
+    "name": "Untended Land Crumbles",
+    "expansion": "Jagged Earth",
+    "kind": "blight",
+    "image": "cards/blight/untended_land_crumbles.webp"
+  },
+  {
+    "name": "Urban Development",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/urban_development.webp"
+  },
+  {
+    "name": "Visions Out of Time",
+    "expansion": "Nature Incarnate",
+    "kind": "event",
+    "image": "cards/event/visions_out_of_time.webp"
+  },
+  {
+    "name": "War Touches the Island's Shores",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/war_touches_the_island_s_shores.webp"
+  },
+  {
+    "name": "Wary of the Interior",
+    "expansion": "Basegame",
+    "kind": "fear",
+    "image": "cards/fear/wary_of_the_interior.webp"
+  },
+  {
+    "name": "Wave of Reconnaissance",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/wave_of_reconnaissance.webp"
+  },
+  {
+    "name": "Well-Prepared Explorers",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/well_prepared_explorers.webp"
+  },
+  {
+    "name": "Wounded Lands Attract Explorers",
+    "expansion": "Jagged Earth",
+    "kind": "event",
+    "image": "cards/event/wounded_lands_attract_explorers.webp"
+  },
+  {
+    "name": "Years of Little Rain",
+    "expansion": "Branch & Claw",
+    "kind": "event",
+    "image": "cards/event/years_of_little_rain.webp"
+  }
+]

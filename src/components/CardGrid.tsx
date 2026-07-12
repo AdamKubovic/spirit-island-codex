@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import type { PowerCard } from '../domain/types'
 import { CardViewer } from './CardViewer'
 
 /** Image-grid view of the Cards tab (v4 #04 variant A) — card art is how the owner recognises
- * cards. Lazy-loaded; tap enlarges via the shared CardViewer. */
-export function CardGrid({ cards }: { cards: PowerCard[] }) {
+ * cards. Lazy-loaded; tap enlarges via the shared CardViewer. Only needs a name and an image, so
+ * it works for power cards and fear/event/blight alike (v4 #13) without a second component. */
+export function CardGrid({ cards }: { cards: { name: string; image: string }[] }) {
   const [enlarged, setEnlarged] = useState<{ src: string; alt: string } | null>(null)
   const base = import.meta.env.BASE_URL
 

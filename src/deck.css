@@ -1024,6 +1024,11 @@ button:disabled {
   font-size: 10px;
   color: #7d8f9f;
 }
+.card-row-expansion {
+  flex: 0 0 auto;
+  font-size: 10px;
+  color: #7d8f9f;
+}
 
 .visually-hidden {
   position: absolute;

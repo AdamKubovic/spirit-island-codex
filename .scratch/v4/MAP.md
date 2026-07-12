@@ -104,6 +104,16 @@ anyone can open on their phone:
   →26, Clear resets. The other three type segments (Fear/Events/Blight) wait for #13's dataset —
   not scaffolded ahead of it. See [issues/12](issues/12-the-power-filters.md#comments).
 
+- **#13** — the remaining 139 cards (50 fear / 65 event / 24 blight) join the Cards tab, taking it
+  to all 471. `scripts/extract-other-cards.mjs` mirrors #11's extraction; `OtherCard` deliberately
+  has no elements/cost/speed fields (#01's finding, not a gap), and `OtherCardFilterState`
+  structurally cannot request them — the "no dead controls" rule is type-enforced, not a runtime
+  check. New `Powers | Fear | Events | Blight` segmented switch (#03's call) swaps the filter panel
+  per segment. Verified live: all four segments show correct counts summing to 471, element control
+  only appears under Powers, no overflow at 375px or desktop. See
+  [issues/13](issues/13-fear-event-and-blight.md#comments). **The Cards tab now covers all 471
+  cards — the map's destination is reached.**
+
 ## Not yet specified
 
 - **Whether variant A (the image grid) also gets element icon overlays**, or keeps to card art only
@@ -149,5 +159,7 @@ decide                             build
 09 the name and the URL  (independent, HITL)
 ```
 
-Frontier right now: **13** (fear/event/blight, AFK, unblocked now that #12 is done).
-#01/#03/#04/#07/#08/#09/#10/#11/#12/#14 are all done.
+Frontier: **none.** Every ticket on this map (#01, #03, #04, #07, #08, #09, #10, #11, #12, #13,
+#14) is done. The Cards tab covers all 471 cards, filterable, responsive, deployed. What's "Not yet
+specified" and "Out of scope" above are open questions for a future map, not blocked work on this
+one.

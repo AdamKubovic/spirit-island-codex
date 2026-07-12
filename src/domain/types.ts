@@ -93,6 +93,18 @@ export type PowerCard =
   | (PowerCardBase & { kind: 'major' })
   | (PowerCardBase & { kind: 'unique'; spirit: string; spiritName: string })
 
+/**
+ * Fear, event and blight cards (v4 #01/#13) — the 139 cards outside `PowerCard`. #01 found none
+ * of them carry elements, cost or speed, so `OtherCard` does not carry those fields either; a
+ * missing field here is a fact about the card, not a gap in extraction.
+ */
+export interface OtherCard {
+  name: string
+  expansion: string
+  kind: 'fear' | 'event' | 'blight'
+  image: string
+}
+
 export interface Spirit {
   id: string
   name: string

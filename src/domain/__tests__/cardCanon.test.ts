@@ -1,9 +1,11 @@
 import { existsSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import otherCardsData from '../../data/other-cards.json'
 import powerCardsData from '../../data/power-cards.json'
-import type { PowerCard } from '../types'
+import type { OtherCard, PowerCard } from '../types'
 
 const cards = powerCardsData as PowerCard[]
+const otherCards = otherCardsData as OtherCard[]
 
 /**
  * Pins the field values of a handful of cards independently spot-checked against real card art
@@ -56,5 +58,31 @@ describe('card canon', () => {
     for (const card of cards) {
       expect(existsSync(new URL(`../../../public/${card.image}`, import.meta.url)), `${card.name} -> ${card.image} does not exist`).toBe(true)
     }
+  })
+})
+
+describe('other-card canon (fear, event, blight)', () => {
+  it('has exactly 50 fear, 65 event, 24 blight cards (139 total)', () => {
+    const counts = { fear: 0, event: 0, blight: 0 }
+    for (const card of otherCards) counts[card.kind]++
+    expect(counts).toEqual({ fear: 50, event: 65, blight: 24 })
+    expect(otherCards).toHaveLength(139)
+  })
+
+  it('has globally unique names', () => {
+    const names = otherCards.map((c) => c.name)
+    expect(new Set(names).size).toBe(names.length)
+  })
+
+  it('every card resolves to an image that exists under public/', () => {
+    for (const card of otherCards) {
+      expect(existsSync(new URL(`../../../public/${card.image}`, import.meta.url)), `${card.name} -> ${card.image} does not exist`).toBe(true)
+    }
+  })
+
+  it('all 471 cards together (power + other) have globally unique names', () => {
+    const names = [...cards.map((c) => c.name), ...otherCards.map((c) => c.name)]
+    expect(names).toHaveLength(471)
+    expect(new Set(names).size).toBe(471)
   })
 })
