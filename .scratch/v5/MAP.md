@@ -71,6 +71,15 @@ scenarios browse alongside the cards.
   filter ships per segment. Full-corpus tripwire test added (re-classifies every fear/blight card
   from committed source text, not a sample) after a code-review pass caught the original tripwire
   only covering an 11-card sample.
+- **[#06](issues/06-what-i-own.md) done** (2026-07-12), via `/grilling`: expansion-level collection,
+  one canonical name per expansion with a per-dataset raw-string mapping (spirits/power-cards/
+  other-cards don't agree on raw strings, and Feather & Flame has zero cards). Annotate-by-default
+  with an opt-in hard-filter toggle; Browse/Recommender/Tier-list respect it, Cards tab never does.
+  Tier list keeps an unowned spirit in its rated row (dimmed), no separate grouping. Aspects are
+  gated independently of their spirit - required sourcing `expansion` onto all 31 aspects, verified
+  live against the wiki (not the asset archive's filename suffixes, which would have mis-tagged 2).
+  Collection store mirrors `complexityStore`: absence = owns everything, backup stores only the
+  turned-off deltas. #07a unblocked.
 
 Two calls were made while charting, ahead of any ticket:
 

@@ -1,6 +1,6 @@
 # 07a — The collection store, and the tier list respects it
 
-Status: needs-triage
+Status: ready-for-agent
 Type: wayfinder:task (AFK)
 Parent: [v5 map](../MAP.md) · Spec: [PRD.md](../PRD.md)
 
@@ -30,9 +30,14 @@ first-time visitor to a public knowledge base has not filled in a collection for
 collection narrows anything, the site is silently broken for every user who is not the owner, and the
 owner — whose collection *is* filled in — will never see it. Assert it.
 
-Note #06 may have decided aspects are gated independently of their spirit (an aspect ships in a different
-box than its spirit). A configuration is spirit-plus-aspect, so if that's the call, the filter operates on
-configurations and not just spirits, and the two can disagree.
+**#06 resolved: aspects are gated independently of their spirit.** The filter operates on
+configurations (spirit + aspect), not just spirits — the two can disagree (you can own the base
+spirit but not the expansion an aspect shipped in). #06's Comments carry the sourced
+aspect → expansion table for all 31 aspects (verified against the wiki, not the asset archive's
+incidental filename suffixes, which would mis-tag 2 of them) and the canonical expansion name
+per dataset (`spirits.json`/`power-cards.json`/`other-cards.json` don't agree on raw strings -
+`Aspect` itself has no `expansion` field yet, so this ticket adds one and populates it from #06's
+table).
 
 ## Acceptance criteria
 
