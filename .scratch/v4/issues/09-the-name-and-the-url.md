@@ -1,6 +1,6 @@
 # 09 — The name and the URL
 
-Status: ready-for-human
+Status: done
 Type: wayfinder:task (HITL — only the owner can do the GitHub half)
 Parent: [v4 map](../MAP.md)
 
@@ -44,3 +44,42 @@ Then the agent half:
 
 The new name (owner's call, recorded in `## Comments`) and a working deploy at the new URL, with the
 old one redirecting.
+
+## Comments
+
+**Owner's chosen name (2026-07-12): `Tabletop-Atlas`.** Deliberately generic, not Spirit-Island-
+specific — the owner's stated plan is to expand this app to other board games (Dune Imperium,
+Terraforming Mars mentioned) under the same umbrella, so a game-specific org name would have painted
+the URL into a corner. Checked availability (unclaimed at decision time) before committing; picked
+over `spirit-island-kb` and three other candidates.
+
+**One rename false start, recorded because it's a real gotcha:** the org was created and the repo
+transferred cleanly (GitHub's repo-transfer redirect worked immediately), but the first rename only
+produced `tabletop-atlas`, not `tabletop-atlas.github.io`. GitHub Pages' root-site behavior is keyed
+on that exact literal repo name — `<owner-login>.github.io`, full stop — not on Pages settings, not
+on the workflow, not automatically appended when Pages builds. A repo named anything else, even
+`tabletop-atlas`, always gets project-site behavior (subpath), regardless of whether Pages is
+enabled. Second rename to the exact `.github.io` suffix fixed it.
+
+**Agent half, done once the rename landed:**
+- `vite.config.ts`: `base: '/spirit-island/'` → `base: '/'`
+- `index.html` `<title>` and `README.md`'s heading: "Spirit Island Spirit Recommender" →
+  "Spirit Island Knowledge Base" (PRD story 32 — the app itself is still Spirit-Island-only content;
+  no "Tabletop Atlas" branding injected into the app yet since multi-game content doesn't exist —
+  that's a real decision for whenever a second game actually gets built, not implied by the org name)
+- `git remote` updated to `git@github.com:Tabletop-Atlas/tabletop-atlas.github.io.git`
+- Grepped the repo for `adamkubovic.github.io` / `AdamKubovic/spirit-island` outside `.scratch/` —
+  no hits. `.scratch/`'s historical references (PRDs, this ticket) were left as-is; they're a record
+  of what was true when written, not live config.
+
+**Verified against the real deployed site**, not localhost, per this ticket's own instruction:
+`https://tabletop-atlas.github.io/` returns 200, title is correct, and JS/CSS/logo/favicon all
+resolve from the root with no `/spirit-island/` prefix. Confirmed via the Actions run
+(`gh run view`) that both the `build` and `deploy` jobs succeeded.
+
+**Correction to this ticket's own "what it produces" line:** the old *repo* URL
+(`github.com/AdamKubovic/spirit-island`) does redirect (301) as expected. The old **Pages** URL
+(`adamkubovic.github.io/spirit-island/`) does **not** — it 404s. Pages sites don't inherit the
+repo-transfer redirect; the old site was served from the previous owner's Pages namespace and simply
+stops existing once the repo moves. Anyone with the old link gets a 404, not a redirect. Worth
+knowing if the old URL was ever shared anywhere that can't be updated.

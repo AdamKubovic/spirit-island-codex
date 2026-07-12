@@ -74,6 +74,12 @@ anyone can open on their phone:
   (`spiritislandwiki.com`'s `Esun.png` etc., archived to `images/elements/`), not emoji — requested
   after judging the prototype. Prototype code kept (not deleted) as a starting point for #11/#12.
   See [issues/04](issues/04-result-shape-prototype.md#comments).
+- **#09** — owner named the org `Tabletop-Atlas` (deliberately generic, not Spirit-Island-specific —
+  the owner's stated plan is other games under the same umbrella later). Live at
+  `https://tabletop-atlas.github.io/`, verified against the real deployed site: `vite.config.ts`'s
+  `base` is `/`, title is "Spirit Island Knowledge Base", git remote updated. One correction to the
+  ticket's own assumption: the old repo URL redirects, but the old **Pages** URL does not — it 404s,
+  since Pages sites don't inherit a repo-transfer redirect the way repo URLs do.
 
 ## Not yet specified
 
