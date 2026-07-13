@@ -1,6 +1,6 @@
 # 22 — OFL typography 🎨
 
-Status: needs-info
+Status: done
 Parent: [Phase 4 PRD](../PRD.md) · cluster 5 (Archive & theming)
 
 ## Blocked by
@@ -27,13 +27,11 @@ the `?variant=` switcher; the owner picks; winner ships; screenshots kept in
 
 - [x] Font files are committed and self-hosted with their OFL license texts alongside; the app
       makes no network font requests *(Playwright-verified: every font request same-origin)*
-- [ ] Spirit names render in the chosen display face across Browse, the tier board, and the
-      detail modal; body text renders in Reem Kufi *(body ✓ shipped; the display face ships with
-      the winner — pick pending; the round covers Browse + detail, tier board is ship-time)*
+- [x] Spirit names render in the chosen display face across Browse, the tier board, and the
+      detail modal; body text renders in Reem Kufi
 - [x] Every shipped font's license is OFL — verified, not assumed *(per-family OFL.txt from
       google/fonts' `ofl/` tree; one anomaly caught, traced and documented — see the comment)*
-- [ ] Variant round run and recorded (screenshots kept, scaffolding deleted) *(round run,
-      screenshots in `../screenshots-22/`; scaffolding stays until the pick)*
+- [x] Variant round run and recorded (screenshots kept, scaffolding deleted)
 - [x] Browser-verified at 375px + desktop (long spirit names don't overflow their tiles) *(all
       three candidates: zero overflowing names at both widths; re-verify on ship)*
 
@@ -85,3 +83,18 @@ per-prototype (each file dies independently at its round's close).
 floating switcher. On your pick: the winner ships into `deck.css` across Browse, the tier
 board, and the detail modal per the acceptance, the losing font directories and this prototype
 are deleted, and this ticket closes.
+
+---
+
+**Closed (2026-07-13). The owner picked A — Mouse Memoirs — noting the round's size felt
+small.** Shipped: the `@font-face` and a grouped rule in `deck.css` covering Browse tiles
+(h3/h4), the tier board's tile captions, and the detail modal head — each **sized up a step**
+per the owner's note (tile names 0.92→1.15rem, detail head → 1.9rem, tier captions
+0.55→0.7rem base / 0.7→0.85rem wide). One CSS-order trap fixed in verification: `.deck-main
+h2`'s `font:` shorthand silently reset the family on the detail head (the round's injected
+style tag had masked this by loading last), so the family is repeated on that rule with a
+comment. Scaffolding deleted (`TypeRound.tsx` + App mount), losing fonts (Josefin Sans, Lato)
+and their licenses deleted, `fontFiles.test.ts` and `public/fonts/README.md` updated, `?type=`
+inert. Verified on the production build at 375px + 1280px: Mouse Memoirs loaded and computed on
+all three surfaces, zero name overflow at the larger sizes, no horizontal overflow. 381/381
+tests. Shipped screenshot: `../screenshots-22/1280-SHIPPED-A.png`.

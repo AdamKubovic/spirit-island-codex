@@ -9,9 +9,7 @@ OFL faces ship. Local-first app: no font CDN, no network font requests.
 | Family | File | Role | Source |
 |---|---|---|---|
 | Reem Kufi | `reem-kufi/ReemKufi-Variable.ttf` | body (reportedly the game's actual body font) | https://github.com/google/fonts/tree/main/ofl/reemkufi |
-| Mouse Memoirs | `mouse-memoirs/MouseMemoirs-Regular.ttf` | display candidate (#22 round) | https://github.com/google/fonts/tree/main/ofl/mousememoirs |
-| Josefin Sans | `josefin-sans/JosefinSans-Variable.ttf` | display candidate (#22 round) | https://github.com/google/fonts/tree/main/ofl/josefinsans |
-| Lato (Bold) | `lato/Lato-Bold.ttf` | display candidate (#22 round) | https://github.com/google/fonts/tree/main/ofl/lato |
+| Mouse Memoirs | `mouse-memoirs/MouseMemoirs-Regular.ttf` | display face for spirit names (#22, owner's pick) | https://github.com/google/fonts/tree/main/ofl/mousememoirs |
 
 License verification note: Reem Kufi's `OFL.txt` states Reserved Font Name **"Josefin Sans"** —
 an upstream oddity, cross-checked 2026-07-13 against the font's canonical project
@@ -20,4 +18,5 @@ project's own published license file, shipped verbatim, not a download error. Th
 SIL OFL 1.1 either way. Reserved-name terms are honoured: no font is renamed (the variable-font
 FILES are renamed `[wght]` → `-Variable` for URL safety only; internal font names untouched).
 
-When #22's round closes, the losing display candidates' directories are deleted.
+The #22 round's losing candidates (Josefin Sans, Lato) were deleted when the owner picked
+Mouse Memoirs (2026-07-13).

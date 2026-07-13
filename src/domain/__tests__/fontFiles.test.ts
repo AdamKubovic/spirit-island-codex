@@ -6,12 +6,7 @@ import { describe, expect, it } from 'vitest'
  * the CSS fallback stack just takes over. This pins every shipped font file and its OFL license
  * text (CLAUDE.md: the licenses are the provenance; see public/fonts/README.md).
  */
-const FONT_FILES = [
-  'reem-kufi/ReemKufi-Variable.ttf',
-  'mouse-memoirs/MouseMemoirs-Regular.ttf',
-  'josefin-sans/JosefinSans-Variable.ttf',
-  'lato/Lato-Bold.ttf',
-]
+const FONT_FILES = ['reem-kufi/ReemKufi-Variable.ttf', 'mouse-memoirs/MouseMemoirs-Regular.ttf']
 
 describe('shipped fonts', () => {
   it.each(FONT_FILES)('%s exists with its OFL.txt alongside', (file) => {

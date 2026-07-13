@@ -12,6 +12,25 @@
   font-display: swap;
 }
 
+/* phase-4 #22 (owner picked A): Mouse Memoirs, SIL OFL, self-hosted — the display face for
+ * spirit names across Browse, the tier board, and the detail modal. Sizes on those rules run
+ * a step larger than the old sans sizes: the condensed face reads small at parity (owner's
+ * note on the round). */
+@font-face {
+  font-family: 'Mouse Memoirs';
+  src: url('/fonts/mouse-memoirs/MouseMemoirs-Regular.ttf') format('truetype');
+  font-display: swap;
+}
+
+.spirit-tile h3,
+.spirit-tile h4,
+.spirit-tile-open h3,
+.spirit-detail-head h2,
+.tier-tile figcaption {
+  font-family: 'Mouse Memoirs', ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+
 :root {
   --deck-bg: #0f1216;
   --deck-panel: #121820;
@@ -551,10 +570,10 @@ button:disabled {
     height: 68px;
   }
   .tier-tile figcaption {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
   }
   .tier-tile-spirit-name {
-    font-size: 0.62rem;
+    font-size: 0.72rem;
   }
   /* v4 #14: nav buttons measured 36px tall, under the 44px tap-target guideline
    * (v4 #07 finding 4) - desktop's compact rows are untouched, this is mobile-only. */
@@ -685,7 +704,7 @@ button:disabled {
 .spirit-tile h3,
 .spirit-tile h4 {
   color: var(--deck-text);
-  font-size: 0.92rem;
+  font-size: 1.15rem;
   margin: 0.6rem 0 0.3rem;
 }
 .spirit-tile p {
@@ -830,7 +849,7 @@ button:disabled {
   position: absolute;
   inset: auto 0 0 0;
   padding: 2px 4px;
-  font-size: 0.55rem;
+  font-size: 0.7rem;
   line-height: 1.2;
   color: #fff;
   background: rgba(0, 0, 0, 0.74);
@@ -1027,6 +1046,10 @@ button:disabled {
 }
 .spirit-detail-head h2 {
   color: var(--deck-text);
+  /* family repeated here: .deck-main h2's `font:` shorthand is later in the file than the
+   * grouped #22 rule and would silently reset it. */
+  font-family: 'Mouse Memoirs', ui-sans-serif, system-ui, sans-serif;
+  font-size: 1.9rem;
   margin: 0 0 0.3rem;
   /* v4 #14: reserve clearance for the absolutely-positioned .modal-close button so a long
    * name wraps instead of running under it and getting clipped (v4 #07 finding 2). */
