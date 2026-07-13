@@ -67,6 +67,12 @@ recommender. This map decides; it does not build.
   question in disguise, and the app adopts **no URL routing this phase** (deep-linking stays a
   future, feature-justified decision). Powers remains one segment; the locked sort/group
   controls land within it, no seventh button.
+- **[#08 the recommender's short-term shape](issues/08-the-recommenders-short-term-shape.md)
+  done** (2026-07-13), via `/grilling`: **player-count input stripped entirely** (its only
+  honest effect was a note badge; ranking never read it), and a standing constraint recorded —
+  player count can't touch ranking until sourced per-count data exists. The 10-question wizard
+  holds, no branching; the spec carries a non-gamer **copy pass**. Settings' recommendation-prefs
+  slot stays empty; the homepage door copy stands.
 
 Eight calls were made by the owner ahead of charting, locked in
 [docs/phase-4-notes.md](../../docs/phase-4-notes.md) — they are not tickets; #09 folds them into
@@ -120,5 +126,6 @@ decide                                            assemble
 08 the recommender's short-term shape ───────┘
 ```
 
-Frontier (updated 2026-07-13): **#03, #05, #07, #08** — all independent, any order.
-#09 waits on everything else. #01, #02, #04 and #06 are done.
+Frontier (updated 2026-07-13): **#03, #05, #07** — the two prototypes and the AFK research,
+all independent. #09 waits on them. #01, #02, #04, #06 and #08 are done — every grilling ticket
+on the map is resolved.
