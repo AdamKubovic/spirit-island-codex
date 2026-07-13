@@ -37,6 +37,11 @@ aesthetic spreads to further surfaces. Spreading itself is beyond this map.
 
 <!-- one line per closed ticket: gist + link -->
 
+- **[01 vibe sheet](issues/01-panel-vibe-sheet.md) (done):** panel palette sampled off six panel
+  fronts → [panel-vibe-sheet.md](panel-vibe-sheet.md). Parchment `#e7d19c`, ink `#2e2520`,
+  gold/band accents, presence green, innate rust; node idiom + type hierarchy on the shipped
+  faces; dark-translations proposed. The round builds from these, not guesses.
+
 ## Not yet specified
 
 - If a light-parchment variant wins: how the modal's dark-tuned chip systems (tier chips, tag
