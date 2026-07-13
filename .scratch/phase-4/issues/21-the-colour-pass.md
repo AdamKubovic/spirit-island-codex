@@ -1,6 +1,6 @@
 # 21 — The colour pass 🎨
 
-Status: needs-info
+Status: done
 Parent: [Phase 4 PRD](../PRD.md) · cluster 5 (Archive & theming)
 
 ## Blocked by
@@ -27,17 +27,13 @@ screenshots kept in `../screenshots-21/`.
 
 ## Acceptance criteria
 
-- [ ] Major/Unique/Minor chips are visibly distinct; a test pins that no two kinds (and neither
-      speed) share a colour *(ships with the winning palette — pick pending; every candidate is
-      pairwise-distinct, Playwright-verified via computed styles)*
-- [ ] Fast renders red, Slow renders blue, everywhere speed is shown *(every candidate obeys the
-      locked call; ships with the winner)*
+- [x] Major/Unique/Minor chips are visibly distinct; a test pins that no two kinds (and neither
+      speed) share a colour *(`cardChipColors.test.ts`)*
+- [x] Fast renders red, Slow renders blue, everywhere speed is shown
 - [x] Expansion colours come from one mapping; no surface carries its own copy *(verified
       already true — see the comment)*
-- [ ] Variant round run and recorded (screenshots kept, scaffolding deleted) *(round run,
-      screenshots in `../screenshots-21/`; scaffolding stays until the pick)*
-- [ ] Legibility checked on the dark theme at 375px + desktop *(all candidates checked; the
-      shipped winner re-verifies on close)*
+- [x] Variant round run and recorded (screenshots kept, scaffolding deleted)
+- [x] Legibility checked on the dark theme at 375px + desktop
 
 ## Comments
 
@@ -89,3 +85,19 @@ bottom-left. On your pick: the winner ships into `CardRows`/`deck.css` with fina
 separated per the disclosure above, the no-two-share-a-colour test lands, the scaffolding file
 is deleted, and this ticket closes. And answer the expansion question above if you want colour
 added to the tier board/Archive.
+
+---
+
+**Closed (2026-07-13). The owner picked B — filled pills.** Shipped: `CARD_KIND_COLOR` /
+`CARD_SPEED_COLOR` in `tagColors.ts` (the colour home), consumed inline by `CardRows` per the
+`SpiritTile` precedent, with the `.card-row-pill` shape class in `deck.css`. Final hues
+separated per the disclosure: a lightness/saturation step off `EXPANSION_COLOR`'s jewel tones
+and off #20's shipped scenario bands — `cardChipColors.test.ts` pins pairwise distinctness,
+Fast-red/Slow-blue by channel, and zero byte-identical overlap with the expansion palette.
+Fear/Events/Blight rows keep their grey type text (single-kind segments — nothing to
+distinguish). Scaffolding deleted (`ColourPassRows.tsx`), `?colors=` inert. Verified on the
+production build at 375px + 1280px: five distinct pill fills by default, pills survive grouped
+rendering, Fear rows pill-free, no overflow. 383/383 tests. Shipped screenshot:
+`../screenshots-21/1280-SHIPPED-B.png`. **The expansion sub-question (adding expansion colour
+to the tier board/Archive) went unanswered and stays open** — flagged for a future ticket, not
+built.

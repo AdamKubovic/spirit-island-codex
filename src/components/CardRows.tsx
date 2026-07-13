@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import type { Element, PowerCard } from '../domain/types'
 import { CardViewer } from './CardViewer'
+import { CARD_KIND_COLOR, CARD_SPEED_COLOR } from './tagColors'
 
 const ELEMENT_ICON: Record<Element, string> = {
   Sun: 'sun',
@@ -25,7 +26,7 @@ export function CardRows({ cards }: { cards: PowerCard[] }) {
       {cards.map((card) => (
         <li key={card.name}>
           <button type="button" className="card-row" onClick={() => setEnlarged({ src: `${base}${card.image}`, alt: card.name })}>
-            <span className="card-row-type" data-kind={card.kind}>
+            <span className="card-row-type card-row-pill" style={{ background: CARD_KIND_COLOR[card.kind] }}>
               {card.kind}
             </span>
             <span className="card-row-name">
@@ -38,7 +39,9 @@ export function CardRows({ cards }: { cards: PowerCard[] }) {
               ))}
             </span>
             <span className="card-row-cost">{card.cost}</span>
-            <span className="card-row-speed">{card.speed}</span>
+            <span className="card-row-speed card-row-pill" style={{ background: CARD_SPEED_COLOR[card.speed] }}>
+              {card.speed}
+            </span>
           </button>
         </li>
       ))}

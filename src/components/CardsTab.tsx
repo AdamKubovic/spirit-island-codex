@@ -14,7 +14,6 @@ import { CardGrid } from './CardGrid'
 import { CardRows } from './CardRows'
 import { OtherCardFilters } from './OtherCardFilters'
 import { OtherCardRows } from './OtherCardRows'
-import { ColourPassRows } from '../prototypes/colour-pass/ColourPassRows'
 import { ScenarioGrid } from './ScenarioGrid'
 import { ScenarioRows } from './ScenarioRows'
 
@@ -188,9 +187,7 @@ export function CardsTab() {
       ) : view === 'grid' ? (
         <CardGrid cards={shownCards} />
       ) : segment === 'Powers' ? (
-        // phase-4 #21 variant round (awaiting the owner's pick): renders plain CardRows unless
-        // ?colors= is set. Reverts to <CardRows cards={shownPowerCards} /> when the round closes.
-        <ColourPassRows cards={shownPowerCards} />
+        <CardRows cards={shownPowerCards} />
       ) : (
         <OtherCardRows cards={shownOtherCards} />
       )}

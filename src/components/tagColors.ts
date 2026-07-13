@@ -34,6 +34,23 @@ export const EXPANSION_COLOR: Record<string, string> = {
 /** Dot-meter position (●●○○) - ordinal, not a colour. */
 export const COMPLEXITY_LEVEL: Record<Complexity, number> = { Low: 1, Moderate: 2, High: 3, 'Very High': 4 }
 
+/**
+ * phase-4 #21 (owner picked variant B, filled pills): kind and speed chips in the Archive's
+ * Powers rows. Fast red / Slow blue is the locked owner call. Near-hue check per this file's
+ * own rule: these sit a lightness/saturation step off EXPANSION_COLOR's jewel tones (same
+ * filled treatment, different surface) and off the #20 scenario bands — no value is shared
+ * byte-identically with any other chip system, pinned by cardChipColors.test.ts.
+ */
+export const CARD_KIND_COLOR: Record<'minor' | 'major' | 'unique', string> = {
+  minor: '#6b9948',
+  major: '#9a4f86',
+  unique: '#4f83ad',
+}
+export const CARD_SPEED_COLOR: Record<'Fast' | 'Slow', string> = {
+  Fast: '#b03d3d',
+  Slow: '#3a6fa5',
+}
+
 const TAG_COLOR: Record<string, string> = {
   aggressive: '#e0475a',
   'blight-positive': '#e0862f',

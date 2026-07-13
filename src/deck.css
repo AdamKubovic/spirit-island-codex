@@ -1349,6 +1349,15 @@ button:disabled {
   text-transform: uppercase;
   color: #7d8f9f;
 }
+/* phase-4 #21 (owner's pick: variant B, filled pills) — shape only; each pill's background
+ * comes inline from tagColors' CARD_KIND_COLOR / CARD_SPEED_COLOR, the single source. */
+.card-row-pill {
+  width: auto;
+  color: #f2f2f2;
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+  text-align: center;
+}
 .card-row-name {
   flex: 1 1 160px;
   min-width: 0;
