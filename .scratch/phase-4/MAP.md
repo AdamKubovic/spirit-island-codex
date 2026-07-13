@@ -48,6 +48,12 @@ recommender. This map decides; it does not build.
   Archive/Log/Settings nav-only), **Browse takes the lead in both doors and nav**. One framing
   line each for game and app + a footer disclaimer slot pending #05; art-backed door tiles in
   current styling, theming overhaul stays fog.
+- **[#02 the Settings tab](issues/02-the-settings-tab.md) done** (2026-07-13), via `/grilling`:
+  "Customise tiers" **dissolves** — tier editing becomes an edit mode on the Tier list tab, and a
+  new Settings tab (named "Settings", last in nav) takes its three settings sections: Backup, My
+  collection, Complexity overrides. Open-door policy: future durable prefs default to Settings.
+  The v5 split survives — durable collection in Settings, session-only hide-unowned checkboxes
+  stay on each surface.
 
 Eight calls were made by the owner ahead of charting, locked in
 [docs/phase-4-notes.md](../../docs/phase-4-notes.md) — they are not tickets; #09 folds them into
@@ -101,5 +107,5 @@ decide                                            assemble
 08 the recommender's short-term shape ───────┘
 ```
 
-Frontier (updated 2026-07-13): **#02, #03, #04, #05, #06, #08** — all independent, any order.
-#07 waits on #06; #09 waits on everything. #01 is done.
+Frontier (updated 2026-07-13): **#03, #04, #05, #06, #08** — all independent, any order.
+#07 waits on #06; #09 waits on everything. #01 and #02 are done.

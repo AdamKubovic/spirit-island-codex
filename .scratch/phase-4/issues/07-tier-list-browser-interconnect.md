@@ -27,6 +27,10 @@ Prototype it: a rough modal (or in-place render) over the real tier board, and a
 with a real tier chip row, screenshots per round, owner reacts. The decision to lock: the reuse
 pattern (modal vs navigation vs inline), and exactly what tier info Browse's detail shows.
 
+Note from [#02](02-the-settings-tab.md)'s resolution: the tier board is also gaining an
+**edit-my-board mode** (Customise tiers dissolves into it). Whatever click-to-detail affordance
+this prototype picks must coexist with edit interactions on the same tiles.
+
 Note [#03](03-the-radar-chart-fix-or-replace.md) may be reshaping `SpiritDetail`'s contents in
 parallel — the two tickets decide different things (this one: how the view is reached and what
 tier info it gains; #03: one panel inside it), but the spec assembly reconciles their combined
