@@ -2,6 +2,16 @@
  * The "command deck" look, promoted from the ?variant=B prototype.
  * Dark by design — this is a tool you fiddle with, not a document you read.
  */
+
+/* phase-4 #22: the body face — Reem Kufi (reportedly the game's actual body font), SIL OFL,
+ * self-hosted from public/fonts/ (provenance + license there). No font CDN: local-first. */
+@font-face {
+  font-family: 'Reem Kufi';
+  src: url('/fonts/reem-kufi/ReemKufi-Variable.ttf') format('truetype');
+  font-weight: 400 700;
+  font-display: swap;
+}
+
 :root {
   --deck-bg: #0f1216;
   --deck-panel: #121820;
@@ -21,7 +31,7 @@ body {
   margin: 0;
   background: var(--deck-bg);
   color: var(--deck-body);
-  font: 14px/1.5 ui-sans-serif, system-ui, sans-serif;
+  font: 14px/1.5 'Reem Kufi', ui-sans-serif, system-ui, sans-serif;
 }
 
 .deck {
@@ -182,7 +192,7 @@ body {
   border-radius: 4px;
   color: var(--deck-text);
   padding: 0.35rem 0.4rem;
-  font: 12px/1.3 ui-sans-serif, system-ui, sans-serif;
+  font: 12px/1.3 'Reem Kufi', ui-sans-serif, system-ui, sans-serif;
 }
 .deck-field select:focus-visible,
 .deck-field input:focus-visible,
@@ -461,7 +471,7 @@ button:disabled {
 }
 .deck-wizard h2 {
   color: var(--deck-text);
-  font: 600 1.4rem/1.3 ui-sans-serif, system-ui, sans-serif;
+  font: 600 1.4rem/1.3 'Reem Kufi', ui-sans-serif, system-ui, sans-serif;
   text-transform: none;
   letter-spacing: -0.01em;
   margin: 0.4rem 0 1.2rem;
@@ -598,7 +608,7 @@ button:disabled {
   padding: 0.35rem 0.4rem;
   text-transform: none;
   letter-spacing: 0;
-  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-family: 'Reem Kufi', ui-sans-serif, system-ui, sans-serif;
 }
 
 .spirit-grid {

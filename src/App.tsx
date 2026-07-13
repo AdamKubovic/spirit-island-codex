@@ -7,6 +7,7 @@ import { Homepage } from './components/Homepage'
 import { RecommenderMain, RecommenderProvider, RecommenderSide } from './components/Recommender'
 import { Settings } from './components/Settings'
 import { TierBoard } from './components/TierBoard'
+import { TypeRound } from './prototypes/ofl-typography/TypeRound'
 
 /** 'home' is not a nav tab (#01 decision 3): the clickable logo is the only route home, and
  * while it is current no nav item matches it, so none shows active. */
@@ -42,6 +43,9 @@ function App() {
         {tab === 'tiers' && <TierBoard />}
         {tab === 'log' && <GameLog />}
         {tab === 'settings' && <Settings />}
+        {/* phase-4 #22 variant round (awaiting the owner's pick): renders nothing without
+         * ?type=. Delete this mount and its import when the round closes. */}
+        <TypeRound />
       </AppShell>
     </RecommenderProvider>
   )
