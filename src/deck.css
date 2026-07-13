@@ -40,12 +40,94 @@ body {
   overflow-y: auto;
 }
 
+.deck-brand-button {
+  all: unset;
+  cursor: pointer;
+  display: block;
+}
+.deck-brand-button:focus-visible {
+  outline: 2px solid var(--deck-accent);
+  outline-offset: 2px;
+}
 .deck-brand {
   display: block;
   width: 100%;
   max-width: 232px;
   height: auto;
   margin-bottom: 1.5rem;
+}
+
+/* --- homepage (#13) --- */
+.home {
+  max-width: 880px;
+}
+.home-framing p {
+  margin: 0 0 0.6rem;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.home-framing a {
+  color: var(--deck-accent);
+}
+.home-footer {
+  margin-top: 2rem;
+  font: 11px/1.5 var(--deck-mono);
+  letter-spacing: 0.06em;
+  color: var(--deck-dim);
+}
+.home-door-text {
+  display: grid;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.home-door-title {
+  color: var(--deck-text);
+  font-size: 16px;
+  font-weight: 600;
+}
+.home-door-sub {
+  color: var(--deck-body);
+  font-size: 13px;
+}
+
+.home-doors {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1.5rem;
+}
+.home-door-banner {
+  all: unset;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 168px 1fr;
+  gap: 1.1rem;
+  align-items: center;
+  border: 1px solid var(--deck-line);
+  border-radius: 8px;
+  background: var(--deck-panel);
+  padding: 0.6rem;
+  overflow: hidden;
+}
+.home-door-banner:hover {
+  border-color: #2c3a46;
+  background: #16202a;
+}
+.home-door-banner .home-door-art {
+  width: 168px;
+  height: 76px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+@media (max-width: 460px) {
+  .home-door-banner {
+    grid-template-columns: 112px 1fr;
+    gap: 0.7rem;
+  }
+  .home-door-banner .home-door-art {
+    width: 112px;
+    height: 64px;
+  }
 }
 
 .deck-nav {

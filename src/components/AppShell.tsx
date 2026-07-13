@@ -15,19 +15,24 @@ export function AppShell<T extends string>({
   nav,
   current,
   onNavigate,
+  onHome,
   side,
   children,
 }: {
   nav: NavItem<T>[]
   current: T
   onNavigate: (id: T) => void
+  /** The logo is the only route home (#01 decision 3) — there is no Home nav button. */
+  onHome: () => void
   side?: ReactNode
   children: ReactNode
 }) {
   return (
     <div className="deck">
       <aside className="deck-side">
-        <img className="deck-brand" src={`${import.meta.env.BASE_URL}spirit-island-logo.webp`} alt="Spirit Island" />
+        <button type="button" className="deck-brand-button" onClick={onHome} aria-label="Home">
+          <img className="deck-brand" src={`${import.meta.env.BASE_URL}spirit-island-logo.webp`} alt="Spirit Island" />
+        </button>
         <nav className="deck-nav">
           {nav.map((item) => (
             <button

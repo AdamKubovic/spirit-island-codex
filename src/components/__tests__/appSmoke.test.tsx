@@ -19,15 +19,41 @@ describe('app smoke', () => {
     expect(() => renderToStaticMarkup(<App />)).not.toThrow()
   })
 
-  it('renders the shell and the first wizard question', () => {
+  it('boots to the homepage: framing lines, three doors, disclaimer, outbound game link (#13)', () => {
     const html = renderToStaticMarkup(<App />)
+    expect(html).toContain('Explore every spirit')
+    expect(html).toContain('Not sure what to play?')
+    expect(html).toContain('How do they rank?')
+    expect(html).toContain('unofficial, fan-made companion')
+    expect(html).toContain('not affiliated with the Spirit Island rights holders')
+    expect(html).toContain('https://shop.greaterthangames.com/pages/spirit-island')
+    // The door art ids are hand-typed in Homepage.tsx; pin them so a typo can't silently
+    // fall back to another spirit's art.
+    expect(html).toContain('spirits/lightnings-swift-strike.webp')
+    expect(html).toContain('spirits/river-surges-in-sunlight.webp')
+    expect(html).toContain('spirits/a-spread-of-rampant-green.webp')
+    // Boot is the homepage, not the recommender wizard.
+    expect(html).not.toContain('How do you like to beat your opponents?')
+  })
+
+  it('the logo is the only route home: a Home button wraps it, and no nav item is active on boot (#13)', () => {
+    const html = renderToStaticMarkup(<App />)
+    expect(html).toContain('aria-label="Home"')
     expect(html).toContain('alt="Spirit Island"')
-    expect(html).toContain('Recommend')
-    expect(html).toContain('Tier list')
-    // Fresh state (memory storage) starts at the wizard, on its first real question (#10:
-    // the player-count screen is gone).
-    expect(html).toContain('How do you like to beat your opponents?')
-    expect(html).not.toContain('How many players')
+    const nav = html.slice(html.indexOf('<nav'), html.indexOf('</nav>'))
+    expect(nav).not.toContain('data-active="true"')
+    // No Home nav button: "Home" appears only as the logo's accessible label.
+    expect(html.match(/>Home</g)).toBeNull()
+  })
+
+  it('nav starts with Browse; Recommend is demoted to second (#13, the locked call)', () => {
+    const html = renderToStaticMarkup(<App />)
+    const nav = html.slice(html.indexOf('deck-nav'))
+    // Browse is the FIRST nav button, not merely before Recommend.
+    expect(nav.match(/<button[^>]*>([^<]+)<\/button>/)?.[1]).toBe('Browse')
+    const order = ['Browse', 'Recommend', 'Archive', 'Tier list'].map((label) => nav.indexOf(`>${label}<`))
+    expect(order.every((i) => i > -1)).toBe(true)
+    expect([...order].sort((a, b) => a - b)).toEqual(order)
   })
 
   it('throws a useful error if recommender components are used outside the provider', () => {
