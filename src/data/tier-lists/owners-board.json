@@ -2,6 +2,7 @@
   "id": "owners-board",
   "name": "Owner's board",
   "type": "strength",
+  "subject": "configurations",
   "origin": "personal",
   "tierLabels": [
     "X",

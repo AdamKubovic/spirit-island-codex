@@ -127,7 +127,7 @@ export function TierListControls({
             type="button"
             disabled={!newName.trim()}
             onClick={() => {
-              const created = tierStore.createList({ name: newName.trim(), type: newType })
+              const created = tierStore.createList({ name: newName.trim(), type: newType, subject: 'configurations' })
               tierStore.setActiveListId(created.id)
               setNewName('')
               onChange()

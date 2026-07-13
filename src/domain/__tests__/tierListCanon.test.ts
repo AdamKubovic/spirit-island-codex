@@ -2,12 +2,22 @@ import { describe, expect, it } from 'vitest'
 import ownersBoard from '../../data/tier-lists/owners-board.json'
 import siaFavoritesFunSolo from '../../data/tier-lists/sia-favorites-fun-solo-2026.json'
 import threeMbgStrengthSolo from '../../data/tier-lists/3mbg-strength-solo-2025.json'
+import powerCardsData from '../../data/power-cards.json'
 import spiritsData from '../../data/spirits.json'
 import { expand } from '../configurations'
-import type { Spirit, TierList } from '../types'
+import type { PowerCard, Spirit, TierList, TierListSubject } from '../types'
 
 const spirits = spiritsData as Spirit[]
+const powerCards = powerCardsData as PowerCard[]
 const configIds = new Set(expand(spirits).map((c) => c.configId))
+
+/** The id namespace each subject's tier keys must resolve against (#12/ADR 0002).
+ * Card subjects key by card name — the power-card dataset carries no other id. */
+const KEY_NAMESPACE: Record<TierListSubject, Set<string>> = {
+  configurations: configIds,
+  'minor-powers': new Set(powerCards.filter((c) => c.kind === 'minor').map((c) => c.name)),
+  'major-powers': new Set(powerCards.filter((c) => c.kind === 'major').map((c) => c.name)),
+}
 
 /** Every shipped tier list. Extend this array as new lists land - this test is the tripwire
  * that keeps every one of them honest, modelled on `aspectCanon.test.ts`. */
@@ -138,11 +148,19 @@ const THREE_MBG_EXPECTED_KEYS = [
 ]
 
 describe('tier list canon', () => {
+  it('every shipped list declares subject: configurations (#12 data migration — extend, never drop, when a card list ships)', () => {
+    for (const list of SHIPPED_LISTS) {
+      expect(list.subject, `${list.id} has no subject`).toBe('configurations')
+    }
+  })
+
   for (const list of SHIPPED_LISTS) {
     describe(list.id, () => {
-      it('references only configIds that exist in spirits.json', () => {
-        for (const configId of Object.keys(list.tiers)) {
-          expect(configIds, `${list.id} rates unknown configuration "${configId}"`).toContain(configId)
+      it('declares a known subject and every tier key resolves in that subject\'s namespace', () => {
+        const namespace = KEY_NAMESPACE[list.subject]
+        expect(namespace, `${list.id} declares unknown subject "${list.subject}"`).toBeDefined()
+        for (const key of Object.keys(list.tiers)) {
+          expect(namespace, `${list.id} rates unknown ${list.subject} key "${key}"`).toContain(key)
         }
       })
 
@@ -170,6 +188,11 @@ describe('tier list canon', () => {
       })
     })
   }
+
+  it('the card-subject namespaces resolve against power-cards.json (deliberate duplication - the tripwire any future card list hits)', () => {
+    expect(KEY_NAMESPACE['minor-powers'].size).toBe(101)
+    expect(KEY_NAMESPACE['major-powers'].size).toBe(78)
+  })
 
   it('the owner\'s board covers all 68 configurations (deliberate duplication - drift fails loudly)', () => {
     expect(Object.keys(ownersBoard.tiers).sort()).toEqual([...OWNERS_BOARD_EXPECTED_KEYS].sort())

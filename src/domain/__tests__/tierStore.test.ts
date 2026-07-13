@@ -16,6 +16,7 @@ const CITED_LIST: TierList = {
   id: 'cited-fixture',
   name: 'A Cited List',
   type: 'strength',
+  subject: 'configurations',
   players: 1,
   origin: 'cited',
   tierLabels: ['S', 'A', 'B', 'C', 'D', 'F'],
@@ -35,6 +36,7 @@ const SIX_BAND_LIST: TierList = {
   id: 'six-band-fixture',
   name: 'Six Band',
   type: 'strength',
+  subject: 'configurations',
   origin: 'personal',
   tierLabels: ['S', 'A', 'B', 'C', 'D', 'F'],
   methodology: 'test fixture',
@@ -46,6 +48,7 @@ const SINGLE_BAND_LIST: TierList = {
   id: 'single-band-fixture',
   name: 'One Band',
   type: 'strength',
+  subject: 'configurations',
   origin: 'personal',
   tierLabels: ['Only'],
   methodology: 'test fixture',
@@ -210,10 +213,10 @@ describe('tierStore', () => {
       expect(store.getActiveListId()).toBe(OWNERS_BOARD.id)
     })
 
-    it('the active list persists across a simulated reload', () => {
+    it('the active pick is session state; a simulated reload boots the default list (#12)', () => {
       const storage = memoryStorage()
       createTierStore(storage, shipped).setActiveListId(CITED_LIST.id)
-      expect(createTierStore(storage, shipped).getActiveListId()).toBe(CITED_LIST.id)
+      expect(createTierStore(storage, shipped).getActiveListId()).toBe(OWNERS_BOARD.id)
     })
 
     it('an override written to one list is not visible from another', () => {
@@ -268,6 +271,98 @@ describe('tierStore', () => {
     })
   })
 
+  describe('the subject axis (#12 / ADR 0002)', () => {
+    const MINOR_LIST: TierList = {
+      id: 'minor-cited-fixture',
+      name: 'A Minor-Powers List',
+      type: 'strength',
+      subject: 'minor-powers',
+      origin: 'cited',
+      tierLabels: ['S', 'A', 'B'],
+      methodology: 'test fixture',
+      source: {
+        author: 'Someone',
+        title: 'A card video',
+        url: 'https://example.com/cards',
+        retrievedAt: '2026-01-01',
+        method: 'llm-transcript-scrape',
+      },
+      verified: false,
+      tiers: { 'Call of the Dahan Ways': 'S' },
+    }
+    const shipped = [OWNERS_BOARD, CITED_LIST, MINOR_LIST]
+
+    it('tracks one active list per subject: activating a card list leaves the configurations active untouched', () => {
+      const store = createTierStore(memoryStorage(), shipped)
+      store.setActiveListId(MINOR_LIST.id)
+      expect(store.getActiveListFor('minor-powers')?.id).toBe(MINOR_LIST.id)
+      expect(store.getActiveListFor('configurations')?.id).toBe(OWNERS_BOARD.id)
+      expect(store.getActiveList().id).toBe(OWNERS_BOARD.id)
+    })
+
+    it('a subject with no lists has no active list', () => {
+      const store = createTierStore(memoryStorage(), shipped)
+      expect(store.getActiveListFor('major-powers')).toBeUndefined()
+    })
+
+    it('a fresh install boots the owner\'s board as the configurations default (today\'s behaviour, pending #18\'s verified seed)', () => {
+      const store = createTierStore(memoryStorage(), shipped)
+      expect(store.getDefaultList('configurations')?.id).toBe(OWNERS_BOARD.id)
+      expect(store.getActiveList().id).toBe(OWNERS_BOARD.id)
+    })
+
+    it('the default list is durable: setDefaultListId changes which list boots active after a simulated reload', () => {
+      const storage = memoryStorage()
+      createTierStore(storage, shipped).setDefaultListId(CITED_LIST.id)
+      const rebooted = createTierStore(storage, shipped)
+      expect(rebooted.getDefaultList('configurations')?.id).toBe(CITED_LIST.id)
+      expect(rebooted.getActiveList().id).toBe(CITED_LIST.id)
+    })
+
+    it('the default is per subject: a card-list default never shadows the configurations default', () => {
+      const storage = memoryStorage()
+      createTierStore(storage, shipped).setDefaultListId(MINOR_LIST.id)
+      const rebooted = createTierStore(storage, shipped)
+      expect(rebooted.getDefaultList('minor-powers')?.id).toBe(MINOR_LIST.id)
+      expect(rebooted.getActiveList().id).toBe(OWNERS_BOARD.id)
+    })
+
+    it('a stored default that no longer resolves falls back to the owner\'s board instead of crashing the boot', () => {
+      const storage = memoryStorage()
+      storage.setItem('spirit-island:default-list-id:configurations', 'a-deleted-custom-list')
+      const store = createTierStore(storage, shipped)
+      expect(store.getActiveList().id).toBe(OWNERS_BOARD.id)
+    })
+
+    it('migrates the legacy durable active-list key into the configurations default (the old pick was, in effect, a boot pick)', () => {
+      const storage = memoryStorage()
+      storage.setItem('spirit-island:active-list-id', CITED_LIST.id)
+      const store = createTierStore(storage, shipped)
+      expect(store.getActiveList().id).toBe(CITED_LIST.id)
+      expect(store.getDefaultList('configurations')?.id).toBe(CITED_LIST.id)
+      expect(storage.getItem('spirit-island:active-list-id')).toBeNull()
+    })
+
+    it('backfills subject: configurations onto a personal list persisted before #12, so it can still be activated', () => {
+      const storage = memoryStorage()
+      const preSubjectList = { ...SIX_BAND_LIST }
+      delete (preSubjectList as Partial<TierList>).subject
+      storage.setItem('spirit-island:custom-tier-lists', JSON.stringify([preSubjectList]))
+      const store = createTierStore(storage, [OWNERS_BOARD])
+      store.setActiveListId(SIX_BAND_LIST.id)
+      expect(store.getActiveList().id).toBe(SIX_BAND_LIST.id)
+    })
+
+    it('createList stamps the requested subject and the new list can be activated for it', () => {
+      const store = createTierStore(memoryStorage(), shipped)
+      const created = store.createList({ name: 'My Card List', type: 'fun', subject: 'major-powers' })
+      expect(created.subject).toBe('major-powers')
+      store.setActiveListId(created.id)
+      expect(store.getActiveListFor('major-powers')?.id).toBe(created.id)
+      expect(store.getActiveList().id).toBe(OWNERS_BOARD.id)
+    })
+  })
+
   describe('rank normalisation (issue #03)', () => {
     it('computes rank as position / (length - 1), strongest at 0', () => {
       const store = createTierStore(memoryStorage(), [SIX_BAND_LIST])
@@ -305,7 +400,7 @@ describe('tierStore', () => {
   describe('personal fun list (issue #09)', () => {
     it('a created list starts fully unrated', () => {
       const store = createTierStore(memoryStorage())
-      const created = store.createList({ name: 'My Fun List', type: 'fun' })
+      const created = store.createList({ name: 'My Fun List', type: 'fun', subject: 'configurations' })
       expect(created.tiers).toEqual({})
       store.setActiveListId(created.id)
       expect(store.getTier(LIGHTNING)).toBeUndefined()
@@ -313,7 +408,7 @@ describe('tierStore', () => {
 
     it('rating a configuration on a created list does not change it on the owner\'s board', () => {
       const store = createTierStore(memoryStorage())
-      const created = store.createList({ name: 'My Fun List', type: 'fun' })
+      const created = store.createList({ name: 'My Fun List', type: 'fun', subject: 'configurations' })
       store.setActiveListId(created.id)
       store.setTier(LIGHTNING, 'X')
       store.setActiveListId(OWNERS_BOARD.id)
@@ -322,7 +417,7 @@ describe('tierStore', () => {
 
     it('a created list persists across a simulated reload', () => {
       const storage = memoryStorage()
-      const created = createTierStore(storage).createList({ name: 'My Fun List', type: 'fun' })
+      const created = createTierStore(storage).createList({ name: 'My Fun List', type: 'fun', subject: 'configurations' })
       const reloaded = createTierStore(storage)
       expect(reloaded.getLists().some((l) => l.id === created.id)).toBe(true)
     })

@@ -6,6 +6,13 @@ export const LIST_TYPES = ['strength', 'fun'] as const
 
 export type TierListType = (typeof LIST_TYPES)[number]
 
+/** What a tier list ranks (#12/ADR 0002). The subject defines the id namespace of the list's
+ * tier keys — `configurations` keys are configIds; the card subjects key power-card names —
+ * and is the seam where a future game would plug in. No `game` field, deliberately. */
+export const TIER_LIST_SUBJECTS = ['configurations', 'minor-powers', 'major-powers'] as const
+
+export type TierListSubject = (typeof TIER_LIST_SUBJECTS)[number]
+
 export interface SourceCitation {
   author: string
   title: string
@@ -20,13 +27,15 @@ export interface SourceCitation {
  * it was made for, its own tier vocabulary, and a partial set of ratings. Contract published at
  * `.scratch/v3/tier-list-schema.md`.
  *
- * `tiers` maps configId -> label. An absent key means the source never rated that configuration
- * — never null, never a default, never inherited from another list.
+ * `tiers` maps a subject-namespace key -> label. An absent key means the source never rated
+ * that entity — never null, never a default, never inherited from another list.
  */
 export interface TierList {
   id: string
   name: string
   type: TierListType
+  /** The id namespace `tiers` keys live in. Every list declares one; see TIER_LIST_SUBJECTS. */
+  subject: TierListSubject
   /** The player count the source ranked FOR. Absent = source never said. Never inferred. */
   players?: number
   /** cited => immutable in-app; personal => editable. */

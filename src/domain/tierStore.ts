@@ -3,7 +3,7 @@ import siaFavoritesFunSolo from '../data/tier-lists/sia-favorites-fun-solo-2026.
 import threeMbgStrengthSolo from '../data/tier-lists/3mbg-strength-solo-2025.json'
 import type { Configuration } from './configurations'
 import { defaultStorage, type KeyValueStorage } from './storage'
-import type { TierList, TierListType } from './types'
+import type { TierList, TierListSubject, TierListType } from './types'
 
 const SHIPPED_LISTS: TierList[] = [
   ownersBoard as TierList,
@@ -12,9 +12,10 @@ const SHIPPED_LISTS: TierList[] = [
 ]
 
 const OLD_V2_KEY = 'spirit-island:tier-overrides'
-const ACTIVE_LIST_KEY = 'spirit-island:active-list-id'
+const LEGACY_ACTIVE_LIST_KEY = 'spirit-island:active-list-id'
 const CUSTOM_LISTS_KEY = 'spirit-island:custom-tier-lists'
 const overridesKey = (listId: string) => `spirit-island:tier-overrides:${listId}`
+const defaultListKey = (subject: TierListSubject) => `spirit-island:default-list-id:${subject}`
 
 /** FNV-1a. Cheap, stable, and we only need change-detection, not cryptography. */
 function fingerprint(input: string): string {
@@ -40,6 +41,7 @@ interface StoredOverrides {
 export interface CreateListInput {
   name: string
   type: TierListType
+  subject: TierListSubject
 }
 
 /** Rank is the label's position in the list's own vocabulary, normalised so 0 is the
@@ -67,7 +69,11 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
     if (!raw) return []
     try {
       const parsed = JSON.parse(raw)
-      return Array.isArray(parsed) ? (parsed as TierList[]) : []
+      if (!Array.isArray(parsed)) return []
+      // #12 backfill: lists created before the subject axis existed could only ever rank
+      // configurations — stamping that is recorded fact, not a guess. Without it a pre-#12
+      // personal list has subject undefined and could never be activated again.
+      return (parsed as TierList[]).map((l) => (l.subject ? l : { ...l, subject: 'configurations' }))
     } catch {
       return []
     }
@@ -151,9 +157,47 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
 
   migrateV2Overrides()
 
+  /** #12: the durable pick used to be the *active* list id. Under the subject axis the active
+   * pick is session state and the durable pick is the default list — so the legacy key becomes
+   * the configurations default, preserving exactly which list the user's app boots into. */
+  function migrateLegacyActiveKey(): void {
+    const id = storage.getItem(LEGACY_ACTIVE_LIST_KEY)
+    if (id === null) return
+    storage.removeItem(LEGACY_ACTIVE_LIST_KEY)
+    if (storage.getItem(defaultListKey('configurations')) === null) {
+      storage.setItem(defaultListKey('configurations'), id)
+    }
+  }
+
+  migrateLegacyActiveKey()
+
+  // One active list per subject, session-scoped (#06's ruling): a reload boots the default.
+  const sessionActiveIds = new Map<TierListSubject, string>()
+
+  function listOfSubject(id: string | null, subject: TierListSubject): TierList | undefined {
+    const list = id ? findList(id) : undefined
+    return list?.subject === subject ? list : undefined
+  }
+
+  /** The durable boot pick. Unset or unresolvable falls back to the owner's board for
+   * configurations (today's behaviour — #18 verifies and flips the seed to the credited cited
+   * list; the owner's named URL matches no shipped citation yet, so seeding it here would be
+   * guessing) and to the first shipped list for any other subject. */
+  function defaultListFor(subject: TierListSubject): TierList | undefined {
+    const stored = listOfSubject(storage.getItem(defaultListKey(subject)), subject)
+    if (stored) return stored
+    if (subject === 'configurations') return ownersBoardList
+    return allLists().find((l) => l.subject === subject)
+  }
+
+  function activeListFor(subject: TierListSubject): TierList | undefined {
+    return listOfSubject(sessionActiveIds.get(subject) ?? null, subject) ?? defaultListFor(subject)
+  }
+
+  /** The active configurations list — the one Browse, the board, and the recommender read.
+   * Shipped lists always include one, so this never comes back empty. */
   function activeList(): TierList {
-    const id = storage.getItem(ACTIVE_LIST_KEY)
-    return (id && findList(id)) || ownersBoardList
+    return activeListFor('configurations') ?? ownersBoardList
   }
 
   return {
@@ -166,8 +210,23 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
     getActiveList(): TierList {
       return activeList()
     },
+    /** Activates a list for *its own* subject — callers never pass a subject, the list knows. */
     setActiveListId(id: string): void {
-      if (findList(id)) storage.setItem(ACTIVE_LIST_KEY, id)
+      const list = findList(id)
+      if (list) sessionActiveIds.set(list.subject, id)
+    },
+    /** One active list per subject; undefined when no list of that subject exists. */
+    getActiveListFor(subject: TierListSubject): TierList | undefined {
+      return activeListFor(subject)
+    },
+    /** The durable boot pick for a subject (#18's Settings control reads this). */
+    getDefaultList(subject: TierListSubject = 'configurations'): TierList | undefined {
+      return defaultListFor(subject)
+    },
+    /** Durably picks which list boots as active for its subject. */
+    setDefaultListId(id: string): void {
+      const list = findList(id)
+      if (list) storage.setItem(defaultListKey(list.subject), id)
     },
     getTier(configId: string): string | undefined {
       const list = activeList()
@@ -232,6 +291,7 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
         id: `personal-${input.type}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
         name: input.name,
         type: input.type,
+        subject: input.subject,
         origin: 'personal',
         tierLabels: [...ownersBoardList.tierLabels],
         methodology: 'Owner-created list; starts fully unrated.',
