@@ -79,6 +79,12 @@ recommender. This map decides; it does not build.
   never displayed before); the Recommender's per-row radar thumbnail is **dropped, not
   miniaturised**, and `OcfduRadar` deletes at build time. Winner screenshot kept in
   `screenshots-03/`; prototype deleted, source tree restored byte-identical.
+- **[#07 tier list ↔ browser interconnect](issues/07-tier-list-browser-interconnect.md) done**
+  (2026-07-13), by grilling (owner's direction; no prototype round needed): tier tiles open
+  **the same `SpiritDetail` modal** Browse uses; aspect tiles land **scrolled to the highlighted
+  aspect**; the detail shows a **coloured tier chip in the head + one per aspect row** from the
+  active configurations-list, unrated as an outlined chip. Edit mode gates the click;
+  card-subject tiles stay inert this phase.
 
 Eight calls were made by the owner ahead of charting, locked in
 [docs/phase-4-notes.md](../../docs/phase-4-notes.md) — they are not tickets; #09 folds them into
@@ -132,5 +138,6 @@ decide                                            assemble
 08 the recommender's short-term shape ───────┘
 ```
 
-Frontier (updated 2026-07-13): **#05, #07** — the interconnect prototype and the AFK research,
-independent. #09 waits on them. #01, #02, #03, #04, #06 and #08 are done.
+Frontier (updated 2026-07-13): **#05** — the AFK official-assets research is the last ticket
+before #09 (assemble the spec) unblocks. Every HITL ticket is done: #01, #02, #03, #04, #06,
+#07, #08.

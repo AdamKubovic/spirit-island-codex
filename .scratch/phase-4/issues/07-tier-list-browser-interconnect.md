@@ -1,7 +1,8 @@
 # 07 — Tier list ↔ browser interconnect
 
-Status: needs-triage
-Type: wayfinder:prototype (HITL)
+Status: done
+Type: wayfinder:prototype (HITL) — resolved by grilling at the owner's direction; no prototype
+round was needed, every decision reuses an existing idiom
 Parent: [phase-4 map](../MAP.md)
 
 ## Blocked by
@@ -37,3 +38,26 @@ tier info it gains; #03: one panel inside it), but the spec assembly reconciles 
 layout.
 
 ## Comments
+
+**Resolution (2026-07-13, grilled with the owner — four decisions):**
+
+Facts that shaped it: tier-board tiles are inert today (no click handler at all);
+`SpiritDetail` is already a modal, opened by Browse; the detail already shows a plain-text tier
+line (base spirit only); `tierColor(position)` exists, keyed by position in each list's own
+vocabulary per ADR 0001.
+
+1. **Mechanism: tier tiles open the same `SpiritDetail` modal Browse uses.** Same component,
+   over the board — the ticket's "without leaving the tier list", satisfied without a router
+   (which [#04](04-the-archives-structure.md) ruled out this phase) and with zero new idioms.
+2. **Aspect tiles open the base spirit's modal scrolled to the Aspects section, with the
+   clicked aspect's row highlighted** — one scroll call and one CSS class; the clicked thing is
+   never buried.
+3. **Tier display: chip in head + chip per aspect row.** The head's text line becomes a coloured
+   tier chip for the base configuration; each aspect row gets its own small tier chip. Colours
+   via `tierColor` from the **active configurations-list**
+   ([#06](06-multi-tier-list-architecture.md)'s lookup rule). An unrated configuration gets an
+   outlined "unrated" chip — absence stays honest, never defaulted.
+4. **Boundaries:** edit mode ([#02](02-the-settings-tab.md)) gates the click — view mode click
+   opens the modal, edit mode clicks/drags only edit (this resolves the coexistence note #02
+   left on this ticket). **Card-subject tiles stay inert** this phase — no card detail view
+   exists, and v5 explicitly ruled rules-text detail views out of scope.
