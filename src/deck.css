@@ -252,10 +252,6 @@ button:disabled {
 }
 
 .deck-row-body {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 1.5rem;
-  align-items: start;
   padding: 0.25rem 1rem 1rem 8.5rem;
   border-top: 1px solid var(--deck-line-soft);
 }
@@ -905,6 +901,61 @@ button:disabled {
   align-items: flex-start;
   flex-wrap: wrap;
   margin: 1rem 0;
+}
+
+/* --- OCFDU labelled bars (the #03 winner) --- */
+.ocfdu-bars {
+  display: grid;
+  gap: 0.55rem;
+}
+.ocfdu-bar-row {
+  display: grid;
+  grid-template-columns: 4.5rem 44px 1.5rem;
+  align-items: center;
+  gap: 0.9rem;
+}
+.ocfdu-bar-label {
+  font-size: 13px;
+  color: var(--deck-text);
+}
+.ocfdu-bar-track {
+  height: 9px;
+  border-radius: 999px;
+  background: #1a222b;
+  overflow: hidden;
+}
+.ocfdu-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--deck-accent);
+}
+.ocfdu-bar-value {
+  font: 600 12px/1 var(--deck-mono);
+  color: var(--deck-dim);
+}
+.ocfdu-elements {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+.ocfdu-elements-label {
+  font: 600 10px/1 var(--deck-mono);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--deck-dim);
+  margin-right: 0.2rem;
+}
+.ocfdu-element-chip {
+  display: inline-block;
+  border: 1px solid #2c3a46;
+  border-radius: 999px;
+  color: var(--deck-text);
+  font-size: 13px;
+  padding: 0.22rem 0.75rem;
+  white-space: nowrap;
 }
 .spirit-detail-cards {
   display: grid;

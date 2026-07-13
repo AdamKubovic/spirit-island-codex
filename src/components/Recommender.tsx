@@ -17,7 +17,6 @@ import { COMPLEXITIES } from '../domain/types'
 import type { Complexity, OCFDU, Spirit } from '../domain/types'
 import { selectWildcard } from '../domain/wildcard'
 import { whyYou } from '../domain/whyYou'
-import { OcfduRadar } from './OcfduRadar'
 import { SpiritArt } from './SpiritArt'
 
 const spirits = spiritsData as Spirit[]
@@ -315,7 +314,6 @@ function ResultRow({
               </>
             )}
           </div>
-          <OcfduRadar ratings={spirit.ratings} />
         </div>
       )}
     </li>

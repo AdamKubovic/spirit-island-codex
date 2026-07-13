@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { tierStore } from '../domain/tierStore'
 import type { Spirit } from '../domain/types'
 import { CardViewer } from './CardViewer'
-import { OcfduRadar } from './OcfduRadar'
+import { OcfduBars } from './OcfduBars'
 import { PlaceholderArt } from './PlaceholderArt'
 import { SpiritArt } from './SpiritArt'
 import { COMPLEXITY_LEVEL, EXPANSION_COLOR, tagColor, tagLabel } from './tagColors'
@@ -104,7 +104,7 @@ export function SpiritDetail({ spirit, onClose }: { spirit: Spirit; onClose: () 
         <p>{spirit.summary}</p>
 
         <div className="spirit-detail-body">
-          <OcfduRadar ratings={spirit.ratings} />
+          <OcfduBars ratings={spirit.ratings} elements={spirit.elements} />
           {spirit.ratingsSource === 'estimate' && (
             <p className="meta">
               These OCFDU ratings are an estimate — nobody has verified them against a printed source.
