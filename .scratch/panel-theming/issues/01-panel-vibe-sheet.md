@@ -2,7 +2,7 @@
 
 Status: ready-for-agent
 Label: wayfinder:research (AFK)
-Parent: [Panel theming map](../MAP.md)
+Parent: [Panel theming map](../MAP.md) · [PRD](../PRD.md)
 
 ## Blocked by
 
@@ -30,3 +30,11 @@ panel scans this repo already hosts (`public/panels/*.webp`, ~4–6 panels sampl
   restate the vibe-not-replica line so the prototype ticket inherits it.
 
 Resolution = the vibe sheet linked from this ticket, with the sampled panels named.
+
+## Acceptance criteria
+
+- [ ] Vibe sheet exists with hexes sampled from at least four named panel scans, grouped into
+      surface / text / accent roles, each with a proposed dark translation
+- [ ] Node anatomy and type hierarchy described as CSS-achievable properties using only the
+      shipped fonts — no new assets proposed
+- [ ] The fidelity guard (what NOT to copy) is restated for the round to inherit

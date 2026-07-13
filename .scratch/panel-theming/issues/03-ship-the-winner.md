@@ -2,7 +2,7 @@
 
 Status: ready-for-agent
 Label: wayfinder:task (AFK once the pick exists)
-Parent: [Panel theming map](../MAP.md)
+Parent: [Panel theming map](../MAP.md) · [PRD](../PRD.md)
 
 ## Blocked by
 
@@ -18,3 +18,14 @@ comment per the house pattern. Apply any reaction notes the pick carried (the #2
 feels small" precedent). The two-axis code review runs before the commit.
 
 Resolution = what shipped and where, linked screenshot, test count.
+
+## Acceptance criteria
+
+- [ ] The picked treatment is the modal's default look; `?panel=` is inert and the round
+      scaffolding is deleted
+- [ ] The palette lives in the colour home; the collision test pins it apart from the
+      expansion, tag, kind/speed, and band palettes
+- [ ] App smoke asserts the treatment renders and the OCFDU truth rules survive it
+- [ ] The pick's reaction notes are applied (the #22 "sized up" precedent)
+- [ ] Production build verified at 375px + desktop; SHIPPED screenshot kept; two-axis code
+      review applied before the commit

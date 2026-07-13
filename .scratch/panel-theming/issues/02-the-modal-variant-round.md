@@ -2,7 +2,7 @@
 
 Status: ready-for-agent
 Label: wayfinder:prototype (HITL — the owner picks)
-Parent: [Panel theming map](../MAP.md)
+Parent: [Panel theming map](../MAP.md) · [PRD](../PRD.md)
 
 ## Blocked by
 
@@ -31,3 +31,15 @@ tension, not solve it). Screenshots (baseline + each variant, modal open, 375px 
 
 Resolution = the owner's pick recorded, plus their reactions worth carrying into the ship
 ticket (e.g. "A but warmer", size notes).
+
+## Acceptance criteria
+
+- [ ] Three compositions (A light parchment + nodes, B dark translation + nodes, C dark +
+      retinted bars anchor) live behind `?panel=A|B|C` with the floating switcher; the app is
+      byte-identical without the param
+- [ ] Every colour traces to the vibe sheet's sampled palette
+- [ ] OCFDU truth rules hold in every variant (a transcribed 6 shows 6 over a clamped track;
+      unrated renders nothing)
+- [ ] Screenshots (baseline + each variant, modal open) at 375px + 1280px in
+      `../screenshots-02/`; no horizontal overflow at 375px
+- [ ] Ticket left at `needs-info` carrying the pick question — never self-closed

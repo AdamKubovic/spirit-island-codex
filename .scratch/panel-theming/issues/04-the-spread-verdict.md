@@ -2,7 +2,7 @@
 
 Status: ready-for-agent
 Label: wayfinder:grilling (HITL)
-Parent: [Panel theming map](../MAP.md)
+Parent: [Panel theming map](../MAP.md) · [PRD](../PRD.md)
 
 ## Blocked by
 
@@ -21,3 +21,9 @@ first? A short grilling, one line of verdict:
 Either way this ticket closes the map: after it, nothing on this effort is left to decide.
 
 Resolution = the verdict line, plus the new effort's name if chartered.
+
+## Acceptance criteria
+
+- [ ] The verdict is recorded on this ticket: spread yes/no, and what surface first if yes
+- [ ] If yes: the new effort is named for its own wayfinder charting — nothing is built here
+- [ ] The map's Decisions-so-far carries all four closed tickets; the map is complete
