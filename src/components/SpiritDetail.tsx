@@ -4,6 +4,8 @@ import { tierStore } from '../domain/tierStore'
 import type { Spirit } from '../domain/types'
 import { CardViewer } from './CardViewer'
 import { OcfduBars } from './OcfduBars'
+// ROUND 02 (panel-theming) — throwaway import, delete on ship (#03).
+import { OcfduNodes, PanelSwitcher, readPanelVariant } from './PanelRound'
 import { PlaceholderArt } from './PlaceholderArt'
 import { SpiritArt } from './SpiritArt'
 import { COMPLEXITY_LEVEL, EXPANSION_COLOR, tagColor, tagLabel } from './tagColors'
@@ -81,6 +83,9 @@ export function SpiritDetail({
   highlightAspect?: string
 }) {
   const [enlarged, setEnlarged] = useState<{ src: string; alt: string } | null>(null)
+  // ROUND 02 (panel-theming) — throwaway. null unless `?panel=A|B|C`, so the app is
+  // byte-identical without the param. Delete on ship (#03).
+  const [panelVariant, setPanelVariant] = useState(readPanelVariant)
   // "Lands scrolled" is a one-time act: without this guard the inline callback ref re-fires on
   // every re-render (e.g. enlarging a card image) and snaps scroll back to the aspect row.
   const scrolledToAspect = useRef(false)
@@ -90,8 +95,14 @@ export function SpiritDetail({
   const expansionColor = EXPANSION_COLOR[spirit.expansion]
 
   return (
+    <>
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal spirit-detail" onClick={(e) => e.stopPropagation()} role="dialog" aria-label={spirit.name}>
+      <div
+        className={panelVariant ? `modal spirit-detail panel-${panelVariant}` : 'modal spirit-detail'}
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-label={spirit.name}
+      >
         <button type="button" className="modal-close" onClick={onClose} aria-label="Close">
           ×
         </button>
@@ -133,7 +144,12 @@ export function SpiritDetail({
         <p>{spirit.summary}</p>
 
         <div className="spirit-detail-body">
-          <OcfduBars ratings={spirit.ratings} elements={spirit.elements} />
+          {/* ROUND 02: A & B render nodes; C (and no-param) keeps #23's bars. Delete on ship. */}
+          {panelVariant === 'A' || panelVariant === 'B' ? (
+            <OcfduNodes ratings={spirit.ratings} elements={spirit.elements} />
+          ) : (
+            <OcfduBars ratings={spirit.ratings} elements={spirit.elements} />
+          )}
           {spirit.ratingsSource === 'estimate' && (
             <p className="meta">
               These OCFDU ratings are an estimate — nobody has verified them against a printed source.
@@ -221,5 +237,9 @@ export function SpiritDetail({
 
       {enlarged && <CardViewer src={enlarged.src} alt={enlarged.alt} onClose={() => setEnlarged(null)} />}
     </div>
+    {/* ROUND 02: floating switcher, outside the backdrop so its clicks don't close the modal.
+        Delete on ship (#03). */}
+    {panelVariant && <PanelSwitcher current={panelVariant} onPick={setPanelVariant} />}
+    </>
   )
 }
