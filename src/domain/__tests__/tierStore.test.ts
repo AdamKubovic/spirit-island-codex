@@ -271,6 +271,70 @@ describe('tierStore', () => {
     })
   })
 
+  describe('clearTier — moving a configuration to unrated (#15)', () => {
+    it('clearing a seed-rated configuration makes it unrated: getTier undefined, absent from getAll', () => {
+      const store = createTierStore(memoryStorage())
+      store.clearTier(LIGHTNING)
+      expect(store.getTier(LIGHTNING)).toBeUndefined()
+      expect(LIGHTNING in store.getAll()).toBe(false)
+    })
+
+    it('an un-rating persists through the existing override machinery across a simulated reload', () => {
+      const storage = memoryStorage()
+      createTierStore(storage).clearTier(LIGHTNING)
+      const reloaded = createTierStore(storage)
+      expect(reloaded.getTier(LIGHTNING)).toBeUndefined()
+    })
+
+    it('re-assigning a tier after clearing restores it', () => {
+      const store = createTierStore(memoryStorage())
+      store.clearTier(LIGHTNING)
+      store.setTier(LIGHTNING, 'S')
+      expect(store.getTier(LIGHTNING)).toBe('S')
+    })
+
+    it('clearing a configuration the list never rated is a no-op, not an edit', () => {
+      const store = createTierStore(memoryStorage(), [SIX_BAND_LIST])
+      store.setActiveListId(SIX_BAND_LIST.id)
+      store.clearTier(RIVER) // SIX_BAND_LIST never rated RIVER
+      expect(store.getOverrides()).toEqual({})
+      expect(store.isCustomised()).toBe(false)
+    })
+
+    it('clearing an override (not a seed rating) restores the seed absence rather than recording an edit', () => {
+      const store = createTierStore(memoryStorage(), [SIX_BAND_LIST])
+      store.setActiveListId(SIX_BAND_LIST.id)
+      store.setTier(RIVER, 'A')
+      store.clearTier(RIVER)
+      expect(store.getTier(RIVER)).toBeUndefined()
+      expect(store.isCustomised()).toBe(false)
+    })
+
+    it('refuses to clear on a cited list, like setTier', () => {
+      const store = createTierStore(memoryStorage(), [OWNERS_BOARD, CITED_LIST])
+      store.setActiveListId(CITED_LIST.id)
+      store.clearTier(LIGHTNING)
+      expect(store.getTier(LIGHTNING)).toBe('S')
+    })
+
+    it('an un-rating survives a backup round-trip (export overrides, import them elsewhere)', () => {
+      const storageA = memoryStorage()
+      const storeA = createTierStore(storageA)
+      storeA.clearTier(LIGHTNING)
+      const exported = storeA.getOverrides()
+
+      const storeB = createTierStore(memoryStorage())
+      storeB.importOverrides({ [OWNERS_BOARD.id]: exported })
+      expect(storeB.getTier(LIGHTNING)).toBeUndefined()
+    })
+
+    it('a cleared configuration never leaks into the rank prior', () => {
+      const store = createTierStore(memoryStorage())
+      store.clearTier(LIGHTNING)
+      expect(store.getRankPrior()[LIGHTNING]).toBeUndefined()
+    })
+  })
+
   describe('the subject axis (#12 / ADR 0002)', () => {
     const MINOR_LIST: TierList = {
       id: 'minor-cited-fixture',

@@ -3,10 +3,11 @@ import { describe, expect, it } from 'vitest'
 import spiritsData from '../../data/spirits.json'
 import type { Spirit } from '../../domain/types'
 import App from '../../App'
+import { tierStore } from '../../domain/tierStore'
 import { RecommenderMain, RecommenderProvider, RecommenderSide } from '../Recommender'
 import { Settings } from '../Settings'
 import { SpiritDetail } from '../SpiritDetail'
-import { TierEditor } from '../TierEditor'
+import { TierBoard } from '../TierBoard'
 
 const spirits = spiritsData as Spirit[]
 
@@ -48,31 +49,34 @@ describe('app smoke', () => {
     expect(html.match(/>Home</g)).toBeNull()
   })
 
-  it('nav starts with Browse and ends with Settings (#13/#14, the locked calls)', () => {
+  it('nav reads exactly Browse, Recommend, Archive, Tier list, Log, Settings (#13/#14/#15)', () => {
     const html = renderToStaticMarkup(<App />)
     const nav = html.slice(html.indexOf('deck-nav'), html.indexOf('</nav>'))
-    // Browse is the FIRST nav button, not merely before Recommend.
-    expect(nav.match(/<button[^>]*>([^<]+)<\/button>/)?.[1]).toBe('Browse')
     const labels = [...nav.matchAll(/<button[^>]*>([^<]+)<\/button>/g)].map((m) => m[1])
-    expect(labels[labels.length - 1]).toBe('Settings')
-    const order = ['Browse', 'Recommend', 'Archive', 'Tier list'].map((label) => nav.indexOf(`>${label}<`))
-    expect(order.every((i) => i > -1)).toBe(true)
-    expect([...order].sort((a, b) => a - b)).toEqual(order)
+    expect(labels).toEqual(['Browse', 'Recommend', 'Archive', 'Tier list', 'Log', 'Settings'])
   })
 
-  it('Settings holds exactly the three migrated sections; Customise tiers holds none of them (#14)', () => {
+  it('Settings holds exactly the three migrated sections (#14)', () => {
     const settings = renderToStaticMarkup(<Settings />)
     expect(settings).toContain('Backup')
     expect(settings).toContain('My collection')
     expect(settings).toContain('Complexity overrides')
     // "Exactly" the three migrated sections — a fourth section heading would be scope creep.
     expect(settings.match(/<h3>/g)).toHaveLength(3)
+  })
 
-    const editor = renderToStaticMarkup(<TierEditor />)
-    expect(editor).toContain('Customise tiers')
-    expect(editor).not.toContain('Backup')
-    expect(editor).not.toContain('My collection')
-    expect(editor).not.toContain('Complexity overrides')
+  it('the tier board offers Edit tiers only on a personal list; a cited list gets no affordance (#15)', () => {
+    // Default active list is the owner's board (personal).
+    expect(renderToStaticMarkup(<TierBoard />)).toContain('Edit tiers')
+
+    tierStore.setActiveListId('3mbg-strength-solo-2025')
+    try {
+      const citedBoard = renderToStaticMarkup(<TierBoard />)
+      expect(citedBoard).not.toContain('Edit tiers')
+      expect(citedBoard).toContain('switch to a personal list to make changes')
+    } finally {
+      tierStore.setActiveListId('owners-board')
+    }
   })
 
   it('throws a useful error if recommender components are used outside the provider', () => {

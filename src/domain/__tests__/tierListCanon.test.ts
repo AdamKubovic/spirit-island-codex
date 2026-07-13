@@ -176,6 +176,10 @@ describe('tier list canon', () => {
         expect(new Set(list.tierLabels).size).toBe(list.tierLabels.length)
       })
 
+      it('has no empty-string tierLabel (reserved: the edit layer encodes "un-rated" as empty, #15)', () => {
+        expect(list.tierLabels).not.toContain('')
+      })
+
       it('has a source with a URL if origin is cited', () => {
         if (list.origin === 'cited') {
           expect(list.source, `${list.id} is cited but has no source`).toBeDefined()

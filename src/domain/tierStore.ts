@@ -11,6 +11,12 @@ const SHIPPED_LISTS: TierList[] = [
   threeMbgStrengthSolo as TierList,
 ]
 
+/** Override value meaning "the user un-rated this" (#15). Lives only in the override layer —
+ * `getTier`/`getAll` strip it, so it never renders, never reaches the rank prior, and never
+ * appears in a list's own `tiers` (where absence, not a sentinel, means unrated per ADR 0001).
+ * An empty string survives the existing Record<string, string> backup schema untouched. */
+const UNRATED_OVERRIDE = ''
+
 const OLD_V2_KEY = 'spirit-island:tier-overrides'
 const LEGACY_ACTIVE_LIST_KEY = 'spirit-island:active-list-id'
 const CUSTOM_LISTS_KEY = 'spirit-island:custom-tier-lists'
@@ -230,7 +236,8 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
     },
     getTier(configId: string): string | undefined {
       const list = activeList()
-      return readOverridesFor(list)[configId] ?? list.tiers[configId]
+      const label = readOverridesFor(list)[configId] ?? list.tiers[configId]
+      return label === UNRATED_OVERRIDE ? undefined : label
     },
     /** No-ops on a `cited` list — editing 3MBG's list would make it no longer 3MBG's list. */
     setTier(configId: string, label: string): void {
@@ -238,6 +245,16 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
       if (list.origin === 'cited') return
       const overrides = readOverridesFor(list)
       overrides[configId] = label
+      writeOverridesFor(list, overrides)
+    },
+    /** Moves a configuration to the unrated bucket (#15). Where the seed never rated it,
+     * deleting the override restores plain absence; where it did, the sentinel shadows it. */
+    clearTier(configId: string): void {
+      const list = activeList()
+      if (list.origin === 'cited') return
+      const overrides = readOverridesFor(list)
+      if (list.tiers[configId] === undefined) delete overrides[configId]
+      else overrides[configId] = UNRATED_OVERRIDE
       writeOverridesFor(list, overrides)
     },
     /** Resets only the active list; other lists' overrides are untouched. */
@@ -251,7 +268,11 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
     },
     getAll(): Record<string, string> {
       const list = activeList()
-      return { ...list.tiers, ...readOverridesFor(list) }
+      const merged = { ...list.tiers, ...readOverridesFor(list) }
+      for (const [id, label] of Object.entries(merged)) {
+        if (label === UNRATED_OVERRIDE) delete merged[id]
+      }
+      return merged
     },
     /** Only the active list's user edits — what a backup export carries for it. */
     getOverrides(): Record<string, string> {

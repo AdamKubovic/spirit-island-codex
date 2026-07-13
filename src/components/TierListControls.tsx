@@ -38,7 +38,7 @@ function TierListCitation({ list, rated, total }: { list: TierList; rated: numbe
 /**
  * The list picker (#04), its type filter (#09) and its citation panel (#05), shared by the
  * read-only board and the editor so they can never disagree about which list is active.
- * `allowCreate` gates the "new personal list" form, shown only from the editor.
+ * `allowCreate` gates the "new personal list" form, shown on the tier board (#15).
  */
 export function TierListControls({
   totalConfigs,

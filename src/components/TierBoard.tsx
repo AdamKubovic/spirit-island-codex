@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type ReactNode } from 'react'
 import spiritsData from '../data/spirits.json'
 import { collectionStore, filterOwnedConfigurations, isConfigurationOwned } from '../domain/collectionStore'
 import { expand, type Configuration } from '../domain/configurations'
@@ -11,9 +11,40 @@ import { TierListControls } from './TierListControls'
 const spirits = spiritsData as Spirit[]
 const configurations = expand(spirits)
 
+/** Edit-mode controls for one tile (#15): reassign its tier, or send it to Unrated. Rendered
+ * only when the active list is personal — the store refuses cited edits, the UI never offers
+ * them. Note for #17: while edit mode is active it owns tile interaction; the view-mode
+ * click-to-detail behaviour must never fire during editing. */
+function TierTileEdit({
+  config,
+  current,
+  labels,
+  onAssign,
+}: {
+  config: Configuration
+  current: string
+  labels: string[]
+  onAssign: (label: string) => void
+}) {
+  const name = config.aspect ? `${config.spirit.name} — ${config.aspect.name}` : config.spirit.name
+  return (
+    <label className="tier-tile-edit">
+      <span className="visually-hidden">Tier for {name}</span>
+      <select value={current} onChange={(e) => onAssign(e.target.value)}>
+        {labels.map((label) => (
+          <option key={label} value={label}>
+            {label}
+          </option>
+        ))}
+        <option value="">Unrated</option>
+      </select>
+    </label>
+  )
+}
+
 /** v5 #06: a configuration outside the collection stays in its rated tier row - a tier is
  * "how good," not "do you own it," so it's dimmed and badged in place, never regrouped. */
-function TierTile({ config, owned }: { config: Configuration; owned: boolean }) {
+function TierTile({ config, owned, edit }: { config: Configuration; owned: boolean; edit?: ReactNode }) {
   return (
     <figure
       className={owned ? 'tier-tile' : 'tier-tile tier-tile-unowned'}
@@ -31,6 +62,7 @@ function TierTile({ config, owned }: { config: Configuration; owned: boolean }) 
       ) : (
         <figcaption>{config.spirit.name}</figcaption>
       )}
+      {edit}
       {!owned && (
         <span className="unowned-badge" aria-hidden="true">
           ⊘
@@ -41,34 +73,98 @@ function TierTile({ config, owned }: { config: Configuration; owned: boolean }) 
   )
 }
 
-/** Read-only visual tier board. Editing lives in the Customise tab. */
+/** The tier board. Editing is a mode on this board (#15, the dissolution) — available only on
+ * personal-origin lists, persisting through the same override machinery the old editor used. */
 export function TierBoard() {
   const [, setVersion] = useState(0)
   const [hardFilter, setHardFilter] = useState(false)
+  const [editing, setEditing] = useState(false)
   const bump = () => setVersion((v) => v + 1)
   const active = tierStore.getActiveList()
   const customised = tierStore.isCustomised()
   const excluded = new Set(collectionStore.getExcluded())
+  // The store refuses cited edits; the UI must not offer them (#15). `editing` may survive a
+  // list switch, so the affordance is gated on the *current* list's origin, not the toggle.
+  const canEdit = active.origin === 'personal'
+  const editingHere = editing && canEdit
   // Hard-filter (#06's opt-in): excluded exactly as if annotation had removed them first, rather
   // than dimmed in place. Session-only - a view preference, not collection data, so it isn't
   // persisted or exported like the collection itself.
   const visibleConfigurations = hardFilter ? filterOwnedConfigurations(configurations, excluded) : configurations
   const grouped = groupByTier(visibleConfigurations, tierStore.getAll(), active.tierLabels)
 
+  const assign = (configId: string) => (label: string) => {
+    if (label === '') tierStore.clearTier(configId)
+    else tierStore.setTier(configId, label)
+    bump()
+  }
+
+  const editFor = (config: Configuration, current: string) =>
+    editingHere ? (
+      <TierTileEdit config={config} current={current} labels={active.tierLabels} onAssign={assign(config.configId)} />
+    ) : undefined
+
   return (
     <section>
       <h2>Tier list</h2>
-      <TierListControls totalConfigs={configurations.length} onChange={bump} />
+      <TierListControls totalConfigs={configurations.length} allowCreate onChange={bump} />
       <p>
         {customised ? 'Your customised tier list' : 'The shipped tier list'} — <strong>{active.tierLabels[0]}</strong>{' '}
         is strongest, <strong>{active.tierLabels[active.tierLabels.length - 1]}</strong> weakest. This ordering feeds
         the recommender: the <em>raw power ↔ something fresh</em> slider decides how heavily a spirit's tier counts
-        toward its score. Change it in the <strong>Customise tiers</strong> tab.
+        toward its score.{' '}
+        {canEdit ? (
+          <>Toggle <strong>Edit tiers</strong> to reassign spirits right here.</>
+        ) : (
+          <>A cited list can't be edited — switch to a personal list to make changes.</>
+        )}
       </p>
       <label className="deck-field-inline">
         <input type="checkbox" checked={hardFilter} onChange={(e) => setHardFilter(e.target.checked)} />
         Only show spirits I own
       </label>
+      {canEdit && (
+        <label className="deck-field-inline">
+          <input type="checkbox" checked={editing} onChange={(e) => setEditing(e.target.checked)} />
+          Edit tiers
+        </label>
+      )}
+      {tierStore.wasDiscarded() && (
+        <p className="notice">
+          Your saved tier edits were discarded because the shipped tier list has changed since you
+          made them. Export a backup from Settings next time to avoid losing edits like this.{' '}
+          <button
+            type="button"
+            onClick={() => {
+              tierStore.dismissDiscardNotice()
+              bump()
+            }}
+          >
+            Dismiss
+          </button>
+        </p>
+      )}
+      {editingHere && (
+        <p>
+          <button
+            type="button"
+            disabled={!customised}
+            onClick={() => {
+              if (!customised) return
+              const ok = window.confirm(
+                'This discards your tier edits and cannot be undone. Export a backup from Settings first?\n\n' +
+                  'Choose Cancel to go export, or OK to reset anyway.',
+              )
+              if (!ok) return
+              tierStore.reset()
+              bump()
+            }}
+          >
+            Reset to the shipped tier list
+          </button>{' '}
+          {customised ? <span className="meta">You have unsaved-to-repo edits.</span> : null}
+        </p>
+      )}
 
       <div className="tier-board">
         {active.tierLabels.map((label, i) => (
@@ -81,7 +177,12 @@ export function TierBoard() {
                 <p className="tier-empty">No spirits in this tier</p>
               ) : (
                 grouped.labeled[label].map((config) => (
-                  <TierTile key={config.configId} config={config} owned={isConfigurationOwned(config, excluded)} />
+                  <TierTile
+                    key={config.configId}
+                    config={config}
+                    owned={isConfigurationOwned(config, excluded)}
+                    edit={editFor(config, label)}
+                  />
                 ))
               )}
             </div>
@@ -96,7 +197,12 @@ export function TierBoard() {
               configurations here.
             </p>
             {grouped.unrated.map((config) => (
-              <TierTile key={config.configId} config={config} owned={isConfigurationOwned(config, excluded)} />
+              <TierTile
+                key={config.configId}
+                config={config}
+                owned={isConfigurationOwned(config, excluded)}
+                edit={editFor(config, '')}
+              />
             ))}
           </div>
         </div>

@@ -787,6 +787,16 @@ button:disabled {
   width: 116px;
   margin: 0;
 }
+.tier-tile-edit select {
+  width: 100%;
+  margin-top: 0.2rem;
+  background: var(--deck-panel);
+  border: 1px solid var(--deck-line);
+  border-radius: 4px;
+  color: var(--deck-text);
+  padding: 0.2rem;
+  font-size: 11px;
+}
 .tier-tile-art {
   display: block;
   width: 116px;
