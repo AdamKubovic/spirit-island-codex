@@ -70,17 +70,16 @@ future effort.
   badge on grid tiles, a coloured pill on rows, Powers rows gained the expansion column the owner
   asked for. Flagged during the round: variant B (tint) would have been invisible on grid tiles —
   full-bleed card art leaves no surface for a background wash to show through; moot since C won.
-  Tier-board sub-decision carried to fog below, unanswered.
-
-## Not yet specified
-
-<!-- fog: in-scope, but not sharp until an upstream ticket resolves -->
-
-- **Extending expansion colour to the tier board** — the phase-4 #21 open thread also named the tier
-  board. Ticket [05](issues/05-expansion-colour-archive.md) surfaced it as an owner sub-decision but
-  the round closed (owner picked variant C) without an answer — still open, doesn't graduate without
-  an explicit yes. The board already colours tiles by tier position, so a second colour signal may
-  conflict if this is ever picked up.
+  Tier-board sub-decision carried forward to ticket 09.
+- **[09](issues/09-tier-board-expansion-colour.md)** — owner picked variant **A, left-edge stripe**
+  for the tier board, after a three-way round mirroring ticket 05's. Shipped: `TierTile`/`CardTile`
+  border-left stripe, coloured by an aspect's *own* expansion (not its base spirit's — confirmed
+  31/31 aspects diverge from their spirit's expansion, so the spirit's colour would be uniformly
+  stale). Variant B (tint) confirmed invisible here too, same as ticket 05's Archive finding.
+  **⚠ Not a settled decision like ticket 05's — the owner is still weighing A against B (no colour
+  at all) and said so explicitly** ("leaning towards B... I will see after some time how I feel"),
+  after briefly picking C then changing to A. If a future pass finds the tier board too busy, revert
+  this ticket's ship commit (→ B) rather than treating A as locked in.
 
 ## Out of scope
 

@@ -1,6 +1,6 @@
 # 09 — Expansion colour on the tier board
 
-Status: needs-info
+Status: done
 Label: wayfinder:prototype (HITL — owner picks the look)
 Parent: [Legibility-pass map](../MAP.md)
 
@@ -48,7 +48,7 @@ for any aspect in the collection, or note if none currently do.
 - [x] Variant B's grid-tile limitation from ticket 05 is checked against tier tiles, not assumed
 - [x] `cardChipColors.test.ts` and the full suite stay green; no collision between `EXPANSION_COLOR`
       and `tierColor()`'s palette introduced
-- [ ] Owner pick recorded, winner shipped, scaffolding deleted, screenshots kept
+- [x] Owner pick recorded, winner shipped, scaffolding deleted, screenshots kept
 - [x] Legible on dark theme at 375px + desktop
 
 ## Comments
@@ -92,6 +92,23 @@ row without being confused for one another. Full suite (390 tests) + `tsc -b` + 
 
 ### The pick (owner)
 
-Which treatment ships on the tier board — **A** (left-edge stripe), **B** (background tint — note
-it's invisible on every tile, same as the Archive grid finding), or **C** (solid chip, matching the
-Archive)? Any reaction goes here. **This ticket does not self-close — it waits for your pick.**
+**Owner picked A (left-edge stripe), 2026-07-14** — after briefly considering C (the Archive's
+pick), then B (no visible signal at all — deliberately leaving the tier board uncoloured).
+
+**Owner's own words, worth carrying forward rather than losing in a status flip:** "I am also
+leaning towards B, i.e. keeping it invisible — I will see after some time how I feel but for now
+let's go with C" (then changed the pick itself to A immediately after). Read together: the owner is
+not fully settled between *some* colour signal (A) and *no* colour signal on this specific surface
+(B) — unlike the Archive, where C was a clear, confident pick. **This is a live tension to revisit,
+not a closed decision** — if a future pass feels the tier board is too busy or the expansion signal
+adds noise next to the tier-position colour, B (i.e. reverting to no tile-level colour, `git revert`
+this ticket's ship commit) is the documented fallback, not a fresh idea.
+
+**Shipped:** variant A across `TierTile` (border-left stripe, coloured by the aspect's own
+expansion when present, else the base spirit's) and `CardTile` (same treatment, `card.expansion`
+via `expansionColorFor()`). `.tier-tile-art` changed from a fixed 116px/150px width to `width: 100%`
+so the new `border-box` sizing on `.tier-tile` doesn't overflow the tile at either breakpoint.
+Scaffolding deleted: `TierExpansionRound.tsx` removed, the `variant` prop and its threading through
+`TierBoard.tsx` removed, `deck.css`'s throwaway switcher block removed. Shipped screenshots in
+[`../screenshots-09/`](../screenshots-09/) (`SHIPPED-*`). `tsc -b`, `oxlint`, and the full test
+suite (390 tests) all green after the ship.
