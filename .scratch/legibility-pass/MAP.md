@@ -77,6 +77,11 @@ future effort.
   the Archive's solid-chip idiom when checked (variant C). Resolves the A-vs-B tension by not forcing
   either as the only answer. Aspect tiles colour by the aspect's *own* expansion when the toggle is
   on (not the base spirit's — confirmed 31/31 aspects diverge from their spirit's expansion).
+- **[08](issues/08-scenario-expansion-colouring.md)** — mechanical follow-through, no new decision:
+  scenarios join the expansion-colour system (ticket 05's C chip) now that they have the field
+  (ticket 02). Grid tiles' top-left chip sits opposite the existing bottom-left difficulty tab —
+  the two signals coexist without clobbering each other. All 16 scenarios resolve today; the
+  honest-absence guard is in place regardless.
 
 ## Out of scope
 

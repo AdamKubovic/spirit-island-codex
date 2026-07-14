@@ -1,6 +1,6 @@
 # 08 — Scenario expansion colouring
 
-Status: ready-for-agent
+Status: done
 Label: wayfinder:task (AFK — mechanical once both blockers land)
 Parent: [Legibility-pass map](../MAP.md) · [PRD](../PRD.md)
 
@@ -32,9 +32,24 @@ than dropping either).
 
 ## Acceptance criteria
 
-- [ ] Scenario grid + rows show expansion in the treatment #05 shipped, from the one `EXPANSION_COLOR` map
-- [ ] A scenario's expansion colour matches that expansion's colour on Browse tiles / other Archive types byte-for-byte
-- [ ] Scenarios left expansion-absent by #02 show no colour (no default)
-- [ ] Difficulty banding and expansion colour coexist legibly (or the conflict is surfaced, not silently resolved)
-- [ ] `cardChipColors.test.ts` green; test suite / `tsc -b` / `oxlint` green
-- [ ] Legible on dark theme at 375px + desktop
+- [x] Scenario grid + rows show expansion in the treatment #05 shipped, from the one `EXPANSION_COLOR` map
+- [x] A scenario's expansion colour matches that expansion's colour on Browse tiles / other Archive types byte-for-byte
+- [x] Scenarios left expansion-absent by #02 show no colour (no default) — moot today (all 16 resolve), the guard is still in place
+- [x] Difficulty banding and expansion colour coexist legibly (or the conflict is surfaced, not silently resolved)
+- [x] `cardChipColors.test.ts` green; test suite / `tsc -b` / `oxlint` green
+- [x] Legible on dark theme at 375px + desktop
+
+## Comments
+
+**Shipped (2026-07-14).** `ScenarioGrid` gained a top-left `expansion-chip-corner` (the same chip
+CardGrid/AdversaryGrid use), sitting opposite the existing bottom-left difficulty tab — the two
+signals don't overlap or compete (`.scenario-difficulty` is `bottom: 0; left: 0`,
+`.expansion-chip-corner` is `top: 0.3rem; left: 0.3rem`). `ScenarioRows` gained the same
+`card-row-expansion`/`expansion-chip` pill `OtherCardRows`/`AdversaryRows` already show, replacing
+its stale "scenarios carry no expansion field at all" comment (true before ticket 02, not since).
+Colour comes from `expansionColorFor()` — the same function and `EXPANSION_COLOR` map every other
+surface uses, so no separate palette. All 16 scenarios' raw expansion strings resolve today (ticket
+02's "0 left absent" holds); the honest-absence guard renders no chip if that ever changes, rather
+than guessing. Screenshots at 375px + 1280px, grid + rows, in
+[`../screenshots-08/`](../screenshots-08/). `tsc -b`, `oxlint`, and the full test suite (390 tests)
+green.
