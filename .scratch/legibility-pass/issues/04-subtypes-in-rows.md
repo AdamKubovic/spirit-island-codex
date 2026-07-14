@@ -1,6 +1,6 @@
 # 04 — Subtypes in the Archive rows view
 
-Status: needs-info
+Status: done
 Label: wayfinder:prototype (HITL — owner picks the look)
 Parent: [Legibility-pass map](../MAP.md)
 
@@ -37,7 +37,7 @@ Notes:
 - [x] Blight's uniform "blight" kind label is replaced by its subtype tags
 - [x] A new subtype palette lives in `tagColors.ts`, pinned distinct by `cardChipColors.test.ts`
 - [x] Multi-tag and zero-tag cases render cleanly
-- [ ] `?variant=` round run, owner pick recorded, scaffolding deleted, screenshots kept
+- [x] `?variant=` round run, owner pick recorded, scaffolding deleted, screenshots kept
 - [x] Legible on dark theme at 375px + desktop; test suite green
 
 ## Comments
@@ -69,5 +69,12 @@ Screenshots (baseline + A/B/C, Blight/Fear/Events segments, at 375px + 1280px) i
 
 ## The pick (owner)
 
-Which treatment ships — **A** (filled pill), **B** (tinted text), or **C** (outlined tag)? Any
-reaction goes here. **This ticket does not self-close — it waits for your pick.**
+**Owner picked A (filled pill), 2026-07-14.**
+
+**Shipped:** variant A across `OtherCardRows` — every fear/blight/event subtype chip is a solid
+pill, colour from `SUBTYPE_COLOR`. Scaffolding removed: `SubtypeVariantRound.tsx` deleted, the
+`variant` prop and its threading through `CardsTab.tsx` removed, `deck.css`'s throwaway switcher +
+B/C treatment rules removed — `.subtype-chip` is now the winning fill treatment's rule directly
+(no `-fill` suffix), matching how ticket 05 promoted its winning chip class on ship. Shipped
+screenshots in [`../screenshots-04/`](../screenshots-04/) (`SHIPPED-*`). `tsc -b`, `oxlint`, and the
+full test suite (392 tests) all green after the ship.

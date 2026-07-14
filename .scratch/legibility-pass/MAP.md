@@ -82,6 +82,12 @@ future effort.
   (ticket 02). Grid tiles' top-left chip sits opposite the existing bottom-left difficulty tab —
   the two signals coexist without clobbering each other. All 16 scenarios resolve today; the
   honest-absence guard is in place regardless.
+- **[04](issues/04-subtypes-in-rows.md)** — fear/blight/event subtypes surfaced in the Archive rows
+  view (previously data used only as filters). New `SUBTYPE_COLOR`/`subtypeLabel` in `tagColors.ts`
+  (14 values, pinned distinct). Blight's uniform "blight" kind label — no information, every blight
+  card had it — is replaced outright by its subtype tags, the owner's specific ask; a one-time
+  row-level note carries the judgment provenance instead of repeating it per chip. Owner picked
+  variant **A, filled pill** after a three-way round (pill / tinted text / outlined tag).
 
 ## Out of scope
 

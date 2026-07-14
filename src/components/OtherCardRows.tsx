@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import type { BlightTag, EventClass, FearTag, OtherCard } from '../domain/types'
 import { CardViewer } from './CardViewer'
-import { subtypeChipProps, type SubtypeVariant } from './SubtypeVariantRound'
 import { expansionColorFor, SUBTYPE_COLOR, subtypeLabel } from './tagColors'
 
 /** legibility-pass #04: the subtype tags/class each card kind carries — fear/blight are 0..n
@@ -12,25 +11,18 @@ function subtypesFor(card: OtherCard): (FearTag | BlightTag | EventClass)[] {
   return card.tags
 }
 
-function SubtypeChips({ tags, variant }: { tags: (FearTag | BlightTag | EventClass)[]; variant?: SubtypeVariant }) {
+/** Owner picked variant A (filled pill, the `CardRows` kind/speed idiom) after a three-way round. */
+function SubtypeChips({ tags }: { tags: (FearTag | BlightTag | EventClass)[] }) {
   if (tags.length === 0) {
     return <span className="card-row-subtype-empty">Unclassified</span>
   }
-  // ROUND 04 scaffolding: no variant param = plain text, same "mechanical part ships, treatment
-  // is gated" split ticket 05 used for its expansion column (see SubtypeVariantRound.tsx).
-  if (!variant) {
-    return <span className="card-row-subtype-plain">{tags.map(subtypeLabel).join(', ')}</span>
-  }
   return (
     <span className="card-row-subtypes">
-      {tags.map((tag) => {
-        const { className, style } = subtypeChipProps(variant, SUBTYPE_COLOR[tag])
-        return (
-          <span key={tag} className={className} style={style}>
-            {subtypeLabel(tag)}
-          </span>
-        )
-      })}
+      {tags.map((tag) => (
+        <span key={tag} className="subtype-chip" style={{ background: SUBTYPE_COLOR[tag] }}>
+          {subtypeLabel(tag)}
+        </span>
+      ))}
     </span>
   )
 }
@@ -43,7 +35,7 @@ function SubtypeChips({ tags, variant }: { tags: (FearTag | BlightTag | EventCla
  * label was uniform across every blight card (no information) and is replaced outright by its
  * subtype tags — the owner's specific ask. Blight's tags are `tagsSource: 'judgment'`
  * (types.ts) — the row-level note below carries that provenance once, not per chip. */
-export function OtherCardRows({ cards, variant }: { cards: OtherCard[]; variant?: SubtypeVariant }) {
+export function OtherCardRows({ cards }: { cards: OtherCard[] }) {
   const [enlarged, setEnlarged] = useState<{ src: string; alt: string } | null>(null)
   const base = import.meta.env.BASE_URL
 
@@ -60,7 +52,7 @@ export function OtherCardRows({ cards, variant }: { cards: OtherCard[]; variant?
                 </span>
               )}
               <span className="card-row-name">{card.name}</span>
-              <SubtypeChips tags={subtypesFor(card)} variant={variant} />
+              <SubtypeChips tags={subtypesFor(card)} />
               {card.kind === 'blight' && <span className="card-row-subtype-note meta">judgment</span>}
               <span
                 className={color ? 'card-row-expansion expansion-chip' : 'card-row-expansion'}
