@@ -40,12 +40,6 @@ describe('Archive artwork', () => {
     }
   })
 
-  it('has no expansion field on any scenario record (#05b: the manifest cannot source one)', () => {
-    for (const scenario of SCENARIOS) {
-      expect(scenario).not.toHaveProperty('expansion')
-    }
-  })
-
   it('names Varied Terrains as the scenario with no back in the manifest (front-only tile per #04, so this has no rendering effect)', () => {
     expect(SCENARIOS.map((s) => s.name)).toContain('Varied Terrains')
   })

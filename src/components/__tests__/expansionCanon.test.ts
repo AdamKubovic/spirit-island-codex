@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import adversariesData from '../../data/adversaries.json'
 import otherCardsData from '../../data/other-cards.json'
 import powerCardsData from '../../data/power-cards.json'
+import scenariosData from '../../data/scenarios.json'
 import spiritsData from '../../data/spirits.json'
 import type { ExpansionName } from '../../domain/types'
 import { EXPANSION_COLOR, normalizeExpansion } from '../tagColors'
@@ -61,12 +62,24 @@ describe('expansion canon', () => {
     }
   })
 
+  it('resolves every scenario expansion string to its known canonical value', () => {
+    const seen = rawExpansionMapping((scenariosData.scenarios as { expansion: string }[]).map((s) => s.expansion))
+    expect(seen).toEqual({
+      'Base Game': 'Base',
+      'Branch and Claw': 'Branch & Claw',
+      'Jagged Earth': 'Jagged Earth',
+      'Nature Incarnate': 'Nature Incarnate',
+      'Promo Pack 2': 'Feather & Flame',
+    })
+  })
+
   it('every value normalizeExpansion can produce is a known EXPANSION_COLOR key', () => {
     const allRaw = [
       ...(otherCardsData as { expansion: string }[]).map((c) => c.expansion),
       ...(powerCardsData as { expansion: string }[]).map((c) => c.expansion),
       ...(adversariesData.adversaries as { expansion: string }[]).map((a) => a.expansion),
       ...(spiritsData as { expansion: string }[]).map((s) => s.expansion),
+      ...(scenariosData.scenarios as { expansion: string }[]).map((s) => s.expansion),
     ]
     const unresolved = allRaw.filter((raw) => {
       const canonical = normalizeExpansion(raw)

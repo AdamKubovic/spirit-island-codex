@@ -1,84 +1,100 @@
 {
-  "_note": "Derived from images/manifest.json's scenario_front rows (v5 #05b). No expansion field: the manifest does not carry one and no other source in this repo knows what a scenario is. One scenario, Varied Terrains, has no scenario_back in the manifest - the tile only ever shows the front (#04), so that absence has no effect here. Difficulty added by phase-4 #20: transcribed verbatim from the Spirit Island Wiki, 2026-07-13 — the List_of_Scenarios page cross-checked against each ambiguous scenario's own page (Second Wave, Powers Long Forgotten, Elemental Invocation, Destiny Unfolds, Surges of Colonization). Qualified values (1*, -1*, +/- 1) are kept verbatim, not collapsed to numbers. The wiki prints one +2/+7 for Surges of Colonization; the two rows here split it normal/larger per that page's LARGER SURGES (HIGHER DIFFICULTY) rules text. Fetch trail in .scratch/phase-4/issues/20-scenario-difficulty.md.",
+  "_note": "Derived from images/manifest.json's scenario_front rows (v5 #05b). One scenario, Varied Terrains, has no scenario_back in the manifest - the tile only ever shows the front (#04), so that absence has no effect here. Difficulty added by phase-4 #20: transcribed verbatim from the Spirit Island Wiki, 2026-07-13 \u2014 the List_of_Scenarios page cross-checked against each ambiguous scenario's own page (Second Wave, Powers Long Forgotten, Elemental Invocation, Destiny Unfolds, Surges of Colonization). Qualified values (1*, -1*, +/- 1) are kept verbatim, not collapsed to numbers. The wiki prints one +2/+7 for Surges of Colonization; the two rows here split it normal/larger per that page's LARGER SURGES (HIGHER DIFFICULTY) rules text. Fetch trail in .scratch/phase-4/issues/20-scenario-difficulty.md. Expansion added by legibility-pass #02: the raw string transcribed verbatim from each scenario's own Spirit Island Wiki page (its 'Part of the ___ Expansion' / 'Part of the Base Game' line) \u2014 same convention as other-cards/power-cards/adversaries, resolved through normalizeExpansion()'s EXPANSION_ALIASES rather than pre-collapsed here. A Diversity of Spirits and Varied Terrains print 'Part of Promo Pack 2' on their own pages but are category-tagged Feather and Flame (the retail box that later absorbed that promo content); 'Promo Pack 2' resolves to Feather & Flame per the owner's legibility-pass #01 call (Promo2/Promo Pack 2 always resolves to Feather & Flame). Fetch trail in .scratch/legibility-pass/scenario-expansions-research.md.",
   "scenarios": [
     {
       "name": "A Diversity of Spirits",
       "difficulty": "0",
+      "expansion": "Promo Pack 2",
       "image": "scenarios/a-diversity-of-spirits.webp"
     },
     {
       "name": "Blitz",
       "difficulty": "0",
+      "expansion": "Base Game",
       "image": "scenarios/blitz.webp"
     },
     {
       "name": "Dahan Insurrection",
       "difficulty": "4",
+      "expansion": "Base Game",
       "image": "scenarios/dahan-insurrection.webp"
     },
     {
       "name": "Despicable Theft",
       "difficulty": "2",
+      "expansion": "Jagged Earth",
       "image": "scenarios/despicable-theft.webp"
     },
     {
       "name": "Destiny Unfolds",
       "difficulty": "-1*",
+      "expansion": "Nature Incarnate",
       "image": "scenarios/destiny-unfolds.webp"
     },
     {
       "name": "Elemental Invocation",
       "difficulty": "1*",
+      "expansion": "Jagged Earth",
       "image": "scenarios/elemental-invocation.webp"
     },
     {
       "name": "Guard the Isle's Heart",
       "difficulty": "0",
+      "expansion": "Base Game",
       "image": "scenarios/guard-the-isle-s-heart.webp"
     },
     {
       "name": "Powers Long Forgotten",
       "difficulty": "1*",
+      "expansion": "Branch and Claw",
       "image": "scenarios/powers-long-forgotten.webp"
     },
     {
       "name": "Rituals of Terror",
       "difficulty": "3",
+      "expansion": "Base Game",
       "image": "scenarios/rituals-of-terror.webp"
     },
     {
       "name": "Rituals of the Destroying Flame",
       "difficulty": "3",
+      "expansion": "Branch and Claw",
       "image": "scenarios/rituals-of-the-destroying-flame.webp"
     },
     {
       "name": "Second Wave",
       "difficulty": "+/- 1",
+      "expansion": "Branch and Claw",
       "image": "scenarios/second-wave.webp"
     },
     {
       "name": "Surges of Colonization (Larger Surges)",
       "difficulty": "+7",
+      "expansion": "Nature Incarnate",
       "image": "scenarios/surges-of-colonization-larger-surges.webp"
     },
     {
       "name": "Surges of Colonization (Normal Surges)",
       "difficulty": "+2",
+      "expansion": "Nature Incarnate",
       "image": "scenarios/surges-of-colonization-normal-surges.webp"
     },
     {
       "name": "The Great River",
       "difficulty": "3",
+      "expansion": "Jagged Earth",
       "image": "scenarios/the-great-river.webp"
     },
     {
       "name": "Varied Terrains",
       "difficulty": "2",
+      "expansion": "Promo Pack 2",
       "image": "scenarios/varied-terrains.webp"
     },
     {
       "name": "Ward the Shores",
       "difficulty": "2",
+      "expansion": "Branch and Claw",
       "image": "scenarios/ward-the-shores.webp"
     }
   ]

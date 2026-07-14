@@ -53,10 +53,16 @@ const EXPANSION_ALIASES: Record<string, ExpansionName> = {
   // Every canonical name is already its own alias (`spirits.json` uses these verbatim).
   ...Object.fromEntries(EXPANSIONS.map((name) => [name, name])),
   Basegame: 'Base',
+  'Base Game': 'Base',
   'Branch and Claw': 'Branch & Claw',
   'Horizons of Spirit Island': 'Horizons',
   Promo2: 'Feather & Flame',
   'Promo Pack 2 / Feather and Flame': 'Feather & Flame',
+  // legibility-pass #02: scenarios.json transcribes the wiki's own "Part of Promo Pack 2" line
+  // verbatim. Same shape as the Promo2 case above, not a fresh ambiguity — the wiki category-tags
+  // Promo Pack 2 content as Feather and Flame (the retail box that absorbed it), matching the
+  // adversary record's own pairing. Carries forward the #01 owner call rather than re-escalating.
+  'Promo Pack 2': 'Feather & Flame',
 }
 
 /** Absent means the raw string isn't in `EXPANSION_ALIASES` — never a guessed fallback. */

@@ -29,9 +29,43 @@ const CANONICAL_DIFFICULTIES: Record<string, string> = {
   'Ward the Shores': '2',
 }
 
+/**
+ * legibility-pass #02: pins every scenario's expansion against the Spirit Island Wiki (each
+ * scenario's own page states "Part of the ___ Expansion" / "Part of the Base Game"; fetch trail
+ * in `.scratch/legibility-pass/scenario-expansions-research.md`). Kept as the raw wiki string, not
+ * the canonical `ExpansionName` — same convention as `difficulty` above and as the other card
+ * datasets; `expansionCanon.test.ts` is the tripwire that these raw strings resolve correctly via
+ * `normalizeExpansion()`. A Diversity of Spirits and Varied Terrains print "Part of Promo Pack 2"
+ * on their own pages but are category-tagged Feather and Flame; `normalizeExpansion` resolves
+ * `Promo Pack 2` to `Feather & Flame` per the owner's legibility-pass #01 call (Promo2/Promo Pack 2
+ * always resolves to Feather & Flame).
+ */
+const CANONICAL_EXPANSIONS: Record<string, string> = {
+  'A Diversity of Spirits': 'Promo Pack 2',
+  Blitz: 'Base Game',
+  'Dahan Insurrection': 'Base Game',
+  'Despicable Theft': 'Jagged Earth',
+  'Destiny Unfolds': 'Nature Incarnate',
+  'Elemental Invocation': 'Jagged Earth',
+  "Guard the Isle's Heart": 'Base Game',
+  'Powers Long Forgotten': 'Branch and Claw',
+  'Rituals of Terror': 'Base Game',
+  'Rituals of the Destroying Flame': 'Branch and Claw',
+  'Second Wave': 'Branch and Claw',
+  'Surges of Colonization (Larger Surges)': 'Nature Incarnate',
+  'Surges of Colonization (Normal Surges)': 'Nature Incarnate',
+  'The Great River': 'Jagged Earth',
+  'Varied Terrains': 'Promo Pack 2',
+  'Ward the Shores': 'Branch and Claw',
+}
+
 describe('scenario canon', () => {
   it('pins every scenario difficulty to the wiki-sourced value', () => {
     expect(Object.fromEntries(SCENARIOS.map((s) => [s.name, s.difficulty]))).toEqual(CANONICAL_DIFFICULTIES)
+  })
+
+  it('pins every scenario expansion to the wiki-sourced value', () => {
+    expect(Object.fromEntries(SCENARIOS.map((s) => [s.name, s.expansion]))).toEqual(CANONICAL_EXPANSIONS)
   })
 
   it('covers exactly the 16 shipped scenarios — a new scenario cannot ship without a sourced difficulty', () => {

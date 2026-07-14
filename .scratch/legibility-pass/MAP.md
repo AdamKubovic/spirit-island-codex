@@ -56,6 +56,10 @@ future effort.
   expansion string to the canonical set, tripwire-tested. `Promo2` was ambiguous in the data itself
   (Downpour Drenches the World: `Promo` spirit, all-`Promo2` power cards) and got escalated rather
   than guessed — owner call: `Promo2` always → `Feather & Flame`.
+- **[02](issues/02-source-scenario-expansions.md)** — all 16 scenario rows sourced from canon (each
+  scenario's own wiki page), 0 left absent; `scenarios.json` gained `expansion`, pinned by
+  `scenarioCanon.test.ts`. *A Diversity of Spirits* / *Varied Terrains* hit the same Promo Pack 2 vs
+  Feather & Flame shape ticket 01 already settled — carried forward, not re-escalated.
 
 ## Not yet specified
 
