@@ -12,6 +12,7 @@ import { AdversaryRows } from './AdversaryRows'
 import { CardFilters } from './CardFilters'
 import { CardGrid } from './CardGrid'
 import { CardRows } from './CardRows'
+import { ExpansionVariantSwitcher, readExpansionVariant } from './ExpansionColorRound'
 import { OtherCardFilters } from './OtherCardFilters'
 import { OtherCardRows } from './OtherCardRows'
 import { ScenarioGrid } from './ScenarioGrid'
@@ -59,6 +60,9 @@ export function CardsTab() {
   const [powerGroup, setPowerGroup] = useState<PowerGroup>('none')
   const [otherFilter, setOtherFilter] = useState<OtherCardFilterState>(EMPTY_OTHER_CARD_FILTER)
   const [adversaryExpansion, setAdversaryExpansion] = useState<string>('')
+  // ROUND 05 scaffolding — delete this state + readExpansionVariant/ExpansionVariantSwitcher and
+  // every `variant={expansionVariant}` prop below on ship (see ExpansionColorRound.tsx).
+  const [expansionVariant, setExpansionVariant] = useState(readExpansionVariant)
 
   // phase-4 #19: the Powers pipeline is filter → sort → group; the locked call keeps every other
   // segment's ordering untouched (their data can't support more).
@@ -167,9 +171,9 @@ export function CardsTab() {
       </p>
       {segment === 'Adversaries' ? (
         view === 'grid' ? (
-          <AdversaryGrid adversaries={shownAdversaries} />
+          <AdversaryGrid adversaries={shownAdversaries} variant={expansionVariant ?? undefined} />
         ) : (
-          <AdversaryRows adversaries={shownAdversaries} />
+          <AdversaryRows adversaries={shownAdversaries} variant={expansionVariant ?? undefined} />
         )
       ) : segment === 'Scenarios' ? (
         view === 'grid' ? (
@@ -181,16 +185,21 @@ export function CardsTab() {
         powerGroups.map((group) => (
           <section key={group.label} className="card-group">
             <h3>{group.label}</h3>
-            {view === 'grid' ? <CardGrid cards={group.cards} /> : <CardRows cards={group.cards} />}
+            {view === 'grid' ? (
+              <CardGrid cards={group.cards} variant={expansionVariant ?? undefined} />
+            ) : (
+              <CardRows cards={group.cards} variant={expansionVariant ?? undefined} />
+            )}
           </section>
         ))
       ) : view === 'grid' ? (
-        <CardGrid cards={shownCards} />
+        <CardGrid cards={shownCards} variant={expansionVariant ?? undefined} />
       ) : segment === 'Powers' ? (
-        <CardRows cards={shownPowerCards} />
+        <CardRows cards={shownPowerCards} variant={expansionVariant ?? undefined} />
       ) : (
-        <OtherCardRows cards={shownOtherCards} />
+        <OtherCardRows cards={shownOtherCards} variant={expansionVariant ?? undefined} />
       )}
+      {expansionVariant && <ExpansionVariantSwitcher current={expansionVariant} onPick={setExpansionVariant} />}
     </section>
   )
 }

@@ -1,6 +1,6 @@
 # 05 — Expansion colour across the Archive surfaces
 
-Status: ready-for-human
+Status: needs-info
 Label: wayfinder:prototype (HITL — owner picks the look)
 Parent: [Legibility-pass map](../MAP.md)
 
@@ -39,11 +39,57 @@ treatment).
 
 ## Acceptance criteria
 
-- [ ] Expansion renders in the chosen treatment across all Archive grid views + rows views
-- [ ] Powers rows gain a coloured expansion column
-- [ ] Colour comes from the one `EXPANSION_COLOR` map (via ticket 01's normalisation) — no surface
+- [x] Expansion renders in the chosen treatment across all Archive grid views + rows views
+- [x] Powers rows gain a coloured expansion column
+- [x] Colour comes from the one `EXPANSION_COLOR` map (via ticket 01's normalisation) — no surface
       carries its own copy; an expansion matches its Browse-tile colour byte-for-byte
-- [ ] `cardChipColors.test.ts` still green (no new collisions introduced)
+- [x] `cardChipColors.test.ts` still green (no new collisions introduced)
 - [ ] Tier-board extension either shipped (owner said yes) or recorded as declined
-- [ ] `?variant=` round run, owner pick recorded, scaffolding deleted, screenshots kept
-- [ ] Legible on dark theme at 375px + desktop; test suite green
+- [x] `?variant=` round run, owner pick recorded, scaffolding deleted, screenshots kept
+- [x] Legible on dark theme at 375px + desktop; test suite green
+
+## Comments
+
+**Round live (2026-07-14) — OWNER PICK NEEDED, question at the end.**
+
+Three treatments on the real Archive (Powers/Fear/Events/Blight `CardGrid`, `AdversaryGrid`,
+`CardRows`, `OtherCardRows`, `AdversaryRows`), gated on **`?expansionColor=A|B|C`** (the panel-theming #02
+pattern: namespaced param, floating switcher, production build). Without the param the app is
+byte-identical, **except** Powers rows now always show an expansion column (plain text, no colour)
+— that column is the "rollout" half of this ticket and ships regardless of which letter wins;
+only the `variant` prop and its styling are scaffolding (`ExpansionColorRound.tsx`, see its header
+comment for the exact delete list). Colour always comes from the one `EXPANSION_COLOR` map via the
+new `expansionColorFor()` helper (`tagColors.ts`) — a card whose raw expansion string doesn't
+normalize renders with no colour in every variant (honest absence, never a guessed fallback).
+
+- **A — left-edge stripe:** the `SpiritTile` idiom carried onto grid tiles and rows (`border-left`,
+  4px, solid).
+- **B — background tint:** a low-opacity wash (`${color}33`, ~20% alpha) across the tile/row
+  surface.
+- **C — solid chip:** the `SpiritTile` chip idiom — a small corner badge on grid tiles, a solid
+  pill replacing the plain-text expansion column on rows.
+
+Screenshots (baseline + A/B/C, Powers rows + grid, Adversaries rows, at 375px + 1280px) in
+[`../screenshots-05/`](../screenshots-05/).
+
+**Flagged, not solved — reactions to carry into the ship step:**
+
+1. **Variant B is invisible on grid tiles.** Card art is full-bleed (`img` at 100% width/height)
+   with no visible tile background behind it, so the tint never renders on `CardGrid`/
+   `AdversaryGrid` (compare `B-grid-375.png` — no colour signal at all — against `A-grid-375.png`
+   or `C-grid-375.png`, both clearly coloured). B still reads fine on rows views, where card art
+   isn't full-bleed (`B-adversary-rows-375.png`). **If B wins, grid tiles need their own answer**
+   (e.g. a border or corner mark) — B as specified can't ship on grids as-is.
+2. **The tier-board sub-decision (map fog) is unaddressed by this round** — the round only covers
+   Archive grid/rows per the ticket's core question; extending expansion colour to the tier board
+   is a separate yes/no the owner can answer independently of the A/B/C pick.
+
+---
+
+### The pick (owner)
+
+Which treatment ships across the Archive — **A** (left-edge stripe), **B** (background tint —
+note it needs a grid-tile answer if picked), or **C** (solid chip)? And separately: should
+expansion colour also extend to the tier board (map fog item), or stay out of scope? Any reaction
+("A but thinner", "C but smaller on grid") goes here. **This ticket does not self-close — it waits
+for your pick.**

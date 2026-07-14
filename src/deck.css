@@ -1406,6 +1406,63 @@ button:disabled {
   text-align: center;
 }
 
+/* ROUND 05 (legibility-pass) — THROWAWAY, delete this block on ship along with
+ * ExpansionColorRound.tsx and the variant props it gates (see that file's header comment).
+ * Variant A (stripe) and B (tint) are applied entirely via inline style from
+ * `expansionVariantStyle()`; only C (chip) and the switcher itself need dedicated rules here. */
+.card-grid-tile-variant-C {
+  position: relative;
+}
+.expansion-chip {
+  color: #fff;
+  font-weight: 700;
+}
+.expansion-chip-corner {
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+  font-size: 9px;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  max-width: calc(100% - 0.6rem);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.card-row-expansion.expansion-chip {
+  border-radius: 999px;
+  padding: 0.15rem 0.5rem;
+  font-size: 10px;
+}
+.variant-switcher {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(10, 13, 16, 0.92);
+  border: 1px solid var(--deck-line);
+  border-radius: 999px;
+}
+.variant-switcher-tag {
+  font: 700 10px/1 var(--deck-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--deck-dim);
+}
+.variant-switcher-buttons {
+  display: flex;
+  gap: 0.3rem;
+}
+.variant-switcher-buttons button[data-active='true'] {
+  border-color: var(--deck-accent);
+  color: var(--deck-accent);
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

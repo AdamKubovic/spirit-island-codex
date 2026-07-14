@@ -70,6 +70,13 @@ export function normalizeExpansion(raw: string): ExpansionName | undefined {
   return EXPANSION_ALIASES[raw]
 }
 
+/** legibility-pass #05: the one place raw expansion strings become a colour. Undefined for a raw
+ * string `normalizeExpansion` can't place — honest absence, never a guessed fallback colour. */
+export function expansionColorFor(raw: string): string | undefined {
+  const canonical = normalizeExpansion(raw)
+  return canonical ? EXPANSION_COLOR[canonical] : undefined
+}
+
 /** Dot-meter position (●●○○) - ordinal, not a colour. */
 export const COMPLEXITY_LEVEL: Record<Complexity, number> = { Low: 1, Moderate: 2, High: 3, 'Very High': 4 }
 

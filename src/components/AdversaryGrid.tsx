@@ -1,12 +1,21 @@
 import { useState } from 'react'
 import type { Adversary } from '../domain/adversaries'
 import { adversaryImage } from '../domain/adversaries'
+import { expansionVariantStyle, type ExpansionVariant } from './ExpansionColorRound'
 import { CardViewer } from './CardViewer'
+import { expansionColorFor } from './tagColors'
 
 /** v5 #05a: the Adversaries segment's grid tile — panel art plus its level range, the "image +
  * data" answer #04 grilled out. Adversaries is deliberately the one segment whose tile isn't a
  * bare image: the data already exists (adversaries.json, canon-tested) and is cheap to show. */
-export function AdversaryGrid({ adversaries }: { adversaries: Adversary[] }) {
+export function AdversaryGrid({
+  adversaries,
+  variant,
+}: {
+  adversaries: Adversary[]
+  /** ROUND 05 scaffolding — delete this prop and its uses on ship (see ExpansionColorRound.tsx). */
+  variant?: ExpansionVariant
+}) {
   const [enlarged, setEnlarged] = useState<{ src: string; alt: string } | null>(null)
   const base = import.meta.env.BASE_URL
 
@@ -14,14 +23,21 @@ export function AdversaryGrid({ adversaries }: { adversaries: Adversary[] }) {
     <div className="card-grid">
       {adversaries.map((adversary) => {
         const src = `${base}${adversaryImage(adversary.name)}`
+        const color = expansionColorFor(adversary.expansion)
         return (
           <button
             key={adversary.name}
             type="button"
-            className="card-grid-tile adversary-tile"
+            className={variant ? `card-grid-tile adversary-tile card-grid-tile-variant-${variant}` : 'card-grid-tile adversary-tile'}
+            style={expansionVariantStyle(variant, color)}
             onClick={() => setEnlarged({ src, alt: adversary.name })}
           >
             <img src={src} alt={adversary.name} loading="lazy" decoding="async" />
+            {color && variant === 'C' && (
+              <span className="expansion-chip expansion-chip-corner" style={{ background: color }}>
+                {adversary.expansion}
+              </span>
+            )}
             <span className="adversary-tile-level">
               Lv {adversary.minLevel}–{adversary.maxLevel}
             </span>

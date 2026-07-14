@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import type { Element, PowerCard } from '../domain/types'
+import { expansionVariantStyle, type ExpansionVariant } from './ExpansionColorRound'
 import { CardViewer } from './CardViewer'
-import { CARD_KIND_COLOR, CARD_SPEED_COLOR } from './tagColors'
+import { CARD_KIND_COLOR, CARD_SPEED_COLOR, expansionColorFor } from './tagColors'
 
 const ELEMENT_ICON: Record<Element, string> = {
   Sun: 'sun',
@@ -16,35 +17,54 @@ const ELEMENT_ICON: Record<Element, string> = {
 
 /** Compact-rows view of the Cards tab (v4 #04 variant B) — scans fast at 375px. Tap opens the
  * same CardViewer the grid uses. Real in-game element icons, not emoji (owner's request after
- * judging the prototype). */
-export function CardRows({ cards }: { cards: PowerCard[] }) {
+ * judging the prototype).
+ *
+ * legibility-pass #05: gained an expansion column — Powers rows were the one rows view without
+ * one (OtherCardRows/AdversaryRows already showed it as plain text). This column survives the
+ * `?expansionColor=` round regardless of which treatment wins; only the `variant` prop and its styling
+ * are scaffolding (see ExpansionColorRound.tsx). */
+export function CardRows({ cards, variant }: { cards: PowerCard[]; variant?: ExpansionVariant }) {
   const [enlarged, setEnlarged] = useState<{ src: string; alt: string } | null>(null)
   const base = import.meta.env.BASE_URL
 
   return (
     <ul className="card-rows">
-      {cards.map((card) => (
-        <li key={card.name}>
-          <button type="button" className="card-row" onClick={() => setEnlarged({ src: `${base}${card.image}`, alt: card.name })}>
-            <span className="card-row-type card-row-pill" style={{ background: CARD_KIND_COLOR[card.kind] }}>
-              {card.kind}
-            </span>
-            <span className="card-row-name">
-              {card.name}
-              {card.kind === 'unique' && <span className="card-row-spirit"> — {card.spiritName}</span>}
-            </span>
-            <span className="card-row-elements">
-              {card.elements.map((e, i) => (
-                <img key={`${e}-${i}`} src={`${base}elements/${ELEMENT_ICON[e]}.webp`} alt={e} className="card-row-element-icon" />
-              ))}
-            </span>
-            <span className="card-row-cost">{card.cost}</span>
-            <span className="card-row-speed card-row-pill" style={{ background: CARD_SPEED_COLOR[card.speed] }}>
-              {card.speed}
-            </span>
-          </button>
-        </li>
-      ))}
+      {cards.map((card) => {
+        const color = expansionColorFor(card.expansion)
+        return (
+          <li key={card.name}>
+            <button
+              type="button"
+              className="card-row"
+              style={expansionVariantStyle(variant, color)}
+              onClick={() => setEnlarged({ src: `${base}${card.image}`, alt: card.name })}
+            >
+              <span className="card-row-type card-row-pill" style={{ background: CARD_KIND_COLOR[card.kind] }}>
+                {card.kind}
+              </span>
+              <span className="card-row-name">
+                {card.name}
+                {card.kind === 'unique' && <span className="card-row-spirit"> — {card.spiritName}</span>}
+              </span>
+              <span className="card-row-elements">
+                {card.elements.map((e, i) => (
+                  <img key={`${e}-${i}`} src={`${base}elements/${ELEMENT_ICON[e]}.webp`} alt={e} className="card-row-element-icon" />
+                ))}
+              </span>
+              <span className="card-row-cost">{card.cost}</span>
+              <span className="card-row-speed card-row-pill" style={{ background: CARD_SPEED_COLOR[card.speed] }}>
+                {card.speed}
+              </span>
+              <span
+                className={color && variant === 'C' ? 'card-row-expansion expansion-chip' : 'card-row-expansion'}
+                style={color && variant === 'C' ? { background: color } : undefined}
+              >
+                {card.expansion}
+              </span>
+            </button>
+          </li>
+        )
+      })}
       {enlarged && <CardViewer src={enlarged.src} alt={enlarged.alt} onClose={() => setEnlarged(null)} />}
     </ul>
   )
