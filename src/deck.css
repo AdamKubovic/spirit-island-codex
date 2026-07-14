@@ -1433,6 +1433,40 @@ button:disabled {
   font-size: 10px;
 }
 
+/* ROUND 09 (legibility-pass) — THROWAWAY, delete this block on ship along with
+ * TierExpansionRound.tsx and the variant props it gates (see that file's header comment). Variant
+ * A (stripe) and B (tint) are applied entirely via inline style from
+ * `tierExpansionVariantStyle()`; variant C reuses `.expansion-chip`/`.expansion-chip-corner`
+ * above (already permanent, from ticket 05's ship) — only the switcher needs a rule here. */
+.variant-switcher {
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 300;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(10, 13, 16, 0.92);
+  border: 1px solid var(--deck-line);
+  border-radius: 999px;
+}
+.variant-switcher-tag {
+  font: 700 10px/1 var(--deck-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--deck-dim);
+}
+.variant-switcher-buttons {
+  display: flex;
+  gap: 0.3rem;
+}
+.variant-switcher-buttons button[data-active='true'] {
+  border-color: var(--deck-accent);
+  color: var(--deck-accent);
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

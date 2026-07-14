@@ -7,7 +7,9 @@ import { groupByTier, tierStore } from '../domain/tierStore'
 import type { PowerCard, Spirit, TierList, TierListSubject } from '../domain/types'
 import { SpiritArt } from './SpiritArt'
 import { SpiritDetail } from './SpiritDetail'
+import { expansionColorFor } from './tagColors'
 import { tierColor } from './tierColors'
+import { TierExpansionVariantSwitcher, readTierExpansionVariant, tierExpansionVariantStyle, type TierExpansionVariant } from './TierExpansionRound'
 import { TierListControls } from './TierListControls'
 
 const spirits = spiritsData as Spirit[]
@@ -64,12 +66,20 @@ function TierTile({
   owned,
   edit,
   onOpen,
+  variant,
 }: {
   config: Configuration
   owned: boolean
   edit?: ReactNode
   onOpen?: () => void
+  /** ROUND 09 scaffolding — delete this prop and its uses on ship (see TierExpansionRound.tsx). */
+  variant?: TierExpansionVariant
 }) {
+  // legibility-pass #09: an aspect tile colours by the aspect's OWN expansion, not its base
+  // spirit's — every aspect in the data ships in a later box than its spirit (31/31 diverge), so
+  // the spirit's expansion would be uniformly stale for aspect tiles.
+  const expansion = config.aspect ? config.aspect.expansion : config.spirit.expansion
+  const color = expansionColorFor(expansion)
   return (
     <figure
       className={owned ? 'tier-tile' : 'tier-tile tier-tile-unowned'}
@@ -90,6 +100,7 @@ function TierTile({
             }
           : undefined
       }
+      style={tierExpansionVariantStyle(variant, color)}
     >
       <SpiritArt spirit={config.spirit} className="tier-tile-art" />
       {config.aspect ? (
@@ -101,6 +112,11 @@ function TierTile({
         <figcaption>{config.spirit.name}</figcaption>
       )}
       {edit}
+      {color && variant === 'C' && (
+        <span className="expansion-chip expansion-chip-corner" style={{ background: color }}>
+          {expansion}
+        </span>
+      )}
       {!owned && (
         <span className="unowned-badge" aria-hidden="true">
           ⊘
@@ -114,10 +130,20 @@ function TierTile({
 /** Card art with the same missing-file posture as the rest of the app: a plain placeholder,
  * never a broken image. Card lists are ungated by the collection (#16) — like the Archive,
  * browsing the full pool is the point. */
-function CardTile({ card, edit }: { card: PowerCard; edit?: ReactNode }) {
+function CardTile({
+  card,
+  edit,
+  variant,
+}: {
+  card: PowerCard
+  edit?: ReactNode
+  /** ROUND 09 scaffolding — delete this prop and its uses on ship (see TierExpansionRound.tsx). */
+  variant?: TierExpansionVariant
+}) {
   const [failed, setFailed] = useState(false)
+  const color = expansionColorFor(card.expansion)
   return (
-    <figure className="tier-tile" title={card.name}>
+    <figure className="tier-tile" title={card.name} style={tierExpansionVariantStyle(variant, color)}>
       {failed ? (
         <span className="tier-tile-card-art tier-tile-card-missing" aria-hidden="true" />
       ) : (
@@ -132,6 +158,11 @@ function CardTile({ card, edit }: { card: PowerCard; edit?: ReactNode }) {
       )}
       <figcaption>{card.name}</figcaption>
       {edit}
+      {color && variant === 'C' && (
+        <span className="expansion-chip expansion-chip-corner" style={{ background: color }}>
+          {card.expansion}
+        </span>
+      )}
     </figure>
   )
 }
@@ -148,6 +179,9 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
   const [viewedSubject, setViewedSubject] = useState<TierListSubject>(initialSubject ?? 'configurations')
   // #17: board → detail. An aspect tile opens the base spirit's modal scrolled to that aspect.
   const [detail, setDetail] = useState<{ spirit: Spirit; aspect?: string } | null>(null)
+  // ROUND 09 scaffolding — delete this state + readTierExpansionVariant/TierExpansionVariantSwitcher
+  // and every `variant={tierExpansionVariant}` prop below on ship (see TierExpansionRound.tsx).
+  const [tierExpansionVariant, setTierExpansionVariant] = useState(readTierExpansionVariant)
   const bump = () => setVersion((v) => v + 1)
 
   const viewed: TierList = tierStore.getActiveListFor(viewedSubject) ?? tierStore.getActiveList()
@@ -185,10 +219,18 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
         onOpen={
           editingHere ? undefined : () => setDetail({ spirit: config.spirit, aspect: config.aspect?.name })
         }
+        variant={tierExpansionVariant ?? undefined}
       />
     ))
   const cardTiles = (items: PowerCard[], current: string) =>
-    items.map((card) => <CardTile key={card.name} card={card} edit={editControl(card.name, card.name, current)} />)
+    items.map((card) => (
+      <CardTile
+        key={card.name}
+        card={card}
+        edit={editControl(card.name, card.name, current)}
+        variant={tierExpansionVariant ?? undefined}
+      />
+    ))
 
   // Hard-filter (#06's opt-in): excluded exactly as if annotation had removed them first, rather
   // than dimmed in place. Session-only - a view preference, not collection data, so it isn't
@@ -313,6 +355,9 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
 
       {detail && (
         <SpiritDetail spirit={detail.spirit} highlightAspect={detail.aspect} onClose={() => setDetail(null)} />
+      )}
+      {tierExpansionVariant && (
+        <TierExpansionVariantSwitcher current={tierExpansionVariant} onPick={setTierExpansionVariant} />
       )}
     </section>
   )
