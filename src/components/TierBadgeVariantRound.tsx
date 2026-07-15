@@ -34,19 +34,17 @@ const LABEL: Record<TierBadgeVariant, string> = {
 }
 
 /** The one place a variant + a tier colour become the tile's badge className/style, so A/B/C
- * can't drift between call sites. `tileStyle` layers onto the tile's own style (which already
- * sets the expansion `borderLeftColor`); only variant C needs it. */
+ * can't drift between call sites. `ring` is a second, separate element (rendered alongside the
+ * badge, not instead of it) — variant C's outline runs on top/right/bottom only, never the left
+ * edge where the expansion stripe already lives, so the `.tier-badge-ring` element has to sit
+ * outside `.spirit-tile-art-wrap` (which clips to the art) at the full tile's bounds. */
 export function tierBadgeProps(
   variant: TierBadgeVariant,
   color: string,
-): { className: string; style: CSSProperties; tileStyle?: CSSProperties } {
+): { className: string; style: CSSProperties; ring?: CSSProperties } {
   if (variant === 'A') return { className: 'tier-badge tier-badge-corner', style: { background: color } }
   if (variant === 'B') return { className: 'tier-badge tier-badge-ribbon', style: { background: color } }
-  return {
-    className: 'tier-badge tier-badge-ring-label',
-    style: { color },
-    tileStyle: { boxShadow: `inset 0 0 0 2px ${color}` },
-  }
+  return { className: 'tier-badge tier-badge-ring-label', style: { color }, ring: { borderColor: color } }
 }
 
 export function TierBadgeVariantSwitcher({

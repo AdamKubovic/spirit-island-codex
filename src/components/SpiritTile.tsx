@@ -40,10 +40,8 @@ export function SpiritTile({
   const badge = tierVariant && tier ? tierBadgeProps(tierVariant, tierColor(tier.position)) : undefined
 
   return (
-    <li
-      className={owned ? 'spirit-tile' : 'spirit-tile spirit-tile-unowned'}
-      style={{ borderLeftColor: expansionColor, ...badge?.tileStyle }}
-    >
+    <li className={owned ? 'spirit-tile' : 'spirit-tile spirit-tile-unowned'} style={{ borderLeftColor: expansionColor }}>
+      {badge?.ring && <span className="tier-badge-ring" style={badge.ring} />}
       <button
         type="button"
         className="spirit-tile-open"

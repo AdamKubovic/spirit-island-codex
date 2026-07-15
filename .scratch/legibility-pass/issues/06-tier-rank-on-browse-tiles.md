@@ -34,7 +34,7 @@ winner.
 - [x] Unrated spirits show honest absence (no invented tier)
 - [x] Reuses the existing `tierColors.ts` palette; no collision with the tile's expansion colour
 - [x] Aspects remain modal-only (no tile change there)
-- [x] `?variant=` round run, owner pick recorded, scaffolding deleted, screenshots kept
+- [ ] `?variant=` round run, owner pick recorded, scaffolding deleted, screenshots kept
 - [x] Legible on dark theme at 375px + desktop; test suite green
 
 ## Comments
