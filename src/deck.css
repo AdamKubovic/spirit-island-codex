@@ -1321,6 +1321,12 @@ button:disabled {
   color: var(--deck-panel-2);
 }
 
+/* archive-grouping #02: group headers render the raw group label (e.g. a card's own `kind`
+ * string) verbatim — capitalize is presentation only, not a second label to keep in sync. */
+.card-group h3 {
+  text-transform: capitalize;
+}
+
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));

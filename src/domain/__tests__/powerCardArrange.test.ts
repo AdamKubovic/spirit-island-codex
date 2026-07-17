@@ -93,3 +93,47 @@ describe('groupPowerCards by element', () => {
     expect(groupPowerCards([free], 'element')).toEqual([{ label: 'Moon', cards: [free] }])
   })
 })
+
+describe('groupPowerCards by expansion', () => {
+  const base = card({ name: 'BaseCard', expansion: 'Base' })
+  const jaggedEarth = card({ name: 'JECard', expansion: 'Jagged Earth' })
+  const jaggedEarth2 = card({ name: 'JECard2', expansion: 'Jagged Earth' })
+  const unrecognized = card({ name: 'MysteryCard', expansion: 'Some Future Box' })
+
+  it('groups follow the canonical EXPANSIONS order; cards within a group keep input order', () => {
+    expect(groupPowerCards([jaggedEarth, base, jaggedEarth2], 'expansion')).toEqual([
+      { label: 'Base', cards: [base] },
+      { label: 'Jagged Earth', cards: [jaggedEarth, jaggedEarth2] },
+    ])
+  })
+
+  it('omits canonical expansions no card has — no empty groups', () => {
+    const labels = groupPowerCards([base], 'expansion').map((g) => g.label)
+    expect(labels).toEqual(['Base'])
+  })
+
+  it('a card whose expansion string is not in the canonical set still groups under its raw label, never dropped', () => {
+    expect(groupPowerCards([base, unrecognized], 'expansion')).toEqual([
+      { label: 'Base', cards: [base] },
+      { label: 'Some Future Box', cards: [unrecognized] },
+    ])
+  })
+})
+
+describe('groupPowerCards by type', () => {
+  const minor = card({ name: 'MinorCard', kind: 'minor' })
+  const major = card({ name: 'MajorCard', kind: 'major' })
+  const unique = card({ name: 'UniqueCard', kind: 'unique', spirit: 'x', spiritName: 'X' })
+
+  it('groups minor, then major, then unique; cards within a group keep input order', () => {
+    expect(groupPowerCards([unique, minor, major], 'type')).toEqual([
+      { label: 'minor', cards: [minor] },
+      { label: 'major', cards: [major] },
+      { label: 'unique', cards: [unique] },
+    ])
+  })
+
+  it('omits a kind no card has — no empty groups', () => {
+    expect(groupPowerCards([minor], 'type')).toEqual([{ label: 'minor', cards: [minor] }])
+  })
+})

@@ -125,6 +125,8 @@ export function CardsTab() {
                 <option value="cost">Cost</option>
                 <option value="speed">Speed</option>
                 <option value="element">Element</option>
+                <option value="expansion">Expansion</option>
+                <option value="type">Type</option>
               </select>
             </label>
           </div>
