@@ -69,6 +69,8 @@ effort is left to decide.
 
 - Retheming any surface beyond the detail modal (Browse, tier board, Archive, app shell) — the
   spread verdict (ticket 04) may spawn a NEW effort, but the work is past this destination.
+  **Now charted:** [island-retheme](../island-retheme/MAP.md) (2026-07-17) picked up the spread,
+  consuming this effort's vibe sheet + `PANEL_COLOR` as prior art.
 - Pixel-faithful panel recreation — ruled out at charting (fidelity: vibe, not replica).
 - Fonts/icons sourcing — settled by phase-4 #22 and the official-assets research; this map
   consumes those decisions, it doesn't reopen them.
