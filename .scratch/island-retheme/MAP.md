@@ -83,6 +83,10 @@ app-wide rollout is executed later, off this map.
   Shipping the winner (deleting `?chips=`, making `*_WARM` the only values) is deferred to the
   terminal deliverable, alongside tickets 04/05, so the shell doesn't shift under the owner between
   every pick.
+- **[04 modal re-alignment](issues/04-modal-realignment.md) (needs-info):** both candidates built —
+  `?modal=stay` (shipped dark `PANEL_COLOR`, unchanged) and `?modal=flip` (new `PANEL_COLOR_LIGHT`,
+  the same vibe-sheet roles sampled directly rather than dark-translated). Waiting on the owner's
+  flip-vs-stay pick.
 
 ## Not yet specified
 

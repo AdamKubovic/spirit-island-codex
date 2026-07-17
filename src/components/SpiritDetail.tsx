@@ -7,19 +7,26 @@ import { OcfduBars } from './OcfduBars'
 import { PlaceholderArt } from './PlaceholderArt'
 import { SpiritArt } from './SpiritArt'
 import { readWarmChipVariant } from './ChipRound'
-import { COMPLEXITY_LEVEL, expansionChipColor, PANEL_COLOR, tagColor, tagLabel } from './tagColors'
+import { readModalVariant } from './ModalRound'
+import { COMPLEXITY_LEVEL, expansionChipColor, PANEL_COLOR, PANEL_COLOR_LIGHT, tagColor, tagLabel } from './tagColors'
 import { activeConfigTier, tierColor } from './tierColors'
 
 /** panel-theming #03: the modal's one colour source, injected as CSS custom properties on the
  * modal root and consumed by the `.modal.spirit-detail` rules in deck.css. */
-const PANEL_VARS = {
-  '--panel-surface': PANEL_COLOR.surface,
-  '--panel-raised': PANEL_COLOR.raised,
-  '--panel-edge': PANEL_COLOR.edge,
-  '--panel-text': PANEL_COLOR.text,
-  '--panel-body': PANEL_COLOR.body,
-  '--panel-accent': PANEL_COLOR.accent,
-} as CSSProperties
+function panelVars(colour: Record<'surface' | 'raised' | 'edge' | 'text' | 'body' | 'accent', string>): CSSProperties {
+  return {
+    '--panel-surface': colour.surface,
+    '--panel-raised': colour.raised,
+    '--panel-edge': colour.edge,
+    '--panel-text': colour.text,
+    '--panel-body': colour.body,
+    '--panel-accent': colour.accent,
+  } as CSSProperties
+}
+
+const PANEL_VARS = panelVars(PANEL_COLOR)
+/** ROUND 04 (island-retheme) — THROWAWAY: ticket #04's "flip to light" candidate. */
+const PANEL_VARS_LIGHT = panelVars(PANEL_COLOR_LIGHT)
 
 /** Coloured tier chip for one configuration, read from the active configurations-list (#17).
  * Colour is the label's position in that list's own vocabulary; an absent key renders an
@@ -100,12 +107,13 @@ export function SpiritDetail({
   const level = COMPLEXITY_LEVEL[spirit.complexity]
   const chipVariant = readWarmChipVariant()
   const expansionColor = expansionChipColor(spirit.expansion, chipVariant)
+  const panelVarsForModal = readModalVariant() === 'flip' ? PANEL_VARS_LIGHT : PANEL_VARS
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div
         className="modal spirit-detail"
-        style={PANEL_VARS}
+        style={panelVarsForModal}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label={spirit.name}

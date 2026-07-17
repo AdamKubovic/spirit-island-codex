@@ -1,6 +1,6 @@
 # 04 — Modal re-alignment for the light-parchment win
 
-Status: ready-for-human
+Status: needs-info
 Type: wayfinder:prototype
 Blocked by: —
 Assignee: —
@@ -23,14 +23,38 @@ re-tinted one.
 
 ## Acceptance criteria
 
-- [ ] A "flip to light" candidate (parchment surface, ink text, band-tan accent — analogous to the
+- [x] A "flip to light" candidate (parchment surface, ink text, band-tan accent — analogous to the
       shell's own light tokens) and a "stays dark, deliberately" candidate (shipped `PANEL_COLOR`
       unchanged) both rendered against the live `?theme=A` shell.
-- [ ] OCFDU data-honesty rules (true figures, absent-unrated) hold in whichever wins.
-- [ ] `cardChipColors.test.ts`'s `PANEL_COLOR` pairwise-distinctness pins stay green.
+- [x] OCFDU data-honesty rules (true figures, absent-unrated) hold in whichever wins.
+- [x] `cardChipColors.test.ts`'s `PANEL_COLOR` pairwise-distinctness pins stay green.
 - [ ] Owner's pick + reaction notes recorded.
 
 ## HITL
 
 The **OWNER** picks flip-vs-stay, never the agent — panel-theming already established this as a
 standing HITL rule for exactly this modal. Ticket waits at `needs-info` once candidates are live.
+
+## Candidates live (2026-07-17)
+
+Behind `?theme=A&modal=stay|flip` on any tab (a third switcher stacks under tickets 02/03's
+switchers, bottom-right):
+
+- **stay**: the modal's shipped `PANEL_COLOR` exactly as-is (dark umber-parchment,
+  panel-theming #03) — the "deliberate lantern moment" case.
+- **flip**: a new `PANEL_COLOR_LIGHT` (`tagColors.ts`) — the same vibe-sheet roles as
+  `PANEL_COLOR`, but using the sampled hexes directly rather than their dark-translation:
+  parchment surface (`#e7d19c`), parchment-lit raised (`#f2e7c8`), parchment-aged edge
+  (`#cdb88c`), ink text (`#2e2520`), ink-soft body (`#5b4e2d`). `accent` deliberately reuses the
+  exact same band-tan hex as the shipped dark modal (`#d2b068`) — the vibe sheet notes band-tan
+  "holds on dark," i.e. it was sampled to work on both.
+
+`PANEL_COLOR` itself is untouched — `cardChipColors.test.ts`'s existing pins stay green
+unedited. No new distinctness test was added for `PANEL_COLOR_LIGHT`: the two palettes are
+mutually exclusive (never rendered together, gated behind the same switcher), unlike the chip
+systems ticket 03 guarded, which can appear on-screen simultaneously.
+
+Screenshots (desktop 1280, spirit detail modal) for both `stay` and `flip` are in
+[screenshots-04/](../screenshots-04/).
+
+**Waiting on the owner's reaction** — this ticket stays at `needs-info`.

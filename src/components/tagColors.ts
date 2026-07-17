@@ -214,6 +214,26 @@ export const PANEL_COLOR = {
 } as const
 
 /**
+ * ROUND 04 (island-retheme) — THROWAWAY, delete alongside `ModalRound.tsx` when the round ships
+ * or is abandoned (see that file's docblock for the full teardown list).
+ *
+ * The "flip to light" candidate for ticket #04: the same vibe-sheet roles as `PANEL_COLOR`
+ * above, but using the sampled hexes *directly* rather than their dark-translation — the panel
+ * read as it was actually printed (parchment surface, ink text), analogous to the theme-A shell's
+ * own light tokens. `accent` deliberately reuses the exact same band-tan hex as `PANEL_COLOR`
+ * (the vibe sheet notes band-tan "holds on dark" — i.e. it was always meant to work on both).
+ * Provenance: `.scratch/panel-theming/panel-vibe-sheet.md`.
+ */
+export const PANEL_COLOR_LIGHT = {
+  surface: '#e7d19c', // parchment — the field itself (river-surges, 38%)
+  raised: '#f2e7c8', // parchment-lit — highlights, top of the page (keeper, 8.6%)
+  edge: '#cdb88c', // parchment-aged — shaded paper, section edges (river/heart/keeper, ~6%)
+  text: '#2e2520', // ink — headers & figures (river, 5%)
+  body: '#5b4e2d', // ink-soft — body text (keeper/spread, ~4%)
+  accent: '#d2b068', // band-tan — section bands (river, 6.9%) — same token as PANEL_COLOR.accent
+} as const
+
+/**
  * legibility-pass #04: fear/blight/event subtypes, surfaced in the Archive rows view (previously
  * data that existed only as filters, per v5 #02/#03). Fear/blight tags are keyword-derived
  * (`otherCardClassifier.ts`); blight's are explicitly `tagsSource: 'judgment'` (types.ts) — a
