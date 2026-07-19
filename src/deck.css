@@ -1399,6 +1399,34 @@ button:disabled {
   flex-direction: column;
   gap: 2px;
 }
+/* Column labels for the Rows view — a `<li>` reusing the same `.card-row-*` classes as the real
+ * rows below it, so its columns line up without a second width source to keep in sync. Not a
+ * button (nothing to click), dimmed and uppercase to read as a caption rather than a row. */
+.card-rows-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.8rem;
+  padding: 0 0.6rem 0.35rem;
+  font: 700 9px/1 var(--deck-mono);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--deck-dim);
+  border-bottom: 1px solid var(--deck-line);
+  margin-bottom: 0.15rem;
+}
+.card-rows-head .card-row-type,
+.card-rows-head .card-row-name,
+.card-rows-head .card-row-elements,
+.card-rows-head .card-row-cost,
+.card-rows-head .card-row-speed,
+.card-rows-head .card-row-expansion,
+.card-rows-head .card-row-subtypes {
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+}
 .card-row {
   all: unset;
   cursor: pointer;
@@ -1495,25 +1523,15 @@ button:disabled {
 
 /* legibility-pass #04 (owner picked variant A, filled pill): fear/blight/event subtype tags in
  * the Archive rows view — previously data that existed only as filters (v5 #02/#03).
- * `.card-row-subtypes` holds 0..n chips (a card may match several keyword buckets);
- * `.card-row-subtype-empty` is the "Unclassified" case. `.card-row-subtype-note` carries blight's
- * `tagsSource: 'judgment'` provenance once per row, not repeated on every chip. Colour comes
- * inline from tagColors' `SUBTYPE_COLOR` — shape only, the same idiom `.card-row-pill` uses. */
+ * `.card-row-subtypes` holds 0..n chips (a card may match several keyword buckets), or the single
+ * `.subtype-chip-empty` "Unclassified" chip when a card matches none. Colour comes inline from
+ * tagColors' `SUBTYPE_COLOR` — shape only, the same idiom `.card-row-pill` uses; `.subtype-chip-
+ * empty` is the one chip with no tag behind it, so its grey is a fixed CSS colour, not inline. */
 .card-row-subtypes {
   display: inline-flex;
   flex-wrap: wrap;
   gap: 0.25rem;
   flex: 1 1 auto;
-}
-.card-row-subtype-empty {
-  flex: 1 1 auto;
-  font-size: 10px;
-  color: var(--deck-dim);
-  font-style: italic;
-}
-.card-row-subtype-note {
-  flex: 0 0 auto;
-  font-size: 10px;
 }
 .subtype-chip {
   display: inline-block;
@@ -1523,6 +1541,11 @@ button:disabled {
   font-weight: 600;
   color: #fff;
   white-space: nowrap;
+}
+.subtype-chip-empty {
+  background: #6b6458;
+  color: #e7d19c;
+  font-style: italic;
 }
 
 .visually-hidden {

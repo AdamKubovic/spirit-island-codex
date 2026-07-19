@@ -15,7 +15,11 @@ function subtypesFor(card: OtherCard): (FearTag | BlightTag | EventClass)[] {
 /** Owner picked variant A (filled pill, the `CardRows` kind/speed idiom) after a three-way round. */
 function SubtypeChips({ tags, chipVariant }: { tags: (FearTag | BlightTag | EventClass)[]; chipVariant?: 'warm' }) {
   if (tags.length === 0) {
-    return <span className="card-row-subtype-empty">Unclassified</span>
+    return (
+      <span className="card-row-subtypes">
+        <span className="subtype-chip subtype-chip-empty">Unclassified</span>
+      </span>
+    )
   }
   return (
     <span className="card-row-subtypes">
@@ -35,14 +39,22 @@ function SubtypeChips({ tags, chipVariant }: { tags: (FearTag | BlightTag | Even
  * legibility-pass #04: fear/event keep their kind label and gain a subtype badge; blight's kind
  * label was uniform across every blight card (no information) and is replaced outright by its
  * subtype tags — the owner's specific ask. Blight's tags are `tagsSource: 'judgment'`
- * (types.ts) — the row-level note below carries that provenance once, not per chip. */
+ * (types.ts); that provenance is documented once at the filter panel (`OtherCardFilters.tsx`'s
+ * "Sub-type (judgment - see #02)" label) rather than repeated identically on every blight row. */
 export function OtherCardRows({ cards }: { cards: OtherCard[] }) {
   const [enlarged, setEnlarged] = useState<{ src: string; alt: string } | null>(null)
   const base = import.meta.env.BASE_URL
   const chipVariant = readWarmChipVariant()
+  const showType = cards[0]?.kind !== 'blight'
 
   return (
     <ul className="card-rows">
+      <li className="card-rows-head" aria-hidden="true">
+        {showType && <span className="card-row-type">Type</span>}
+        <span className="card-row-name">Name</span>
+        <span className="card-row-subtypes">Sub-type</span>
+        <span className="card-row-expansion">Expansion</span>
+      </li>
       {cards.map((card) => {
         const color = expansionColorFor(card.expansion, chipVariant)
         return (
@@ -55,7 +67,6 @@ export function OtherCardRows({ cards }: { cards: OtherCard[] }) {
               )}
               <span className="card-row-name">{card.name}</span>
               <SubtypeChips tags={subtypesFor(card)} chipVariant={chipVariant} />
-              {card.kind === 'blight' && <span className="card-row-subtype-note meta">judgment</span>}
               <span
                 className={color ? 'card-row-expansion expansion-chip' : 'card-row-expansion'}
                 style={color ? { background: color } : undefined}

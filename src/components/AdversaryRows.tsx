@@ -16,6 +16,11 @@ export function AdversaryRows({ adversaries }: { adversaries: Adversary[] }) {
 
   return (
     <ul className="card-rows">
+      <li className="card-rows-head" aria-hidden="true">
+        <span className="card-row-name">Name</span>
+        <span className="card-row-expansion">Expansion</span>
+        <span className="card-row-cost">Level</span>
+      </li>
       {adversaries.map((adversary) => {
         const src = `${base}${adversaryImage(adversary.name)}`
         const color = expansionColorFor(adversary.expansion, chipVariant)

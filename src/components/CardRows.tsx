@@ -29,6 +29,14 @@ export function CardRows({ cards }: { cards: PowerCard[] }) {
 
   return (
     <ul className="card-rows">
+      <li className="card-rows-head" aria-hidden="true">
+        <span className="card-row-type">Type</span>
+        <span className="card-row-name">Name</span>
+        <span className="card-row-elements">Elements</span>
+        <span className="card-row-cost">Cost</span>
+        <span className="card-row-speed">Speed</span>
+        <span className="card-row-expansion">Expansion</span>
+      </li>
       {cards.map((card) => {
         const color = expansionColorFor(card.expansion, chipVariant)
         return (
