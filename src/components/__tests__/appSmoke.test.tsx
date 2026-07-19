@@ -1,7 +1,8 @@
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import spiritsData from '../../data/spirits.json'
-import { EXPANSIONS, type Spirit } from '../../domain/types'
+import { EXPANSIONS, FEAR_TAGS, type Spirit } from '../../domain/types'
+import { subtypeLabel } from '../tagColors'
 import App from '../../App'
 import { tierStore } from '../../domain/tierStore'
 import { computeDeckComposition } from '../../domain/deckComposition'
@@ -276,5 +277,19 @@ describe('app smoke', () => {
     const plainMatrixHtml = renderToStaticMarkup(<DeckCombinationMatrix combinations={composition.combinations} />)
     expect(plainMatrixHtml).not.toContain('deck-combo-col-label-highlight')
     expect(plainMatrixHtml).not.toContain('deck-combo-dot-highlight')
+  })
+
+  it('the Dashboard Fear segment shows pool size, a by-tag and by-expansion breakdown, and the hidden-subset framing copy, with no valence classification (deck-dashboard #11)', () => {
+    const html = renderToStaticMarkup(<DashboardTab initialSegment="Fear" />)
+    expect(html).toContain('cards')
+    expect(html).toContain('hidden subset of this pool')
+    expect(html).toContain('By fear tag')
+    for (const tag of FEAR_TAGS) {
+      expect(html).toContain(subtypeLabel(tag))
+    }
+    expect(html).toContain('By expansion')
+    expect(html).not.toContain('Fear segment — coming soon.')
+    expect(html.toLowerCase()).not.toContain('good')
+    expect(html.toLowerCase()).not.toContain('bad')
   })
 })

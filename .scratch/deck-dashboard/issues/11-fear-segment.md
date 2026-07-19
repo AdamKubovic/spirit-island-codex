@@ -1,6 +1,6 @@
 # Fear segment
 
-Status: ready-for-agent
+Status: done
 
 ## Parent
 

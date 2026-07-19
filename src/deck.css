@@ -1246,6 +1246,23 @@ button:disabled {
   display: grid;
   gap: 0.35rem;
 }
+/* deck-dashboard #11: fear/event pool breakdowns share the track/fill/count look but have no
+ * odds column (3 grid columns, not 4) - own classes rather than reusing .deck-element-row. */
+.deck-pool-bars {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+.deck-pool-row {
+  display: grid;
+  grid-template-columns: 9rem 1fr 2.5rem;
+  align-items: center;
+  gap: 0.6rem;
+}
+.deck-pool-label {
+  font-size: 13px;
+  color: var(--deck-text);
+}
 .deck-element-row {
   display: grid;
   grid-template-columns: 64px 1fr 2.5rem 3rem;

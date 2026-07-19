@@ -1,17 +1,23 @@
 import { useMemo, useState } from 'react'
+import otherCardsData from '../data/other-cards.json'
 import powerCardsData from '../data/power-cards.json'
 import spiritsData from '../data/spirits.json'
 import { collectionStore } from '../domain/collectionStore'
 import { computeDeckComposition } from '../domain/deckComposition'
-import { EXPANSIONS, type ExpansionName, type PowerCard, type Spirit } from '../domain/types'
+import { groupOtherCards } from '../domain/otherCardArrange'
+import { EXPANSIONS, type ExpansionName, type OtherCard, type PowerCard, type Spirit } from '../domain/types'
 import { normalizeExpansion } from './tagColors'
 import { DeckCombinationMatrix } from './DeckCombinationMatrix'
 import { DeckElementBars } from './DeckElementBars'
 import { DeckFacets } from './DeckFacets'
+import { DeckPoolBreakdown } from './DeckPoolBreakdown'
 
 const powerCards = powerCardsData as PowerCard[]
 const MINOR_CARDS = powerCards.filter((c) => c.kind === 'minor')
 const MAJOR_CARDS = powerCards.filter((c) => c.kind === 'major')
+
+const otherCards = otherCardsData as OtherCard[]
+const FEAR_CARDS = otherCards.filter((c) => c.kind === 'fear')
 
 // deck-dashboard #10: by spirit, not Configuration — element data exists at spirit level only,
 // and aspects record no element changes (PRD's explicit call, not an oversight).
@@ -38,20 +44,26 @@ function isChecked(expansion: string, checked: ReadonlySet<ExpansionName>): bool
 }
 
 /**
- * v6 #06/#07/#08/#09/#10: the Dashboard tab. Minor and Major show live composition, hypergeometric
- * draw odds, an element-combination dot-matrix, and the speed/cost facets, all against the
- * checked expansion set; Fear/Event's own views are #11/#12. An expansion picker (session-only
+ * v6 #06/#07/#08/#09/#10/#11: the Dashboard tab. Minor and Major show live composition,
+ * hypergeometric draw odds, an element-combination dot-matrix, and the speed/cost facets, all
+ * against the checked expansion set; Event's own view is #12. An expansion picker (session-only
  * state, no storage key) defines the set, defaulting to the Collection; unowned expansions stay
  * listed and annotated, never hidden (PRD user story 6), consistent with Collection treatment
  * elsewhere (`SpiritTile`, `Recommender`'s `unowned-note`). A single N stepper (default 4, clamped
  * to [1, deck size] by the domain module) drives both power-deck segments' odds; the assumption
  * label keeps the static dashboard from reading as live tracking (PRD user story 27). An optional
  * spirit pick (default "no spirit") highlights that spirit's own recorded elements in the bars and
- * combination matrix — no new data, no judgment (PRD user stories 18-20). Holds no game state — a
+ * combination matrix — no new data, no judgment (PRD user stories 18-20). Fear reuses the
+ * existing `groupOtherCards` seam (`otherCardArrange.ts`) for its by-tag and by-expansion
+ * breakdowns rather than duplicating that grouping logic; its framing copy states the pool is a
+ * hidden-subset fact, never a card counter (PRD user story 25), and carries no valence axis —
+ * that's the map's open taxonomy thread, explicitly out of scope here. Holds no game state — a
  * reload always reverts to the Collection default, N=4, no spirit (PRD user story 28).
  */
-export function DashboardTab() {
-  const [segment, setSegment] = useState<Segment>('Minor')
+/** `initialSegment` mirrors `TierBoard`'s `initialSubject` — lets the server-rendered smoke test
+ * reach a non-default segment without simulating a click. */
+export function DashboardTab({ initialSegment }: { initialSegment?: Segment } = {}) {
+  const [segment, setSegment] = useState<Segment>(initialSegment ?? 'Minor')
   const [drawCount, setDrawCount] = useState(DEFAULT_DRAW_COUNT)
   const [checkedExpansions, setCheckedExpansions] = useState<Set<ExpansionName>>(defaultCheckedExpansions)
   // '' is the default "no spirit" state (PRD user story 20) — never a storage key, never
@@ -83,6 +95,10 @@ export function DashboardTab() {
   )
 
   const activeComposition = segment === 'Minor' ? minorComposition : segment === 'Major' ? majorComposition : null
+
+  const fearCardsInPlay = useMemo(() => FEAR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), [checkedExpansions])
+  const fearByTag = useMemo(() => groupOtherCards(fearCardsInPlay, 'subtype'), [fearCardsInPlay])
+  const fearByExpansion = useMemo(() => groupOtherCards(fearCardsInPlay, 'expansion'), [fearCardsInPlay])
 
   return (
     <section>
@@ -154,7 +170,20 @@ export function DashboardTab() {
           <DeckFacets composition={activeComposition} />
         </div>
       )}
-      {segment === 'Fear' && <p className="dashboard-stub">Fear segment — coming soon.</p>}
+      {segment === 'Fear' && (
+        <div className="dashboard-deck">
+          <p className="dashboard-deck-size">{fearCardsInPlay.length} cards</p>
+          <p className="dashboard-assumption">
+            The in-play fear deck is a small hidden subset of this pool, built at setup — these are pool odds, never a card counter.
+          </p>
+
+          <h3>By fear tag</h3>
+          <DeckPoolBreakdown groups={fearByTag} poolSize={fearCardsInPlay.length} />
+
+          <h3>By expansion</h3>
+          <DeckPoolBreakdown groups={fearByExpansion} poolSize={fearCardsInPlay.length} />
+        </div>
+      )}
       {segment === 'Event' && <p className="dashboard-stub">Event segment — coming soon.</p>}
     </section>
   )
