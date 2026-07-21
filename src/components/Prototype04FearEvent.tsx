@@ -285,10 +285,128 @@ function VariantC({ rated, kind }: { rated: Rated[]; kind: 'fear' | 'event' }) {
   )
 }
 
+/* ---------------------------------------------------------------- variant D — round 2 hybrid
+ * Owner's verdict direction (2026-07-21): A's headline stack, but every bucket and every
+ * bucket×group intersection is CLICKABLE and expands to C's card chips filtered to it —
+ * "show me the major removal cards". All counts carry percentages in brackets. */
+function VariantD({ rated, kind, drawNoun }: { rated: Rated[]; kind: 'fear' | 'event'; drawNoun: string }) {
+  const total = rated.length
+  const meta = bucketMeta(kind)
+  const groups = groupOtherCards(rated.map((r) => r.card), 'subtype')
+  // one selection: a bucket alone (group=null) or a bucket×group intersection
+  const [picked, setPicked] = useState<{ bucket: string; group: string | null } | null>(null)
+  const pct = (n: number) => `${total ? Math.round((n / total) * 100) : 0}%`
+  function toggle(bucket: string, group: string | null) {
+    setPicked((p) => (p && p.bucket === bucket && p.group === group ? null : { bucket, group }))
+  }
+  const pickedCards = picked
+    ? rated.filter(
+        (r) =>
+          r.bucket === picked.bucket &&
+          (picked.group === null || (groups.find((g) => g.label === picked.group)?.cards.includes(r.card) ?? false)),
+      )
+    : []
+  const chipWall = picked && (
+    <div style={{ margin: '8px 0 4px', padding: '8px 10px', background: 'var(--deck-panel-2)', border: '1px solid var(--deck-line-soft)', borderRadius: 8 }}>
+      <div style={{ fontSize: 12, color: 'var(--deck-dim)', marginBottom: 6 }}>
+        {picked.bucket}
+        {picked.group ? ` × ${picked.group}` : ''} · {pickedCards.length} card{pickedCards.length === 1 ? '' : 's'} ({pct(pickedCards.length)})
+        <button type="button" onClick={() => setPicked(null)} style={{ marginLeft: 10, background: 'none', border: '1px solid var(--deck-line)', borderRadius: 4, color: 'var(--deck-body)', cursor: 'pointer', fontSize: 11, padding: '1px 7px' }}>
+          clear
+        </button>
+      </div>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+        {pickedCards.map(({ card, bucket, color }) => (
+          <span
+            key={card.name}
+            title={`${card.name} — ${bucket} (${card.expansion})`}
+            style={{ fontSize: 11, color: 'var(--deck-text)', background: 'var(--deck-panel)', border: '1px solid var(--deck-line-soft)', borderLeft: `4px solid ${color}`, borderRadius: 5, padding: '3px 7px', whiteSpace: 'nowrap' }}
+          >
+            {card.name}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+  return (
+    <div>
+      {stubBanner}
+      <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+        {meta.map(({ key, color }) => {
+          const n = rated.filter((r) => r.bucket === key).length
+          const active = picked?.bucket === key && picked.group === null
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => toggle(key, null)}
+              style={{
+                background: active ? 'var(--deck-accent-bg)' : 'var(--deck-panel)',
+                border: `1px solid ${active ? 'var(--deck-accent)' : 'var(--deck-line-soft)'}`,
+                borderRadius: 8,
+                padding: '10px 14px',
+                minWidth: 118,
+                cursor: 'pointer',
+                textAlign: 'left',
+              }}
+            >
+              <div style={{ font: '600 22px/1.1 var(--deck-mono)', color: 'var(--deck-text)' }}>
+                {pct(n)} <span style={{ fontSize: 13, color: 'var(--deck-dim)', fontWeight: 400 }}>({n})</span>
+              </div>
+              <div style={{ fontSize: 12, color: 'var(--deck-dim)', marginTop: 2 }}>
+                <span style={{ width: 8, height: 8, borderRadius: 2, background: color, display: 'inline-block', marginRight: 5 }} />
+                {key} {drawNoun}
+              </div>
+            </button>
+          )
+        })}
+      </div>
+      <p style={{ fontSize: 12, color: 'var(--deck-dim)', marginTop: 6 }}>
+        Next-{drawNoun} odds equal pool share — a full pool, nothing drawn. Click a tile or a bar segment to list its cards.
+      </p>
+      <StackedBar rated={rated} kind={kind} />
+      <Legend kind={kind} />
+      {picked && picked.group === null && chipWall}
+      <h3>{kind === 'event' ? 'By event class' : 'By fear tag'}</h3>
+      <div className="deck-pool-bars">
+        {groups.map(({ label, cards }) => {
+          const sub = rated.filter((r) => cards.includes(r.card))
+          return (
+            <div key={label}>
+              <div className="deck-pool-row">
+                <span className="deck-pool-label">{label}</span>
+                <span style={{ display: 'flex', gap: 2, height: 12, borderRadius: 999, overflow: 'hidden', width: `${(cards.length / Math.max(1, total)) * 100}%`, minWidth: 24 }}>
+                  {meta.map(({ key, color }) => {
+                    const n = sub.filter((r) => r.bucket === key).length
+                    const active = picked?.bucket === key && picked.group === label
+                    return n > 0 ? (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => toggle(key, label)}
+                        title={`${label} × ${key}: ${n} (${pct(n)}) — click to list`}
+                        style={{ flex: n, background: color, border: 'none', cursor: 'pointer', padding: 0, outline: active ? '2px solid var(--deck-text)' : 'none', outlineOffset: -2 }}
+                      />
+                    ) : null
+                  })}
+                </span>
+                <span className="deck-element-count" style={{ whiteSpace: 'nowrap' }}>
+                  {cards.length} ({pct(cards.length)})
+                </span>
+              </div>
+              {picked && picked.group === label && chipWall}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
+
 /* ---------------------------------------------------------------- switcher + host */
-const VARIANTS = ['A', 'B', 'C'] as const
+const VARIANTS = ['A', 'B', 'C', 'D'] as const
 export type PrototypeVariant = (typeof VARIANTS)[number]
-const VARIANT_NAME: Record<PrototypeVariant, string> = { A: 'Headline stack', B: 'Crosstab matrix', C: 'Card wall' }
+const VARIANT_NAME: Record<PrototypeVariant, string> = { A: 'Headline stack', B: 'Crosstab matrix', C: 'Card wall', D: 'Headline + drill (round 2)' }
 
 export function readPrototypeVariant(): PrototypeVariant | null {
   if (import.meta.env.PROD || typeof window === 'undefined') return null
@@ -328,6 +446,7 @@ export function Prototype04FearEvent({ cards, kind, variant, onVariant }: { card
       {variant === 'A' && <VariantA rated={rated} kind={kind} drawNoun={drawNoun} />}
       {variant === 'B' && <VariantB rated={rated} kind={kind} />}
       {variant === 'C' && <VariantC rated={rated} kind={kind} />}
+      {variant === 'D' && <VariantD rated={rated} kind={kind} drawNoun={drawNoun} />}
       <div
         style={{
           position: 'fixed',
