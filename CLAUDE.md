@@ -6,8 +6,9 @@ The unit of recommendation is a **configuration**: a base spirit, or that spirit
 aspect applied. 37 spirits + 31 aspects = 68 configurations.
 
 Current state: `.scratch/v2/README.md` (shipped, three items open). Design rationale:
-`.scratch/v2/PRD.md`. `HANDOFF_spirit_island_recommender.md` predates v1 — read it only for the
-transcribed ratings table; its decisions about aspects and persistence have been reversed.
+`.scratch/v2/PRD.md`. Domain glossary: `CONTEXT.md`; decisions: `docs/adr/`. The printed OCFDU
+ratings live authoritatively in `src/data/spirits.json`, pinned by tests. (The pre-v1
+`HANDOFF_*.md` was removed 2026-07-21; recoverable from git history.)
 
 **This repo has a documented failure mode: agents invent data when a source cannot answer.** It has
 shipped fabricated OCFDU ratings, wrong elements, and five aspects that do not exist. A field that

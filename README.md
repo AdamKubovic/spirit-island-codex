@@ -1,8 +1,8 @@
 # Spirit Island Knowledge Base
 
 Local-first Vite + React + TypeScript app for browsing and recommending Spirit Island
-spirits. See `HANDOFF_spirit_island_recommender.md` and `.scratch/spirit-recommender/PRD.md`
-for full project context.
+spirits. See `CONTEXT.md` for the domain glossary, `docs/adr/` for design decisions, and
+`.scratch/v2/PRD.md` for the shipped project's rationale.
 
 ## Development
 
