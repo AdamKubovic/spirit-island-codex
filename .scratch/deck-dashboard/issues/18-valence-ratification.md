@@ -1,6 +1,6 @@
 # Owner ratification + valence canon
 
-Status: ready-for-human
+Status: done
 
 ## Parent
 
@@ -26,3 +26,13 @@ the owner's judgment; nothing downstream (the view tickets) may start before thi
 ## Blocked by
 
 - [17-valence-rubric-and-draft.md](17-valence-rubric-and-draft.md)
+
+## Comments
+
+**2026-07-21 — ratified.** Owner reviewed all 115 rows against `.scratch/deck-dashboard/
+valence-draft.md`: the 16 cross-check-flagged rows individually (2 amended — Gradual Corruption
+mixed→harmful, Influx of Settlers harmful→mixed; the rest confirmed as drafted), then the
+remaining 99 rows in 5 batches (2 fear, 3 event), all approved as drafted. Ratings landed on
+`src/data/other-cards.json` (`impact`/`impactSource: "judgment"` on fear cards,
+`valence`/`valenceSource: "judgment"` on event cards), pinned by
+`src/domain/__tests__/valenceCanon.test.ts`. Type check, lint, and full suite (474 tests) pass.

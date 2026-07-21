@@ -140,6 +140,15 @@ export type FearTag = (typeof FEAR_TAGS)[number]
 export const BLIGHT_TAGS = ['presenceLoss', 'boardChange', 'damageBonus', 'resourceSwing'] as const
 export type BlightTag = (typeof BLIGHT_TAGS)[number]
 
+/** deck-dashboard #02/#18: a fear card's overall impact, judged across all three terror-level
+ * tiers together — never per-tier (see `valence-rubric.md`). */
+export type Impact = 1 | 2 | 3
+
+/** deck-dashboard #02/#18: an event card's valence from the players' side. "Mixed" is the
+ * honest home for genuine choice/board-state-dependent cards, never forced toward a pole. */
+export const VALENCES = ['harmful', 'mixed', 'beneficial'] as const
+export type Valence = (typeof VALENCES)[number]
+
 /**
  * Fear, event and blight cards (v4 #01/#13) — the 139 cards outside `PowerCard`. #01 found none
  * of them carry elements, cost or speed, so `OtherCard` does not carry those fields either; a
@@ -151,8 +160,12 @@ export type BlightTag = (typeof BLIGHT_TAGS)[number]
  * matched (v5 #02's "Unclassified"), never a forced nearest-bucket guess.
  */
 export type OtherCard =
-  | { name: string; expansion: string; kind: 'fear'; image: string; tags: FearTag[] }
-  | { name: string; expansion: string; kind: 'event'; image: string; eventClass: EventClass }
+  // `impactSource`/`valenceSource: 'judgment'` are in the data itself, not just a doc comment -
+  // same discipline as `ratingsSource` on Spirit and `tagsSource` on blight below. Ratified by
+  // the owner per-card (#17/#18) from the card images; `tags`/`eventClass` were cross-checks
+  // only, never inputs to these ratings.
+  | { name: string; expansion: string; kind: 'fear'; image: string; tags: FearTag[]; impact: Impact; impactSource: 'judgment' }
+  | { name: string; expansion: string; kind: 'event'; image: string; eventClass: EventClass; valence: Valence; valenceSource: 'judgment' }
   // `tagsSource: 'judgment'` is in the data itself, not just a doc comment - same discipline as
   // `ratingsSource` on Spirit, so anyone reading other-cards.json in a year sees the provenance
   // without reading this file.

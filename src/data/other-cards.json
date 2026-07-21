@@ -14,14 +14,18 @@
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/a_strange_madness_among_the_beasts.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Accumulated Devastation",
     "expansion": "Nature Incarnate",
     "kind": "event",
     "image": "cards/event/accumulated_devastation.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Aid from Lesser Spirits",
@@ -49,7 +53,9 @@
     "expansion": "Nature Incarnate",
     "kind": "event",
     "image": "cards/event/an_ominous_dawn.webp",
-    "eventClass": "terrorLevel"
+    "eventClass": "terrorLevel",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Angry Mobs",
@@ -58,7 +64,9 @@
     "image": "cards/fear/angry_mobs.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Attenuated Essence",
@@ -77,7 +85,9 @@
     "image": "cards/fear/avoid_the_dahan.webp",
     "tags": [
       "disruption"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Back Against the Wall",
@@ -97,7 +107,9 @@
     "tags": [
       "removal",
       "defensive"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Beset by Many Troubles",
@@ -106,7 +118,9 @@
     "image": "cards/fear/beset_by_many_troubles.webp",
     "tags": [
       "defensive"
-    ]
+    ],
+    "impact": 3,
+    "impactSource": "judgment"
   },
   {
     "name": "Blight Corrodes the Spirit",
@@ -123,7 +137,9 @@
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/bureaucrats_adjust_funding.webp",
-    "eventClass": "terrorLevel"
+    "eventClass": "terrorLevel",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Burn Brightest Before the End",
@@ -140,14 +156,18 @@
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/cities_rise.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Civic Engagement",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/civic_engagement.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Civil Unrest",
@@ -156,28 +176,36 @@
     "image": "cards/fear/civil_unrest.webp",
     "tags": [
       "weaken"
-    ]
+    ],
+    "impact": 3,
+    "impactSource": "judgment"
   },
   {
     "name": "Coastal Towns Multiply",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/coastal_towns_multiply.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Communities in Disarray",
     "expansion": "Promo2",
     "kind": "fear",
     "image": "cards/fear/communities_in_disarray.webp",
-    "tags": []
+    "tags": [],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "Cultural Assimilation",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/cultural_assimilation.webp",
-    "eventClass": "terrorLevel"
+    "eventClass": "terrorLevel",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Dahan Attack",
@@ -187,7 +215,9 @@
     "tags": [
       "removal",
       "displacement"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Dahan Enheartened",
@@ -196,7 +226,9 @@
     "image": "cards/fear/dahan_enheartened.webp",
     "tags": [
       "displacement"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Dahan Gain the Edge",
@@ -205,7 +237,9 @@
     "image": "cards/fear/dahan_gain_the_edge.webp",
     "tags": [
       "defensive"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Dahan on their Guard",
@@ -214,14 +248,18 @@
     "image": "cards/fear/dahan_on_their_guard.webp",
     "tags": [
       "defensive"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Dahan Raid",
     "expansion": "Basegame",
     "kind": "fear",
     "image": "cards/fear/dahan_raid.webp",
-    "tags": []
+    "tags": [],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "Dahan Reclaim Fishing Grounds",
@@ -230,7 +268,9 @@
     "image": "cards/fear/dahan_reclaim_fishing_grounds.webp",
     "tags": [
       "displacement"
-    ]
+    ],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "Dahan Threaten",
@@ -239,14 +279,18 @@
     "image": "cards/fear/dahan_threaten.webp",
     "tags": [
       "weaken"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Dahan Trade with the Invaders",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/dahan_trade_with_the_invaders.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Daunted by the Dahan",
@@ -256,7 +300,9 @@
     "tags": [
       "defensive",
       "disruption"
-    ]
+    ],
+    "impact": 3,
+    "impactSource": "judgment"
   },
   {
     "name": "Demoralized",
@@ -265,7 +311,9 @@
     "image": "cards/fear/demoralized.webp",
     "tags": [
       "defensive"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Depart the Dangerous Land",
@@ -274,7 +322,9 @@
     "image": "cards/fear/depart_the_dangerous_land.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Depopulation",
@@ -283,7 +333,9 @@
     "image": "cards/fear/depopulation.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Discord",
@@ -292,7 +344,9 @@
     "image": "cards/fear/discord.webp",
     "tags": [
       "weaken"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Disintegrating Ecosystem",
@@ -309,14 +363,18 @@
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/distant_exploration.webp",
-    "eventClass": "terrorLevel"
+    "eventClass": "terrorLevel",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Distracted by Local Troubles",
     "expansion": "Nature Incarnate",
     "kind": "fear",
     "image": "cards/fear/distracted_by_local_troubles.webp",
-    "tags": []
+    "tags": [],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "Downward Spiral",
@@ -333,7 +391,9 @@
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/eager_explorers.webp",
-    "eventClass": "terrorLevel"
+    "eventClass": "terrorLevel",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Emigration Accelerates",
@@ -342,7 +402,9 @@
     "image": "cards/fear/emigration_accelerates.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Erosion of Will",
@@ -360,7 +422,9 @@
     "expansion": "Nature Incarnate",
     "kind": "event",
     "image": "cards/event/ethereal_conjunction.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Explorers are Reluctant",
@@ -369,21 +433,27 @@
     "image": "cards/fear/explorers_are_reluctant.webp",
     "tags": [
       "disruption"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Far-Off Wars Touch the Island",
     "expansion": "Nature Incarnate",
     "kind": "event",
     "image": "cards/event/far_off_wars_touch_the_island.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Farmers Seek the Dahan for Aid",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/farmers_seek_the_dahan_for_aid.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Fear of the Unseen",
@@ -392,7 +462,9 @@
     "image": "cards/fear/fear_of_the_unseen.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Flee from Dangerous Lands",
@@ -402,7 +474,9 @@
     "tags": [
       "removal",
       "displacement"
-    ]
+    ],
+    "impact": 3,
+    "impactSource": "judgment"
   },
   {
     "name": "Flee the Pestilent Land",
@@ -411,49 +485,63 @@
     "image": "cards/fear/flee_the_pestilent_land.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Focused Farming",
     "expansion": "Nature Incarnate",
     "kind": "event",
     "image": "cards/event/focused_farming.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Fortune-Seekers",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/fortune_seekers.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Gradual Corruption",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/gradual_corruption.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Hard-Working Settlers",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/hard_working_settlers.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Harvest Bounty, Harvest Dust",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/harvest_bounty_harvest_dust.webp",
-    "eventClass": "stage"
+    "eventClass": "stage",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Heavy Farming",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/heavy_farming.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Immigration Slows",
@@ -462,14 +550,18 @@
     "image": "cards/fear/immigration_slows.webp",
     "tags": [
       "disruption"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Influx of Settlers",
     "expansion": "Nature Incarnate",
     "kind": "event",
     "image": "cards/event/influx_of_settlers.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Intensifying Exploitation",
@@ -486,7 +578,9 @@
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/interesting_discoveries.webp",
-    "eventClass": "stage"
+    "eventClass": "stage",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Invaders find the Land to their Liking",
@@ -501,21 +595,27 @@
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/invaders_surge_inland.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Invested Aristocracy",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/invested_aristocracy.webp",
-    "eventClass": "stage"
+    "eventClass": "stage",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Investigation of Dangers",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/investigation_of_dangers.webp",
-    "eventClass": "terrorLevel"
+    "eventClass": "terrorLevel",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Isolation",
@@ -524,28 +624,36 @@
     "image": "cards/fear/isolation.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "Lesser Spirits Imperiled",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/lesser_spirits_imperiled.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Life's Balance Tilts",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/life_s_balance_tilts.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Mapmakers Chart the Wild",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/mapmakers_chart_the_wild.webp",
-    "eventClass": "stage"
+    "eventClass": "stage",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Memory Fades to Dust",
@@ -564,14 +672,18 @@
     "image": "cards/fear/mimic_the_dahan.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Missionaries Arrive",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/missionaries_arrive.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Nerves Fray",
@@ -580,42 +692,54 @@
     "image": "cards/fear/nerves_fray.webp",
     "tags": [
       "weaken"
-    ]
+    ],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "New Species Spread",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/new_species_spread.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "No Bravery without Numbers",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/no_bravery_without_numbers.webp",
-    "eventClass": "stage"
+    "eventClass": "stage",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Numinous Crisis",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/numinous_crisis.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Outpaced",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/outpaced.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Overconfidence",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/overconfidence.webp",
-    "eventClass": "terrorLevel"
+    "eventClass": "terrorLevel",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Overseas Trade Seem Safer",
@@ -625,7 +749,9 @@
     "tags": [
       "defensive",
       "disruption"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Panic",
@@ -634,7 +760,9 @@
     "image": "cards/fear/panic.webp",
     "tags": [
       "weaken"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Panicked by Wild Beasts",
@@ -644,7 +772,9 @@
     "tags": [
       "weaken",
       "disruption"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Plan for Departure",
@@ -654,14 +784,18 @@
     "tags": [
       "defensive",
       "displacement"
-    ]
+    ],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "Population Rises",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/population_rises.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Power Corrodes the Spirit",
@@ -679,7 +813,9 @@
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/promising_farmland.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Promising Farmlands",
@@ -696,21 +832,27 @@
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/provincial_seat.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Pull Together in Adversity",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/pull_together_in_adversity.webp",
-    "eventClass": "terrorLevel"
+    "eventClass": "terrorLevel",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Putting down Roots",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/putting_down_roots.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Quarantine",
@@ -719,28 +861,36 @@
     "image": "cards/fear/quarantine.webp",
     "tags": [
       "disruption"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Relentless Optimism",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/relentless_optimism.webp",
-    "eventClass": "terrorLevel"
+    "eventClass": "terrorLevel",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Remnants of a Spirit's Heart",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/remnants_of_a_spirit_s_heart.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Resourceful Populace",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/resourceful_populace.webp",
-    "eventClass": "terrorLevel"
+    "eventClass": "terrorLevel",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Restlessness",
@@ -750,7 +900,9 @@
     "tags": [
       "removal",
       "displacement"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Retreat!",
@@ -759,21 +911,27 @@
     "image": "cards/fear/retreat.webp",
     "tags": [
       "displacement"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Rising Interest in the Island",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/rising_interest_in_the_island.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Sacred Sites under Threat",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/sacred_sites_under_threat.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Scapegoats",
@@ -782,21 +940,27 @@
     "image": "cards/fear/scapegoats.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Search for new Lands",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/search_for_new_lands.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Search for Unclaimed Land",
     "expansion": "Nature Incarnate",
     "kind": "event",
     "image": "cards/event/search_for_unclaimed_land.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Seek Company",
@@ -805,14 +969,18 @@
     "image": "cards/fear/seek_company.webp",
     "tags": [
       "displacement"
-    ]
+    ],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "Seek New Farmland",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/seek_new_farmland.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Seek Safety",
@@ -822,14 +990,18 @@
     "tags": [
       "removal",
       "displacement"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Seeking the Interior",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/seeking_the_interior.webp",
-    "eventClass": "stage"
+    "eventClass": "stage",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Sense of Dread",
@@ -838,7 +1010,9 @@
     "image": "cards/fear/sense_of_dread.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Shattered Fragments of Power",
@@ -855,7 +1029,9 @@
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/slave_rebellion.webp",
-    "eventClass": "adversary"
+    "eventClass": "adversary",
+    "valence": "beneficial",
+    "valenceSource": "judgment"
   },
   {
     "name": "Slow Dissolution of Will",
@@ -872,14 +1048,18 @@
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/smaller_ports_spring_up.webp",
-    "eventClass": "stage"
+    "eventClass": "stage",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Sprawl Contained by the Wilds",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/sprawl_contained_by_the_wilds.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Spreading Timidity",
@@ -889,14 +1069,18 @@
     "tags": [
       "defensive",
       "disruption"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Strange Tales attract Explorers",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/strange_tales_attract_explorers.webp",
-    "eventClass": "stage"
+    "eventClass": "stage",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Strong Earth Shatters Slowly",
@@ -915,7 +1099,9 @@
     "image": "cards/fear/struggles_over_farmland.webp",
     "tags": [
       "weaken"
-    ]
+    ],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "Supply Chains Abandoned",
@@ -924,7 +1110,9 @@
     "image": "cards/fear/supply_chains_abandoned.webp",
     "tags": [
       "disruption"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Tall Tales of Savagery",
@@ -933,21 +1121,27 @@
     "image": "cards/fear/tall_tales_of_savagery.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 3,
+    "impactSource": "judgment"
   },
   {
     "name": "Temporary Truce",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/temporary_truce.webp",
-    "eventClass": "terrorLevel"
+    "eventClass": "terrorLevel",
+    "valence": "beneficial",
+    "valenceSource": "judgment"
   },
   {
     "name": "Terror Spikes Upwards",
     "expansion": "Nature Incarnate",
     "kind": "event",
     "image": "cards/event/terror_spikes_upwards.webp",
-    "eventClass": "terrorLevel"
+    "eventClass": "terrorLevel",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "The Border of Life and Death",
@@ -965,14 +1159,18 @@
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/the_frontier_calls.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "The Struggles of Growth",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/the_struggles_of_growth.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Theological Strife",
@@ -981,7 +1179,9 @@
     "image": "cards/fear/theological_strife.webp",
     "tags": [
       "weaken"
-    ]
+    ],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "Thriving Communities",
@@ -1008,14 +1208,18 @@
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/thriving_trade.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Tight-Knit Communities",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/tight_knit_communities.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Tipping Point",
@@ -1034,7 +1238,9 @@
     "image": "cards/fear/too_many_monsters.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 3,
+    "impactSource": "judgment"
   },
   {
     "name": "Trade Suffers",
@@ -1043,7 +1249,9 @@
     "image": "cards/fear/trade_suffers.webp",
     "tags": [
       "disruption"
-    ]
+    ],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "Tread Carefully",
@@ -1052,7 +1260,9 @@
     "image": "cards/fear/tread_carefully.webp",
     "tags": [
       "disruption"
-    ]
+    ],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "Unnatural Proliferation",
@@ -1071,7 +1281,9 @@
     "image": "cards/fear/unrest.webp",
     "tags": [
       "weaken"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Unsettled",
@@ -1081,7 +1293,9 @@
     "tags": [
       "removal",
       "disruption"
-    ]
+    ],
+    "impact": 2,
+    "impactSource": "judgment"
   },
   {
     "name": "Untended Land Crumbles",
@@ -1100,21 +1314,27 @@
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/urban_development.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Visions Out of Time",
     "expansion": "Nature Incarnate",
     "kind": "event",
     "image": "cards/event/visions_out_of_time.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "War Touches the Island's Shores",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/war_touches_the_island_s_shores.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Wary of the Interior",
@@ -1123,34 +1343,44 @@
     "image": "cards/fear/wary_of_the_interior.webp",
     "tags": [
       "removal"
-    ]
+    ],
+    "impact": 1,
+    "impactSource": "judgment"
   },
   {
     "name": "Wave of Reconnaissance",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/wave_of_reconnaissance.webp",
-    "eventClass": "stage"
+    "eventClass": "stage",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Well-Prepared Explorers",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/well_prepared_explorers.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "harmful",
+    "valenceSource": "judgment"
   },
   {
     "name": "Wounded Lands Attract Explorers",
     "expansion": "Jagged Earth",
     "kind": "event",
     "image": "cards/event/wounded_lands_attract_explorers.webp",
-    "eventClass": "healthyBlightedLand"
+    "eventClass": "healthyBlightedLand",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   },
   {
     "name": "Years of Little Rain",
     "expansion": "Branch & Claw",
     "kind": "event",
     "image": "cards/event/years_of_little_rain.webp",
-    "eventClass": "choice"
+    "eventClass": "choice",
+    "valence": "mixed",
+    "valenceSource": "judgment"
   }
 ]
