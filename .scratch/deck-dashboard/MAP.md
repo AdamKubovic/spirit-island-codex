@@ -55,6 +55,12 @@ Standing constraints for every session on this map:
 
 <!-- one line per closed ticket: gist + link -->
 
+- Innate thresholds ARE sourceable for all 37 spirits (wiki raw wikitext + on-disk TTS JSON
+  cross-check + local panel images; aspects via wiki text + aspect card images) — ~1.5 sessions
+  of transcription. Unblocks the #05 scope decision.
+  [#01](issues/01-innate-thresholds-sourcing.md), findings in
+  [innate-thresholds-research.md](innate-thresholds-research.md).
+
 ## Not yet specified
 
 - Cross-deck visual consistency — how the four segment views share one visual language and
