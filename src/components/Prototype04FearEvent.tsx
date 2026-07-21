@@ -18,6 +18,7 @@
 import { useEffect, useState } from 'react'
 import type { OtherCard } from '../domain/types'
 import { groupOtherCards } from '../domain/otherCardArrange'
+import { CardViewer } from './CardViewer'
 
 export type FearImpact = 1 | 2 | 3
 export type EventValence = 'harmful' | 'mixed' | 'beneficial'
@@ -295,6 +296,10 @@ function VariantD({ rated, kind, drawNoun }: { rated: Rated[]; kind: 'fear' | 'e
   const groups = groupOtherCards(rated.map((r) => r.card), 'subtype')
   // one selection: a bucket alone (group=null) or a bucket×group intersection
   const [picked, setPicked] = useState<{ bucket: string; group: string | null } | null>(null)
+  // round 3: hover a chip → floating card image preview; click → the app's CardViewer enlarge
+  const [hovered, setHovered] = useState<{ card: OtherCard; x: number; y: number } | null>(null)
+  const [enlarged, setEnlarged] = useState<OtherCard | null>(null)
+  const imgBase = import.meta.env.BASE_URL
   const pct = (n: number) => `${total ? Math.round((n / total) * 100) : 0}%`
   function toggle(bucket: string, group: string | null) {
     setPicked((p) => (p && p.bucket === bucket && p.group === group ? null : { bucket, group }))
@@ -317,16 +322,39 @@ function VariantD({ rated, kind, drawNoun }: { rated: Rated[]; kind: 'fear' | 'e
       </div>
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
         {pickedCards.map(({ card, bucket, color }) => (
-          <span
+          <button
             key={card.name}
+            type="button"
             title={`${card.name} — ${bucket} (${card.expansion})`}
-            style={{ fontSize: 11, color: 'var(--deck-text)', background: 'var(--deck-panel)', border: '1px solid var(--deck-line-soft)', borderLeft: `4px solid ${color}`, borderRadius: 5, padding: '3px 7px', whiteSpace: 'nowrap' }}
+            onClick={() => setEnlarged(card)}
+            onMouseEnter={(e) => {
+              const r = (e.currentTarget as HTMLElement).getBoundingClientRect()
+              setHovered({ card, x: r.left, y: r.bottom })
+            }}
+            onMouseLeave={() => setHovered(null)}
+            style={{ fontSize: 11, color: 'var(--deck-text)', background: 'var(--deck-panel)', border: '1px solid var(--deck-line-soft)', borderLeft: `4px solid ${color}`, borderRadius: 5, padding: '3px 7px', whiteSpace: 'nowrap', cursor: 'zoom-in' }}
           >
             {card.name}
-          </span>
+          </button>
         ))}
       </div>
     </div>
+  )
+  const hoverPreview = hovered && !enlarged && (
+    <img
+      src={`${imgBase}${hovered.card.image}`}
+      alt={hovered.card.name}
+      style={{
+        position: 'fixed',
+        left: Math.min(hovered.x, window.innerWidth - 260),
+        top: Math.min(hovered.y + 6, window.innerHeight - 360),
+        width: 240,
+        borderRadius: 10,
+        boxShadow: '0 8px 28px rgba(0,0,0,0.6)',
+        zIndex: 40,
+        pointerEvents: 'none',
+      }}
+    />
   )
   return (
     <div>
@@ -399,6 +427,8 @@ function VariantD({ rated, kind, drawNoun }: { rated: Rated[]; kind: 'fear' | 'e
           )
         })}
       </div>
+      {hoverPreview}
+      {enlarged && <CardViewer src={`${imgBase}${enlarged.image}`} alt={enlarged.name} onClose={() => setEnlarged(null)} />}
     </div>
   )
 }
