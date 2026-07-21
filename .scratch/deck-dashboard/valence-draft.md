@@ -42,7 +42,7 @@ for the owner's attention — an unflagged row isn't automatically correct, just
 | Overseas Trade Seem Safer | 2 | Solid Defend values (up to 9) across all Coastal lands plus a Build-block at II/III — reliable multi-land defense, not a blowout swing. | |
 | Panic | 2 | Adds Damage and reduces invader Health board-wide at II/III — classic dependable weaken, scales but never removes bulk invaders outright, matching the rubric's own solid example. | |
 | Panicked by Wild Beasts | 2 | Adds Damage plus skips Explore/Build (II) or all Actions (III) in Beast lands/adjacent — meaningful tempo loss across a spreading zone. | |
-| Plan for Departure | 1 | Small Gather (1-2 pieces) plus modest Defend (2-4) in Coastal lands only — a narrow, low-magnitude defensive tool. | **flag** — `defensive`+`displacement` tag pair, rated weak despite two disruptive tags |
+| Plan for Departure | 1 | Small Gather (1-2 pieces) plus modest Defend (2-4) in Coastal lands only — a narrow, low-magnitude defensive tool. | ratified — owner: nice tag combination but relatively weak given the Coastal-only restriction |
 | Quarantine | 2 | Blocks Explore in Coastal lands and, at III, stops invader Actions entirely in Ocean-adjacent lands — reliable board-wide tempo denial. | |
 | Restlessness | 2 | Pushes, then at III removes up to 3 invaders from a single land not matching Build — solid single-land chunk removal each game. | |
 | Retreat! | 2 | Pushes up to 2-3 Explorers/Towns from one Inland land, and at III pushes any number from one land — a dependable single-land tempo swing. | |
@@ -71,17 +71,17 @@ for the owner's attention — an unflagged row isn't automatically correct, just
 | An Ominous Dawn | mixed | Depends on how many Power Cards in play generate Fear thresholds — Stage I removes Invader health, Stage II/III adds Fear cards, so it swings with board/deck state rather than favoring one side. | |
 | Bureaucrats Adjust Funding | mixed | With many Towns/Cities, Build Cards skip a land (favorable); with few, it causes extra Builds (unfavorable) — the two thresholds pull opposite directions depending on board state. | |
 | Cities Rise | harmful | Healthy side upgrades Towns to Cities (invader advancement) and Blighted side makes Blight easier to add — both branches worsen the invaders' position for players. | |
-| Civic Engagement | mixed | Healthy side removes a Dahan or increases Ravage damage (harmful either way), but Blighted side only triggers a further Blight add on high-Blight boards — net effect swings with board state. | **flag** — non-choice card rated mixed; Healthy branch reads uniformly harmful with no favorable option, worth a second look |
+| Civic Engagement | harmful | Healthy side removes a Dahan or increases Ravage damage (harmful either way); Blighted side only triggers a further Blight add on high-Blight boards — no branch favors the players. | ratified — owner agreed, amended from mixed |
 | Coastal Towns Multiply | harmful | Healthy side adds a Town, Blighted side adds Ravage damage where there's no Dahan — both branches straightforwardly favor the invaders. | |
 | Cultural Assimilation | harmful | Healthy side converts a Dahan into an Explorer, Blighted side does direct damage to Dahan ignoring Defend — both branches directly hurt the players' Dahan presence. | **flag** — `terrorLevel` cards are usually state-dependent, but here both thresholds are uniformly anti-Dahan |
 | Dahan Trade with the Invaders | mixed | Free option pauses Dahan participation; the two paid options trade Energy/Power Cards for either generating Fear or gaining permanent Dahan Defend — a genuine cost/benefit choice. | |
-| Distant Exploration | mixed | Stage I extends Explore range, Stage II/III adds heavy Ravage damage — both thresholds read harmful with no clearly favorable branch. | **flag** — `terrorLevel` rated mixed but both thresholds harm players; reconsider toward harmful |
-| Eager Explorers | mixed | Stage I adds an Explorer after a Build; Stage II/III shifts damage from land to Dahan where present — both thresholds read harmful with no clear favorable branch. | **flag** — `terrorLevel` rated mixed but both thresholds harm players; reconsider toward harmful |
+| Distant Exploration | harmful | Stage I extends Explore range, Stage II/III adds heavy Ravage damage — both thresholds harm players with no favorable branch. | ratified — owner agreed, amended from mixed |
+| Eager Explorers | harmful | Stage I adds an Explorer after a Build; Stage II/III shifts damage from land to Dahan where present — both thresholds harm players with no favorable branch. | ratified — owner agreed, amended from mixed |
 | Ethereal Conjunction | mixed | "Endure" costs a Sacred Site and Energy while "Seek to Control" grants a free extra Power Card use but discards the hand — a genuine risk/reward trade-off. | |
 | Far-Off Wars Touch the Island | mixed | Adds a Fear card (favorable) but then forces a choice between heavy Invader/Blight escalation or destroying only one Town with no Fear gain — trades Fear gain against Blight/Invader growth. | |
 | Farmers Seek the Dahan for Aid | mixed | "Spurn" damages Dahan and adds Blight but weakens Invaders; "Teach" adds a Town but converts a future Ravage into a Build — a genuine two-sided trade-off. | |
 | Focused Farming | harmful | Healthy side adds both an Explorer and a Town; Blighted side forces Spirits to Forget a Power Card or lose Energy/Sacred Site — both branches cost the players. | |
-| Fortune-Seekers | mixed | Healthy side redirects the next Explore Card to match all non-Town/City lands (swingy by layout); Blighted side only makes Blight easier without Dahan present. | **flag** — Healthy branch arguably net-harmful rather than genuinely mixed; worth a second look |
+| Fortune-Seekers | harmful | Healthy side redirects the next Explore Card to match all non-Town/City lands (net-harmful even where swingy by layout); Blighted side only makes Blight easier without Dahan present — no branch favors the players. | ratified — owner agreed, amended from mixed |
 | Gradual Corruption | mixed | Healthy side adds Blight but Spirits can pay Energy to fully prevent it; Blighted side removes Beasts/Wilds from Blighted lands, a minor player-favoring cleanup. | **flag** — Blighted branch reads closer to neutral/minor than clearly favorable |
 | Hard-Working Settlers | mixed | "Act Cautiously" adds an Explorer and forces an extra Ravage; "Create Unnerving Distractions" skips Ravages and removes Stage II/III cards from the deck at the cost of Fear — a genuine high-stakes trade. | |
 | Harvest Bounty, Harvest Dust | harmful | Healthy-island forces an extra Ravage; Blighted-island pushes a Town off the board only if already saturated (a wash at best); Stage III adds Blight unless Spirits pay a heavy token cost — nets harmful. | **flag** — the Blighted-side "push a Town" branch is arguably player-favorable; confirm it's not mixed |
@@ -134,9 +134,22 @@ for the owner's attention — an unflagged row isn't automatically correct, just
 
 ## Cross-check summary
 
-16 of 115 rows flagged for owner attention: 1 fear card (a `defensive`+`displacement`-tagged
-card drafted weak, an unusual tag/rating combination) and 15 event cards — all `terrorLevel` or
-`healthyBlightedLand` (non-`choice`) cards drafted **mixed**, flagged because one of their two
-branches may read more one-sidedly (harmful or beneficial) than the draft credits it. No fear
-or event card was drafted at an extreme (fear 1 or 3; event harmful/beneficial) that its
-tags/eventClass cross-check disagrees with, beyond the single flagged fear row.
+16 of 115 rows were originally flagged for owner attention: 1 fear card (a
+`defensive`+`displacement`-tagged card drafted weak, an unusual tag/rating combination) and 15
+event cards — all `terrorLevel` or `healthyBlightedLand` (non-`choice`) cards drafted **mixed**,
+flagged because one of their two branches may read more one-sidedly (harmful or beneficial)
+than the draft credited it.
+
+**Partial ratification (this session):** owner reviewed 5 of the 16 flagged rows.
+- **Plan for Departure** — confirmed weak (1); the Coastal-only restriction caps the effect
+  despite the disruptive tag pair.
+- **Civic Engagement**, **Distant Exploration**, **Eager Explorers**, **Fortune-Seekers** —
+  amended from mixed to **harmful**, agreeing that neither branch actually favors the players.
+
+**Still open** — 11 flagged event rows awaiting owner review: Cultural Assimilation (owner
+should confirm harmful, not mixed), Gradual Corruption, Harvest Bounty Harvest Dust, Influx of
+Settlers, No Bravery without Numbers, Population Rises, Pull Together in Adversity, Relentless
+Optimism, Sprawl Contained by the Wilds, The Struggles of Growth, Wounded Lands Attract
+Explorers. None of the 99 unflagged rows have been reviewed row-by-row yet either — full
+ratification per [#18](issues/18-valence-ratification.md) still requires the owner to confirm
+all 115 rows before anything lands on `other-cards.json`.
