@@ -151,16 +151,32 @@ function ElementIcon({ element }: { element: Element }) {
   return <img className="deckchart-b-elicon" src={`${import.meta.env.BASE_URL}elements/${ELEMENT_ICON[element]}.webp`} alt={element} title={element} />
 }
 
-/** Set-size palette (owner: 1 / 2 / 3+ element sets read as different colors). */
-function setSizeClass(size: number): string {
-  if (size === 0) return 'deckchart-b-size0'
-  if (size === 1) return 'deckchart-b-size1'
-  if (size === 2) return 'deckchart-b-size2'
-  return 'deckchart-b-size3'
+/** Bar colours matched to the element icons' own art (owner: moon whitish, fire orange-red, …).
+ * Styling judgment only — near `PlaceholderArt`'s map but tuned to the icon set. */
+const ELEMENT_BAR_COLOR: Record<Element, string> = {
+  Sun: '#e8b923',
+  Moon: '#cdd2e4',
+  Fire: '#d4502e',
+  Air: '#a7c7e7',
+  Water: '#3a7ca5',
+  Earth: '#8a5a3b',
+  Plant: '#4c8c4a',
+  Animal: '#a53232',
 }
 
-type SetSizeBucket = '1' | '2' | '3+'
+/** Set-size palette, round 3 (owner: sets of ≤2, 3, 4, 5 each get their own colour — 1-element
+ * sets barely exist, so they share ≤2's). Size 0 is the "No element" set, kept dim. */
+function setSizeClass(size: number): string {
+  if (size === 0) return 'deckchart-b-size0'
+  if (size <= 2) return 'deckchart-b-size2'
+  if (size === 3) return 'deckchart-b-size3'
+  if (size === 4) return 'deckchart-b-size4'
+  return 'deckchart-b-size5'
+}
+
+type SetSizeBucket = '≤2' | '3' | '4' | '5+'
 type RowSort = 'count' | 'alpha'
+type Unit = 'count' | 'percent'
 
 /** ROUND 03 follow-up rounds (owner picked B, then asked for): element icons instead of words,
  * set-size colour coding (1 / 2 / 3+), pill-styled filters, element-row sort (count/alphabetical),
@@ -171,6 +187,7 @@ function VariantB({ composition, highlightElements }: { composition: DeckComposi
   const [minCount, setMinCount] = useState(1)
   const [topN, setTopN] = useState(20)
   const [rowSort, setRowSort] = useState<RowSort>('count')
+  const [unit, setUnit] = useState<Unit>('count')
 
   function toggleElement(element: Element) {
     setMustInclude((prev) => {
@@ -192,8 +209,10 @@ function VariantB({ composition, highlightElements }: { composition: DeckComposi
 
   function inSizeBuckets(size: number): boolean {
     if (sizeBuckets.size === 0) return true
-    return sizeBuckets.has(size >= 3 ? '3+' : size === 2 ? '2' : '1') && size > 0
+    return sizeBuckets.has(size >= 5 ? '5+' : size === 4 ? '4' : size === 3 ? '3' : '≤2')
   }
+
+  const fmt = (n: number, of: number) => (unit === 'percent' ? `${of === 0 ? 0 : Math.round((n / of) * 100)}%` : String(n))
 
   const allCombos = composition.combinations
   const combos = allCombos
@@ -225,11 +244,11 @@ function VariantB({ composition, highlightElements }: { composition: DeckComposi
           </button>
         ))}
         <span className="deckchart-b-filterlabel">Elements per set</span>
-        {(['1', '2', '3+'] as const).map((bucket) => (
+        {(['≤2', '3', '4', '5+'] as const).map((bucket) => (
           <button
             key={bucket}
             type="button"
-            className={`deckchart-b-sizechip ${setSizeClass(bucket === '3+' ? 3 : Number(bucket))}`}
+            className={`deckchart-b-sizechip ${setSizeClass(bucket === '5+' ? 5 : bucket === '≤2' ? 2 : Number(bucket))}`}
             aria-pressed={sizeBuckets.has(bucket)}
             data-active={sizeBuckets.has(bucket)}
             onClick={() => toggleSizeBucket(bucket)}
@@ -253,12 +272,21 @@ function VariantB({ composition, highlightElements }: { composition: DeckComposi
             A–Z
           </button>
         </div>
+        <div className="deckchart-b-sort" role="group" aria-label="Counts or percentages">
+          <button type="button" data-active={unit === 'count'} onClick={() => setUnit('count')}>
+            Counts
+          </button>
+          <button type="button" data-active={unit === 'percent'} onClick={() => setUnit('percent')}>
+            %
+          </button>
+        </div>
       </div>
       <p className="deckchart-muted">
         Showing {combos.length} of {allCombos.length} element sets ({shownCards} of {composition.deckSize} cards).
       </p>
-      <div className="deckchart-b-scroll">
-        <div className="deckchart-b-grid" style={{ ['--combos' as string]: combos.length }}>
+      <div className="deckchart-b-panel">
+        <div className="deckchart-b-scroll">
+          <div className="deckchart-b-grid" style={{ ['--combos' as string]: combos.length }}>
           {/* top-left corner is empty; column chart spans the combo columns */}
           <div className="deckchart-b-corner" />
           {combos.map((g) => (
@@ -272,9 +300,12 @@ function VariantB({ composition, highlightElements }: { composition: DeckComposi
               <div className={isHighlighted(element, highlightElements) ? 'deckchart-b-rowlabel deckchart-b-rowlabel-highlight' : 'deckchart-b-rowlabel'}>
                 <ElementIcon element={element} />
                 <span className="deckchart-b-totaltrack">
-                  <span className="deckchart-b-totalfill" style={{ width: `${(countFor(element) / totalMax) * 100}%` }} />
+                  <span
+                    className="deckchart-b-totalfill"
+                    style={{ width: `${(countFor(element) / totalMax) * 100}%`, background: ELEMENT_BAR_COLOR[element] }}
+                  />
                 </span>
-                <span className="deckchart-b-totalcount">{countFor(element)}</span>
+                <span className="deckchart-b-totalcount">{fmt(countFor(element), composition.deckSize)}</span>
               </div>
               {combos.map((g) => (
                 <span
@@ -290,13 +321,58 @@ function VariantB({ composition, highlightElements }: { composition: DeckComposi
               ))}
             </div>
           ))}
+          </div>
         </div>
       </div>
       <p className="deckchart-muted">
-        Columns are exact element sets, tallest first — <span className="deckchart-b-legend deckchart-b-size1">1 element</span>,{' '}
-        <span className="deckchart-b-legend deckchart-b-size2">2 elements</span>, <span className="deckchart-b-legend deckchart-b-size3">3+</span>;
-        left bars are each element's deck total.
+        Columns are exact element sets, tallest first — <span className="deckchart-b-legend deckchart-b-size2">≤2 elements</span>,{' '}
+        <span className="deckchart-b-legend deckchart-b-size3">3</span>, <span className="deckchart-b-legend deckchart-b-size4">4</span>,{' '}
+        <span className="deckchart-b-legend deckchart-b-size5">5+</span>; left bars are each element's deck total.
       </p>
+
+      <h3>Facets</h3>
+      <div className="dashboard-facets">
+        <div className="dashboard-facet">
+          <h4>Speed</h4>
+          <div className="deckchart-b-speedrow">
+            <span className="deckchart-b-speeditem">
+              <img className="deckchart-b-speedicon" src={`${import.meta.env.BASE_URL}elements/fast.png`} alt="Fast" title="Fast" />
+              {fmt(composition.speedSplit.fast, composition.deckSize)}
+            </span>
+            <div className="dashboard-facet-bar">
+              <span
+                className="dashboard-facet-fast"
+                style={{ width: `${composition.deckSize === 0 ? 0 : (composition.speedSplit.fast / composition.deckSize) * 100}%` }}
+              />
+              <span
+                className="dashboard-facet-slow"
+                style={{ width: `${composition.deckSize === 0 ? 0 : (composition.speedSplit.slow / composition.deckSize) * 100}%` }}
+              />
+            </div>
+            <span className="deckchart-b-speeditem">
+              <img className="deckchart-b-speedicon" src={`${import.meta.env.BASE_URL}elements/slow.png`} alt="Slow" title="Slow" />
+              {fmt(composition.speedSplit.slow, composition.deckSize)}
+            </span>
+          </div>
+        </div>
+        <div className="dashboard-facet">
+          <h4>Cost</h4>
+          <div className="dashboard-cost-bars">
+            {composition.costDistribution.map(({ cost, count }) => (
+              <div className="dashboard-cost-row" key={cost}>
+                <span className="dashboard-cost-label">{cost}</span>
+                <span className="deck-element-track">
+                  <span
+                    className="deck-element-fill"
+                    style={{ width: `${(count / Math.max(1, ...composition.costDistribution.map((b) => b.count))) * 100}%` }}
+                  />
+                </span>
+                <span className="deck-element-count">{fmt(count, composition.deckSize)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

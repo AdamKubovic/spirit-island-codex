@@ -16,6 +16,9 @@ import { DeckPoolBreakdown } from './DeckPoolBreakdown'
 const powerCards = powerCardsData as PowerCard[]
 const MINOR_CARDS = powerCards.filter((c) => c.kind === 'minor')
 const MAJOR_CARDS = powerCards.filter((c) => c.kind === 'major')
+// ROUND 03 — THROWAWAY, delete with DeckChartRound.tsx (owner asked to try folding a spirit's
+// unique powers into the Minor deck's composition).
+const UNIQUE_CARDS = powerCards.filter((c) => c.kind === 'unique')
 
 const otherCards = otherCardsData as OtherCard[]
 const FEAR_CARDS = otherCards.filter((c) => c.kind === 'fear')
@@ -76,6 +79,7 @@ export function DashboardTab({ initialSegment }: { initialSegment?: Segment } = 
   // ROUND 03 (deck-dashboard #03) — THROWAWAY, delete with DeckChartRound.tsx. Null without
   // the `?deckchart=` param, so the shipped view stays byte-identical.
   const [chartVariant, setChartVariant] = useState(readDeckChartVariant)
+  const [includeUniques, setIncludeUniques] = useState(false)
 
   const highlightElements = useMemo(() => {
     if (!spiritId) return undefined
@@ -92,9 +96,16 @@ export function DashboardTab({ initialSegment }: { initialSegment?: Segment } = 
     })
   }
 
+  // ROUND 03: optionally folds the picked spirit's unique powers into the Minor pool — a
+  // hypothetical the owner wants to explore, clearly not how the physical deck is built
+  // (uniques start in hand, they are never shuffled into the minor deck).
+  const spiritUniques = useMemo(
+    () => (chartVariant && includeUniques && spiritId ? UNIQUE_CARDS.filter((c) => c.spirit === spiritId) : []),
+    [chartVariant, includeUniques, spiritId],
+  )
   const minorComposition = useMemo(
-    () => computeDeckComposition(MINOR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), drawCount),
-    [checkedExpansions, drawCount],
+    () => computeDeckComposition([...MINOR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), ...spiritUniques], drawCount),
+    [checkedExpansions, drawCount, spiritUniques],
   )
   const majorComposition = useMemo(
     () => computeDeckComposition(MAJOR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), drawCount),
@@ -145,6 +156,12 @@ export function DashboardTab({ initialSegment }: { initialSegment?: Segment } = 
           ))}
         </select>
       </label>
+      {chartVariant && spiritId && (
+        <label className="dashboard-spirit-picker">
+          <input type="checkbox" checked={includeUniques} onChange={(e) => setIncludeUniques(e.target.checked)} />
+          Fold this spirit's unique powers into the Minor deck (hypothetical — uniques start in hand)
+        </label>
+      )}
 
       <div className="card-view-switch" role="group" aria-label="Deck">
         {SEGMENTS.map((s) => (
@@ -185,8 +202,12 @@ export function DashboardTab({ initialSegment }: { initialSegment?: Segment } = 
             </>
           )}
 
-          <h3>Facets</h3>
-          <DeckFacets composition={activeComposition} />
+          {chartVariant !== 'B' && (
+            <>
+              <h3>Facets</h3>
+              <DeckFacets composition={activeComposition} />
+            </>
+          )}
         </div>
       )}
       {segment === 'Fear' && (
