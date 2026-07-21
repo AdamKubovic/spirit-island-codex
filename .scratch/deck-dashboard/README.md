@@ -18,6 +18,12 @@ charted the effort — its Notes record what was settled with the owner and why)
   vertical slices. **06 (walking skeleton) blocks everything else**; after it lands, 07–12
   are all independently takeable. Work them with `/implement`, flipping `Status:` to `done`
   as they merge.
+- **14–20 — implementation tickets for `PRD-2.md`** (the follow-up spec: valence views +
+  element-gap odds), sliced via `/to-tickets` 2026-07-21. Frontier opens three-wide: 14
+  (gap-odds block), 15 (innate transcription), 17 (valence rubric + draft) are independent.
+  16 needs 14+15; **18 is the `ready-for-human` ratification gate** (needs 17); the views 19
+  then 20 sit behind 18 — they must never ship on stub ratings. (13 is a parked brainstorm,
+  not part of this pipeline.)
 
 The repo's data rule applies as usual, but note this feature adds **no new datasets** —
 the one judgment dataset in sight (fear/event valence) is exactly what ticket 02 exists to
