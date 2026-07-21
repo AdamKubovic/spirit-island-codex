@@ -8,8 +8,10 @@ import { collectionStore } from '../../domain/collectionStore'
 import { tierStore } from '../../domain/tierStore'
 import { computeDeckComposition } from '../../domain/deckComposition'
 import type { FearCard } from '../../domain/impactBreakdown'
+import type { EventCard } from '../../domain/valenceBreakdown'
 import { DashboardTab } from '../DashboardTab'
 import { DeckUpset } from '../DeckUpset'
+import { EventValenceView } from '../EventValenceView'
 import { FearImpactView } from '../FearImpactView'
 import { RecommenderMain, RecommenderProvider, RecommenderSide } from '../Recommender'
 import { Settings } from '../Settings'
@@ -344,17 +346,37 @@ describe('app smoke', () => {
     expect(withDrill).toContain('Clear')
   })
 
-  it('the Dashboard Event segment shows pool size, a by-class and by-expansion breakdown, with no valence classification (deck-dashboard #12)', () => {
+  it('the Dashboard Event segment shows the variant-D valence view: stat tiles, stacked bar, class facet, no by-expansion facet (deck-dashboard #20)', () => {
     const html = renderToStaticMarkup(<DashboardTab initialSegment="Event" />)
     expect(html).toContain('cards')
+    expect(html).toContain('this pool&#x27;s share')
+    expect(html).toContain('rating-tiles')
+    expect(html).toContain('Harmful')
+    expect(html).toContain('Mixed')
+    expect(html).toContain('Beneficial')
+    expect(html).toContain('rating-stacked-bar')
     expect(html).toContain('By event class')
     for (const eventClass of EVENT_CLASSES) {
       expect(html).toContain(subtypeLabel(eventClass))
     }
-    expect(html).toContain('By expansion')
+    expect(html).not.toContain('By expansion')
+    expect(html).not.toContain('rating-chip-drill')
     expect(html).not.toContain('Event segment — coming soon.')
-    expect(html.toLowerCase()).not.toContain('good')
-    expect(html.toLowerCase()).not.toContain('bad')
+  })
+
+  it('the Event valence view drills a stat tile into its exact cards, with a clear control (deck-dashboard #20)', () => {
+    const cards: EventCard[] = [
+      { name: 'Harmful One', expansion: 'Base', kind: 'event', image: 'cards/event/harmful_one.webp', eventClass: 'choice', valence: 'harmful', valenceSource: 'judgment' },
+      { name: 'Beneficial One', expansion: 'Base', kind: 'event', image: 'cards/event/beneficial_one.webp', eventClass: 'stage', valence: 'beneficial', valenceSource: 'judgment' },
+    ]
+    const html = renderToStaticMarkup(<EventValenceView cards={cards} />)
+    expect(html).not.toContain('rating-chip-drill')
+
+    const withDrill = renderToStaticMarkup(<EventValenceView cards={cards} initialPicked={{ valence: 'harmful', eventClass: null }} />)
+    expect(withDrill).toContain('rating-chip-drill')
+    expect(withDrill).toContain('Harmful One')
+    expect(withDrill).not.toContain('Beneficial One')
+    expect(withDrill).toContain('Clear')
   })
 
   it('the Dashboard Event segment states plainly that a base-game-only set has no events, rather than an error or blank screen (deck-dashboard #12)', () => {

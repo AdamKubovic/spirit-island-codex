@@ -7,13 +7,12 @@ import { collectionStore } from '../domain/collectionStore'
 import { computeDeckComposition } from '../domain/deckComposition'
 import type { FearCard } from '../domain/impactBreakdown'
 import { innateThresholdsFor } from '../domain/innateThresholds'
-import { groupOtherCards } from '../domain/otherCardArrange'
 import { EXPANSIONS, type ExpansionName, type InnatePower, type OtherCard, type PowerCard, type Spirit } from '../domain/types'
 import { normalizeExpansion } from './tagColors'
 import { DeckFacets } from './DeckFacets'
 import { DeckGapOdds } from './DeckGapOdds'
-import { DeckPoolBreakdown } from './DeckPoolBreakdown'
 import { DeckUpset, type DeckUnit } from './DeckUpset'
+import { EventValenceView } from './EventValenceView'
 import { FearImpactView } from './FearImpactView'
 
 const powerCards = powerCardsData as PowerCard[]
@@ -68,9 +67,9 @@ function isChecked(expansion: string, checked: ReadonlySet<ExpansionName>): bool
  * contains them (uniques start in hand). Fear renders the ratified variant-D impact view (#19):
  * headline stat tiles, a stacked impact bar, the by-tag facet as clickable mini stacked bars, and
  * click-to-drill card chips — no by-expansion facet (owner's call from the prototype). Event
- * still reuses the existing `groupOtherCards` seam for its by-class and by-expansion breakdowns
- * pending its own valence view (#20). Fear's framing copy states the pool is a hidden-subset
- * fact, never a card counter (PRD user story 25); Event's empty state (a base-game-only set)
+ * renders the same variant-D valence view (#20) on the harmful/mixed/beneficial axis, sharing
+ * #19's stacked-bar, chip-list and hover/enlarge components. Fear's framing copy states the pool
+ * is a hidden-subset fact, never a card counter (PRD user story 25); Event's empty state (a base-game-only set)
  * reads as a rule of the game, not an error (PRD user story 26). Holds no game state — a reload
  * always reverts to the Collection default, N=4, no spirit, counts (PRD user story 28).
  */
@@ -122,8 +121,6 @@ export function DashboardTab({ initialSegment, initialSpiritId }: { initialSegme
   const fearCardsInPlay = useMemo(() => FEAR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), [checkedExpansions])
 
   const eventCardsInPlay = useMemo(() => EVENT_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), [checkedExpansions])
-  const eventByClass = useMemo(() => groupOtherCards(eventCardsInPlay, 'subtype'), [eventCardsInPlay])
-  const eventByExpansion = useMemo(() => groupOtherCards(eventCardsInPlay, 'expansion'), [eventCardsInPlay])
 
   return (
     <section>
@@ -218,13 +215,7 @@ export function DashboardTab({ initialSegment, initialSpiritId }: { initialSegme
           {eventCardsInPlay.length === 0 ? (
             <p className="dashboard-empty-rule">No events in this set — the base game ships none; this reads as a rule of the game, not a bug.</p>
           ) : (
-            <>
-              <h3>By event class</h3>
-              <DeckPoolBreakdown groups={eventByClass} poolSize={eventCardsInPlay.length} />
-
-              <h3>By expansion</h3>
-              <DeckPoolBreakdown groups={eventByExpansion} poolSize={eventCardsInPlay.length} />
-            </>
+            <EventValenceView cards={eventCardsInPlay} />
           )}
         </div>
       )}
