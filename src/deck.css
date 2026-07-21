@@ -842,7 +842,7 @@ button:disabled {
   place-items: center;
   min-height: 59px;
   font: 800 1.4rem/1 var(--deck-mono);
-  color: #10141a;
+  color: var(--deck-bg);
   border-radius: 6px;
 }
 .tier-tiles {
@@ -865,7 +865,7 @@ button:disabled {
   aspect-ratio: 5 / 7;
   object-fit: cover;
   border-radius: 4px;
-  background: #17202a;
+  background: var(--deck-panel-2);
 }
 .tier-tile-card-missing {
   border: 1px dashed var(--deck-line);
@@ -886,7 +886,7 @@ button:disabled {
   height: 53px;
   object-fit: cover;
   border-radius: 4px;
-  background: #222;
+  background: var(--deck-panel-2);
 }
 .tier-tile figcaption {
   position: absolute;
