@@ -1162,7 +1162,7 @@ button:disabled {
   width: 10px;
   height: 72px;
   border-radius: 999px;
-  background: #1a222b;
+  background: var(--deck-panel-2);
   overflow: hidden;
 }
 .ocfdu-column-fill {
@@ -1193,7 +1193,7 @@ button:disabled {
 }
 .ocfdu-element-chip {
   display: inline-block;
-  border: 1px solid #2c3a46;
+  border: 1px solid var(--deck-line);
   border-radius: 999px;
   color: var(--deck-text);
   font-size: 13px;
@@ -1202,7 +1202,7 @@ button:disabled {
 }
 /* --- Dashboard tab (deck-dashboard #06 walking skeleton, #07 draw odds, #08 expansion picker, #10 spirit highlight) --- */
 .dashboard-picker {
-  border: 1px solid #2c3a46;
+  border: 1px solid var(--deck-line);
   border-radius: 8px;
   padding: 0.6rem 0.9rem;
   margin-bottom: 0.8rem;
@@ -1279,7 +1279,7 @@ button:disabled {
   position: relative;
   height: 10px;
   border-radius: 999px;
-  background: #1a222b;
+  background: var(--deck-panel-2);
   overflow: hidden;
 }
 .deck-element-fill {
@@ -1488,13 +1488,13 @@ button:disabled {
   height: 10px;
   border-radius: 999px;
   overflow: hidden;
-  background: #1a222b;
+  background: var(--deck-panel-2);
 }
 .dashboard-facet-fast {
   background: var(--deck-accent);
 }
 .dashboard-facet-slow {
-  background: #566573;
+  background: var(--deck-dim);
 }
 .dashboard-facet-legend {
   font-size: 12px;
@@ -2053,10 +2053,10 @@ button:disabled {
   height: auto;
 }
 .dashboard-facet-fast {
-  background: #d4502e;
+  background: var(--deck-accent);
 }
 .dashboard-facet-slow {
-  background: #3a7ca5;
+  background: var(--deck-dim);
 }
 .deck-upset-muted {
   color: var(--deck-dim);
@@ -2111,7 +2111,7 @@ button:disabled {
   cursor: pointer;
 }
 .deck-upset-sizechip[data-active='true'] {
-  color: #10130d;
+  color: var(--deck-bg);
 }
 .deck-upset-sizechip.deck-upset-size2[data-active='true'] {
   background: var(--deck-accent);
@@ -2206,7 +2206,7 @@ button:disabled {
   position: relative;
   height: 8px;
   border-radius: 999px;
-  background: #1a222b;
+  background: var(--deck-panel-2);
   overflow: hidden;
 }
 .deck-upset-totalfill {
@@ -2231,7 +2231,7 @@ button:disabled {
   height: 9px;
   margin: 0 auto;
   border-radius: 999px;
-  background: #1a222b;
+  background: var(--deck-panel-2);
 }
 .deck-upset-dot-on.deck-upset-dot-highlight {
   box-shadow: 0 0 0 2px var(--deck-accent-bg), 0 0 0 3px var(--deck-accent);
@@ -2266,7 +2266,7 @@ button:disabled {
 .dashboard-gap-odds-table td {
   padding: 0.3rem 0.6rem;
   text-align: right;
-  border-bottom: 1px solid #1a222b;
+  border-bottom: 1px solid var(--deck-line-soft);
   color: var(--deck-text);
 }
 .dashboard-gap-odds-table thead th {
