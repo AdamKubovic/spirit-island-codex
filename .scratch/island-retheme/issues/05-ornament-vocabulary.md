@@ -1,6 +1,6 @@
 # 05 — Ornament vocabulary for the winning direction
 
-Status: needs-info
+Status: done
 Type: wayfinder:prototype
 Blocked by: —
 Assignee: —
@@ -71,3 +71,23 @@ visible in one shot — filenames are `{variant}-Shell-Browse-{width}.png`, not 
 app-shell-only capture.
 
 Waiting on the owner's pick.
+
+## Fourth candidate built (2026-07-21)
+
+Owner's first pass landed on `corners`, with a note that `vines`' dot-run read as too plain for
+"floral." Rather than reconsider the constraint, a fourth candidate — `floral` — was built to test
+whether a leaf-shaped divider (still CSS-only: an inline `mask-image` data URI painted with
+`var(--deck-accent)`, not a sourced image) read better than the dot run. Gated on
+`?ornament=floral`, same anchor surfaces (`.deck-nav`, `.spirit-tile-name-row`), same structure as
+`vines`. Screenshots in `screenshots-05/floral-Shell-Browse-{375,1280}.png`.
+
+## Owner's pick (2026-07-21)
+
+**`rules`** — minimal accent rules only. (The earlier `corners` read was a mis-click/typo,
+corrected on reflection once `floral` was shown alongside it.)
+
+Ticket resolved: `rules` is the winning ornament direction. `deck.css`'s "ROUND 05" block and
+`OrnamentRound.tsx` stay in place as throwaway scaffolding per this round's own header comment
+(delete on ship) — shipping `rules` as the default look, and deleting the scaffolding, is the
+terminal-deliverable's job (see `../MAP.md`'s "Not yet specified" — that deliverable graduates now
+that this pick has landed).
