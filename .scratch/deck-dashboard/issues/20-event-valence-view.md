@@ -1,6 +1,6 @@
 # Event segment: variant-D valence view
 
-Status: ready-for-agent
+Status: done
 
 ## Parent
 
