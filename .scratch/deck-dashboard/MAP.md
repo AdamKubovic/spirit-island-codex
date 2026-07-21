@@ -61,6 +61,14 @@ Standing constraints for every session on this map:
   of transcription. Unblocks the #05 scope decision.
   [#01](issues/01-innate-thresholds-sourcing.md), findings in
   [innate-thresholds-research.md](innate-thresholds-research.md).
+- Fear/event view: **owner picked prototype variant D** — headline stat tiles (% first, count
+  in brackets) + stacked valence/impact bar + tag/class facet as mini stacked bars, every tile
+  and bar segment click-to-drill into an inline card-chip list, chips hover-preview and
+  click-enlarge the real card image (shared CardViewer); expansion facet dropped; next-draw
+  odds = pool share. Beneficial is blue #4f9ad4 (CVD), fear impact a sequential green ramp.
+  Naming flag: impact levels "minor/major" collide with power kinds — consider weak/solid/strong
+  in the spec. Prototype deleted (commits 7ff7df9/9fb3aef/032a588 hold it).
+  [#04](issues/04-fear-event-view-prototype.md).
 - Fear/event valence taxonomy: **two deck-specific axes** — fear `impact: 1|2|3` (overall, not
   per terror level), event `valence: harmful|mixed|beneficial`. Agent classifies all 115 cards
   from card images against a written rubric (existing `tags`/`eventClass` are cross-checks, not

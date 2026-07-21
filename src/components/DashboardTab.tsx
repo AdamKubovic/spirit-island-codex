@@ -10,9 +10,6 @@ import { normalizeExpansion } from './tagColors'
 import { DeckFacets } from './DeckFacets'
 import { DeckPoolBreakdown } from './DeckPoolBreakdown'
 import { DeckUpset, type DeckUnit } from './DeckUpset'
-// PROTOTYPE deck-dashboard #04 — throwaway; remove this import and the two mounts below when
-// the owner has picked a variant.
-import { Prototype04FearEvent, readPrototypeVariant, type PrototypeVariant } from './Prototype04FearEvent'
 
 const powerCards = powerCardsData as PowerCard[]
 const MINOR_CARDS = powerCards.filter((c) => c.kind === 'minor')
@@ -78,8 +75,6 @@ export function DashboardTab({ initialSegment }: { initialSegment?: Segment } = 
   const [spiritId, setSpiritId] = useState('')
   const [includeUniques, setIncludeUniques] = useState(false)
   const [unit, setUnit] = useState<DeckUnit>('count')
-  // PROTOTYPE #04: null (the shipped view) unless ?variant=A|B|C is present; dev-only.
-  const [prototypeVariant, setPrototypeVariant] = useState<PrototypeVariant | null>(readPrototypeVariant)
 
   const highlightElements = useMemo(() => {
     if (!spiritId) return undefined
@@ -201,17 +196,11 @@ export function DashboardTab({ initialSegment }: { initialSegment?: Segment } = 
             The in-play fear deck is a small hidden subset of this pool, built at setup — these are pool odds, never a card counter.
           </p>
 
-          {prototypeVariant ? (
-            <Prototype04FearEvent cards={fearCardsInPlay} kind="fear" variant={prototypeVariant} onVariant={setPrototypeVariant} />
-          ) : (
-            <>
-              <h3>By fear tag</h3>
-              <DeckPoolBreakdown groups={fearByTag} poolSize={fearCardsInPlay.length} />
+          <h3>By fear tag</h3>
+          <DeckPoolBreakdown groups={fearByTag} poolSize={fearCardsInPlay.length} />
 
-              <h3>By expansion</h3>
-              <DeckPoolBreakdown groups={fearByExpansion} poolSize={fearCardsInPlay.length} />
-            </>
-          )}
+          <h3>By expansion</h3>
+          <DeckPoolBreakdown groups={fearByExpansion} poolSize={fearCardsInPlay.length} />
         </div>
       )}
       {segment === 'Event' && (
@@ -220,17 +209,13 @@ export function DashboardTab({ initialSegment }: { initialSegment?: Segment } = 
           {eventCardsInPlay.length === 0 ? (
             <p className="dashboard-empty-rule">No events in this set — the base game ships none; this reads as a rule of the game, not a bug.</p>
           ) : (
-            prototypeVariant ? (
-              <Prototype04FearEvent cards={eventCardsInPlay} kind="event" variant={prototypeVariant} onVariant={setPrototypeVariant} />
-            ) : (
-              <>
-                <h3>By event class</h3>
-                <DeckPoolBreakdown groups={eventByClass} poolSize={eventCardsInPlay.length} />
+            <>
+              <h3>By event class</h3>
+              <DeckPoolBreakdown groups={eventByClass} poolSize={eventCardsInPlay.length} />
 
-                <h3>By expansion</h3>
-                <DeckPoolBreakdown groups={eventByExpansion} poolSize={eventCardsInPlay.length} />
-              </>
-            )
+              <h3>By expansion</h3>
+              <DeckPoolBreakdown groups={eventByExpansion} poolSize={eventCardsInPlay.length} />
+            </>
           )}
         </div>
       )}

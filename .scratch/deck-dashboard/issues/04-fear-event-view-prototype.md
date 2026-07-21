@@ -1,6 +1,6 @@
 # Fear/event view prototype
 
-Status: ready-for-human
+Status: done
 Labels: wayfinder:prototype
 Map: ../MAP.md
 Blocked-by: 02-fear-event-valence-taxonomy.md
@@ -43,5 +43,26 @@ accent green, because green fails CVD separation against the warm pole (deutan �
 impact uses a sequential green ramp (magnitude, not polarity). Both calls are for the owner to
 ratify or override with the variant pick.
 
-VERDICT (owner): _pending — record the picked variant (or the mix) here, then fold in and
-delete the prototype._
+**2026-07-21 — VERDICT (owner): variant D**, the round-2/3 hybrid of A and C, for both Fear
+and Event segments:
+
+- **A's headline stack** as the base: stat tiles (percent first, count in brackets — "32%
+  (16) minor card"), one 100%-stacked bar, tag/class facet as mini stacked bars, expansion
+  facet dropped. Next-draw odds framed as pool share.
+- **Click-to-drill everywhere:** every stat tile and every bucket×group bar segment expands
+  an inline chip list of exactly those cards ("major × Removal · 6 cards (12%)"), with a
+  clear button; click again collapses.
+- **Card chips open the real card:** hover → floating card-image preview; click → the shared
+  `CardViewer` enlarge. (Touch devices rely on the click path — keep both in the real build.)
+- **Counts always carry percentages in brackets** — no mental division on a 74-card pool.
+- Owner ratified the dataviz color calls: beneficial is **blue** `#4f9ad4` (accent green
+  fails CVD separation vs harmful orange `#d97742`); fear impact is a sequential green ramp.
+- Naming flag for the follow-up spec: "minor/major" impact levels collide with minor/major
+  *powers* — consider renaming the levels (e.g. weak/solid/strong) without touching the #02
+  taxonomy.
+
+Prototype artifacts: commits `7ff7df9` (round 1, variants A–C), `9fb3aef` (round 2, drill),
+`032a588` (round 3, card preview/enlarge); screenshots in `screenshots-04-proto/`. The
+prototype code is deleted with this resolution (stub ratings must not outlive it — the real
+view is rebuilt properly in the follow-up spec, on the ratified table); recover it from those
+commits when implementing.
