@@ -49,7 +49,8 @@ Standing constraints for every session on this map:
   than resolving tickets first. `PRD.md` (ready-for-agent) specs the decided core — no
   valence, no innates, baseline chart forms. Tickets 01–05 stay open: 02+04 feed a follow-up
   valence spec, 01+05 the innates decision (both resolved 2026-07-21 — the follow-up spec now
-  covers valence AND element-gap odds), 03 may refine chart forms (component-level only;
+  covers valence AND element-gap odds — written 2026-07-21 as `PRD-2.md`, ready-for-agent,
+  awaiting `/to-tickets`), 03 may refine chart forms (component-level only;
   the domain seam's outputs are fixed by the spec).
 
 ## Decisions so far
