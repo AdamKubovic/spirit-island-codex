@@ -314,6 +314,7 @@ describe('app smoke', () => {
     const html = renderToStaticMarkup(<DashboardTab initialSegment="Fear" />)
     expect(html).toContain('cards')
     expect(html).toContain('hidden subset of this pool')
+    expect(html).toContain('this pool&#x27;s share')
     expect(html).toContain('rating-tiles')
     expect(html).toContain('weak')
     expect(html).toContain('solid')

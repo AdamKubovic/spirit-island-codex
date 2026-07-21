@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { impactBreakdown, tagImpactBreakdown, type FearCard } from '../domain/impactBreakdown'
 import type { Impact } from '../domain/types'
 import { CardChipList } from './CardChipList'
-import { RatingStackedBar } from './RatingStackedBar'
+import { pct, RatingStackedBar } from './RatingStackedBar'
 
 /** Sequential green ramp (light→dark, magnitude not polarity) — owner-ratified at #04, one hue
  * so "more" reads as "stronger", never a different category (PRD-2 user story 16). The middle
@@ -14,10 +14,6 @@ const IMPACT_COLOR: Record<Impact, string> = { 1: '#8fd7ab', 2: '#3fae6a', 3: '#
 export interface Picked {
   impact: Impact
   tag: string | null
-}
-
-function pct(count: number, total: number): string {
-  return `${total === 0 ? 0 : Math.round((count / total) * 100)}%`
 }
 
 /**
@@ -50,6 +46,7 @@ export function FearImpactView({ cards, initialPicked }: { cards: FearCard[]; in
 
   return (
     <div className="rating-view">
+      <p className="dashboard-assumption">Percentages are this pool's share, not next-draw odds off the physical deck.</p>
       <div className="rating-tiles" role="group" aria-label="Fear impact">
         {overall.map((bucket) => (
           <button

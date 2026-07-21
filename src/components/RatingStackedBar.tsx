@@ -69,6 +69,8 @@ export function RatingStackedBar({
   )
 }
 
-function pct(count: number, total: number): string {
+/** Shared with `FearImpactView` (and #20's event valence view) so every percentage in the
+ * rating views rounds the same way. */
+export function pct(count: number, total: number): string {
   return `${total === 0 ? 0 : Math.round((count / total) * 100)}%`
 }

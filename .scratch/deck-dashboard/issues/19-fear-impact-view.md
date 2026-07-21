@@ -1,6 +1,6 @@
 # Fear segment: variant-D impact view
 
-Status: ready-for-agent
+Status: done
 
 ## Parent
 
