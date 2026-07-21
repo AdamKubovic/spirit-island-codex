@@ -2257,3 +2257,30 @@ button:disabled {
   background: color-mix(in srgb, var(--deck-accent) calc(var(--heat) * 70%), transparent);
 }
 /* --- end ROUND 03 (deck-dashboard #03) --- */
+
+/* ROUND 03 follow-up: UpSet filter row (delete with the round). */
+.deckchart-b-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.4rem;
+}
+.deckchart-b-filters .deckchart-c-chip {
+  cursor: pointer;
+  background: none;
+}
+.deckchart-b-filters .deckchart-c-chip-highlight {
+  background: var(--deck-accent-bg);
+}
+.deckchart-b-filterlabel {
+  font-size: 12px;
+  color: var(--deck-dim);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: 0.4rem;
+}
+.deckchart-b-filterlabel input {
+  width: 3.2rem;
+}

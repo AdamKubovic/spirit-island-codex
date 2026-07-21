@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import type { DeckComposition, ElementCombinationGroup } from '../domain/deckComposition'
 import { ELEMENTS, type Element } from '../domain/types'
 
@@ -135,14 +135,58 @@ function VariantA({ composition, highlightElements }: { composition: DeckComposi
 
 /* ----------------------------------- B — classic UpSet ------------------------------------ */
 
+/** ROUND 03 follow-up (owner: "UpSet wins but needs more filters to be readable"):
+ * element-inclusion chips (AND), a min-cards threshold, and a top-N cap. All prototype-grade. */
 function VariantB({ composition, highlightElements }: { composition: DeckComposition; highlightElements?: ReadonlySet<Element> }) {
-  const combos = composition.combinations
+  const [mustInclude, setMustInclude] = useState<Set<Element>>(new Set())
+  const [minCount, setMinCount] = useState(1)
+  const [topN, setTopN] = useState(20)
+
+  function toggleElement(element: Element) {
+    setMustInclude((prev) => {
+      const next = new Set(prev)
+      if (next.has(element)) next.delete(element)
+      else next.add(element)
+      return next
+    })
+  }
+
+  const allCombos = composition.combinations
+  const combos = allCombos
+    .filter((g) => g.count >= minCount && [...mustInclude].every((e) => g.elements.includes(e)))
+    .slice(0, topN)
+  const shownCards = combos.reduce((sum, g) => sum + g.count, 0)
   const comboMax = Math.max(1, ...combos.map((g) => g.count))
   const totalMax = Math.max(1, ...composition.elements.map((e) => e.count))
   const countFor = (element: Element) => composition.elements.find((e) => e.element === element)?.count ?? 0
 
   return (
     <div className="deckchart-b">
+      <div className="deckchart-b-filters">
+        <span className="deckchart-b-filterlabel">Must include</span>
+        {ELEMENTS.map((element) => (
+          <button
+            key={element}
+            type="button"
+            className={mustInclude.has(element) ? 'deckchart-c-chip deckchart-c-chip-highlight' : 'deckchart-c-chip'}
+            aria-pressed={mustInclude.has(element)}
+            onClick={() => toggleElement(element)}
+          >
+            {element}
+          </button>
+        ))}
+        <label className="deckchart-b-filterlabel">
+          Min cards
+          <input type="number" min={1} max={99} value={minCount} onChange={(e) => setMinCount(Math.max(1, Number(e.target.value) || 1))} />
+        </label>
+        <label className="deckchart-b-filterlabel">
+          Top
+          <input type="number" min={1} max={99} value={topN} onChange={(e) => setTopN(Math.max(1, Number(e.target.value) || 1))} />
+        </label>
+      </div>
+      <p className="deckchart-muted">
+        Showing {combos.length} of {allCombos.length} element sets ({shownCards} of {composition.deckSize} cards).
+      </p>
       <div className="deckchart-b-scroll">
         <div className="deckchart-b-grid" style={{ ['--combos' as string]: combos.length }}>
           {/* top-left corner is empty; column chart spans the combo columns */}
