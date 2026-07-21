@@ -7,6 +7,7 @@ import { computeDeckComposition } from '../domain/deckComposition'
 import { groupOtherCards } from '../domain/otherCardArrange'
 import { EXPANSIONS, type ExpansionName, type OtherCard, type PowerCard, type Spirit } from '../domain/types'
 import { normalizeExpansion } from './tagColors'
+import { DeckChartVariantSwitcher, DeckChartVariantView, readDeckChartVariant } from './DeckChartRound'
 import { DeckCombinationMatrix } from './DeckCombinationMatrix'
 import { DeckElementBars } from './DeckElementBars'
 import { DeckFacets } from './DeckFacets'
@@ -72,6 +73,9 @@ export function DashboardTab({ initialSegment }: { initialSegment?: Segment } = 
   // '' is the default "no spirit" state (PRD user story 20) — never a storage key, never
   // persisted, so a reload always reverts to it.
   const [spiritId, setSpiritId] = useState('')
+  // ROUND 03 (deck-dashboard #03) — THROWAWAY, delete with DeckChartRound.tsx. Null without
+  // the `?deckchart=` param, so the shipped view stays byte-identical.
+  const [chartVariant, setChartVariant] = useState(readDeckChartVariant)
 
   const highlightElements = useMemo(() => {
     if (!spiritId) return undefined
@@ -167,11 +171,19 @@ export function DashboardTab({ initialSegment }: { initialSegment?: Segment } = 
             />
             <span>of {activeComposition.deckSize}</span>
           </label>
-          <DeckElementBars composition={activeComposition} highlightElements={highlightElements} />
+          {chartVariant ? (
+            <DeckChartVariantView variant={chartVariant} composition={activeComposition} highlightElements={highlightElements} />
+          ) : (
+            <DeckElementBars composition={activeComposition} highlightElements={highlightElements} />
+          )}
           <p className="dashboard-assumption">Odds assume a full deck, nothing drawn.</p>
 
-          <h3>Element combinations</h3>
-          <DeckCombinationMatrix combinations={activeComposition.combinations} highlightElements={highlightElements} />
+          {!chartVariant && (
+            <>
+              <h3>Element combinations</h3>
+              <DeckCombinationMatrix combinations={activeComposition.combinations} highlightElements={highlightElements} />
+            </>
+          )}
 
           <h3>Facets</h3>
           <DeckFacets composition={activeComposition} />
@@ -205,6 +217,11 @@ export function DashboardTab({ initialSegment }: { initialSegment?: Segment } = 
               <DeckPoolBreakdown groups={eventByExpansion} poolSize={eventCardsInPlay.length} />
             </>
           )}
+        </div>
+      )}
+      {chartVariant && (
+        <div className="variant-switcher-stack">
+          <DeckChartVariantSwitcher current={chartVariant} onPick={setChartVariant} />
         </div>
       )}
     </section>

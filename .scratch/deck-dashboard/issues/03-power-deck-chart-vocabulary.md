@@ -27,3 +27,22 @@ Deck contents come from the expansion picker (settled at charting; default = own
 collection). Resolution records the chosen vocabulary and links the prototype artifact.
 
 ## Comments
+
+**2026-07-21 — prototype round shipped, awaiting the owner's pick.** Three chart-vocabulary
+candidates for the Minor/Major view, gated on `?deckchart=A|B|C` (`DeckChartRound.tsx`, the
+`?theme=`/`?side=` pattern — app is byte-identical without the param; baseline = the shipped
+bars + dot-matrix). Screenshots in `screenshots-03/` (plus `-river` variants showing the
+spirit highlight):
+
+- **A — odds-first table**: elements sorted by draw-N odds, count/share/odds columns, plus a
+  plain-text "top pairings" list. The no-chart candidate.
+- **B — classic UpSet**: combination counts as columns over a dot matrix, element totals as
+  left bars. The full vocabulary the owner originally named; ~40 columns wide on the full
+  set, horizontally scrollable.
+- **C — pair heat grid**: 8×8 element co-occurrence triangle (diagonal = element totals),
+  draw-odds chips above. Answers "a card advancing two thresholds at once" directly.
+
+All three derive from the existing `DeckComposition` — no domain or data changes, no chart
+library needed for any candidate (hand-rolled per `OcfduBars` precedent). Facets (speed/cost)
+stay below in every variant, so the vocabulary question is isolated. Teardown list in
+`DeckChartRound.tsx`'s docblock; winner folds back as a rewrite of the shipped components.
