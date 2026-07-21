@@ -1,6 +1,6 @@
 # 13 — Spirit artwork
 
-Status: ready-for-human
+Status: done
 
 ## Parent
 
@@ -31,3 +31,13 @@ personal-use licensing is fine): the agent can't reliably fetch and crop binary 
 ## Blocked by
 
 - #01 (slug convention). Slots into #08's placeholder grid and #06's rec cards.
+
+## Comments
+
+**2026-07-21 — resolved by a later effort, superseded here.** This v1-era human task was
+overtaken by the `asset-archive` effort (`.scratch/asset-archive/`), which sourced the real
+spirit panel artwork from the TTS mod JSON + wiki cross-check (#04, `done`) and wired cropped
+WebP thumbnails into the app (#07, `done`) — see also `v3` issue #11's Comments, which the #07
+ticket itself points to. `public/spirits/*.webp` now holds all 37 uniform-aspect thumbnails,
+used across the Recommender, Browser, and Tier list, with placeholder art still covering any
+gap. Flipping straight to `done`; no further sourcing work remains.
