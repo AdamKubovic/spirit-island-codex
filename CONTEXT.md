@@ -28,6 +28,20 @@ arrow (up/same/down), clamped at Very High; the printed value is never mutated. 
 ceiling always reads printed complexity; the enjoyment preference reads the override (ADR 0007).
 _Avoid_: difficulty (for rules load), hardness.
 
+**Tempo / board-control**:
+Two playstyle preference axes the recommender scores *in addition to* OCFDU, because OCFDU cannot
+express them: **tempo** is strong-from-turn-one vs. slow-snowball; **board-control** is appetite
+for fiddly positioning puzzles. Both are fed by spirit tag boosts, not printed numbers (ADR 0007).
+Every other entry in a spirit's `tags` is display / team-gap only, never scored.
+_Avoid_: pace, speed (that means a power card's Fast/Slow).
+
+**Wildcard**:
+The one deliberately off-profile pick in a recommendation shortlist — a configuration chosen to
+sit outside the user's stated preferences (or above their complexity ceiling), so the result set
+nudges past the questionnaire's comfort zone. Distinct from the top-3 fitted picks; the *soft*
+complexity penalty (never a hard cut) is what lets it reach past (ADR 0007).
+_Avoid_: random pick (that is the separate random-chooser mode), spicy.
+
 **Tier list**:
 A cited document ranking one subject: an author, a methodology, its own tier vocabulary, and a
 partial set of ratings. An entity absent from the list is unrated — never defaulted, never
@@ -104,3 +118,11 @@ _Avoid_: innate requirement; element cost (that means a power card's `cost`).
 The expansions the user owns, at expansion granularity. Surfaces annotate unowned content by
 default; hiding is an explicit, session-only choice.
 _Avoid_: library, owned set
+
+**Archive**:
+The browsing surface for the game's content beyond spirits — a segmented switch over Powers,
+Fear, Events, Blight, Adversaries and Scenarios, each a filtered gallery. Renamed from "Cards"
+(v5) once adversaries and scenarios joined. Card sub-type and collection annotations surface here,
+but the Archive never *hard-filters* by collection — browsing an unowned expansion is partly how
+you decide to buy it (ADR 0009).
+_Avoid_: Cards (the old name), gallery; browser (that means the Browse spirit grid).
