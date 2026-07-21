@@ -67,3 +67,8 @@ pick (B, warm-dark) — B was already noted at charting as "near-identical to th
 `PANEL_COLOR_LIGHT` (the `flip` candidate) is left in place as inert scaffolding rather than
 deleted, matching the standing "shipping deferred to the terminal ticket" convention — no code
 currently reads `?modal=flip` as the app default.
+
+**2026-07-21 — shipped.** The terminal deliverable (05, MAP.md) resolved the last open pick
+(ornament: `rules`) and shipped every round's decision as the unconditional default, deleting the
+`?theme=`/`?chips=`/`?modal=`/`?ornament=` prototype scaffolding this ticket built. See MAP.md's
+terminal-deliverable entry.

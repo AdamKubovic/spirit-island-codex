@@ -135,3 +135,8 @@ Consequences for the fog graduated off the original A pick:
 `?theme=` scaffolding (`ThemeRound.tsx`) is unchanged code-wise; the correction is a tracker-only
 update. No app default changes — shipping the final direction is still deferred to the terminal
 deliverable ticket, per the standing convention.
+
+**2026-07-21 — shipped.** The terminal deliverable (05, MAP.md) resolved the last open pick
+(ornament: `rules`) and shipped every round's decision as the unconditional default, deleting the
+`?theme=`/`?chips=`/`?modal=`/`?ornament=` prototype scaffolding this ticket built. See MAP.md's
+terminal-deliverable entry.

@@ -77,3 +77,8 @@ Chip-system reconciliation surfaced one concrete re-tune risk for ticket 02: `ti
 would read poorly (especially the cyan and yellow entries) against a light-parchment field.
 Everything else in both chip systems (`tagColors.ts`'s seven palettes, the tier rainbow's warm-dark
 case) reads as likely-fine, to be confirmed by eye once the round renders real candidates.
+
+**2026-07-21 — shipped.** The terminal deliverable (05, MAP.md) resolved the last open pick
+(ornament: `rules`) and shipped every round's decision as the unconditional default, deleting the
+`?theme=`/`?chips=`/`?modal=`/`?ornament=` prototype scaffolding this ticket built. See MAP.md's
+terminal-deliverable entry.

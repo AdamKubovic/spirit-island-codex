@@ -2,9 +2,7 @@ import { useState } from 'react'
 import { toConfigId } from '../domain/configurations'
 import type { ExpansionName, Spirit } from '../domain/types'
 import { SpiritArt } from './SpiritArt'
-import { readWarmChipVariant } from './ChipRound'
 import { COMPLEXITY_LEVEL, expansionChipColor, tagColor, tagLabel } from './tagColors'
-import { readTheme, tierPaletteVariantFor } from './ThemeRound'
 import { activeConfigTier, tierColor } from './tierColors'
 
 /** v5 #07c: Browse annotates (never hides, unless the caller already dropped it via
@@ -33,10 +31,8 @@ export function SpiritTile({
 }) {
   const [expanded, setExpanded] = useState(false)
   const level = COMPLEXITY_LEVEL[spirit.complexity]
-  const chipVariant = readWarmChipVariant()
-  const expansionColor = expansionChipColor(spirit.expansion, chipVariant)
+  const expansionColor = expansionChipColor(spirit.expansion)
   const tier = activeConfigTier(toConfigId(spirit.id))
-  const tierPaletteVariant = tierPaletteVariantFor(readTheme())
 
   return (
     <li className={owned ? 'spirit-tile' : 'spirit-tile spirit-tile-unowned'} style={{ borderLeftColor: expansionColor }}>
@@ -49,7 +45,7 @@ export function SpiritTile({
         <div className="spirit-tile-art-wrap">
           <SpiritArt spirit={spirit} />
           {tier && (
-            <span className="tier-badge-ribbon" style={{ background: tierColor(tier.position, tierPaletteVariant) }}>
+            <span className="tier-badge-ribbon" style={{ background: tierColor(tier.position) }}>
               {tier.label}
             </span>
           )}
@@ -73,7 +69,7 @@ export function SpiritTile({
       {spirit.tags.length > 0 && (
         <div className="spirit-tile-chip-row spirit-tile-tags">
           {spirit.tags.map((tag) => (
-            <span key={tag} className="spirit-tile-tag-chip" style={{ borderColor: tagColor(tag, chipVariant), color: tagColor(tag, chipVariant) }}>
+            <span key={tag} className="spirit-tile-tag-chip" style={{ borderColor: tagColor(tag), color: tagColor(tag) }}>
               {tagLabel(tag)}
             </span>
           ))}

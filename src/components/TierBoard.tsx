@@ -7,7 +7,6 @@ import { groupByTier, tierStore } from '../domain/tierStore'
 import type { PowerCard, Spirit, TierList, TierListSubject } from '../domain/types'
 import { SpiritArt } from './SpiritArt'
 import { SpiritDetail } from './SpiritDetail'
-import { readTheme, tierPaletteVariantFor } from './ThemeRound'
 import { tierColor } from './tierColors'
 import { TierListControls } from './TierListControls'
 
@@ -147,7 +146,6 @@ function CardTile({
  * card tiles for card lists, same tier rows. Editing is a mode on this board (#15) —
  * personal-origin lists only, persisting through the same override machinery everywhere. */
 export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject } = {}) {
-  const tierPaletteVariant = tierPaletteVariantFor(readTheme())
   const [, setVersion] = useState(0)
   const [hardFilter, setHardFilter] = useState(false)
   const [editing, setEditing] = useState(false)
@@ -300,7 +298,7 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
       <div className="tier-board">
         {viewed.tierLabels.map((label, i) => (
           <div className="tier-row" key={label}>
-            <div className="tier-label" style={{ backgroundColor: tierColor(i, tierPaletteVariant) }}>
+            <div className="tier-label" style={{ backgroundColor: tierColor(i) }}>
               {label}
             </div>
             <div className="tier-tiles">

@@ -6,9 +6,7 @@ import { CardViewer } from './CardViewer'
 import { OcfduBars } from './OcfduBars'
 import { PlaceholderArt } from './PlaceholderArt'
 import { SpiritArt } from './SpiritArt'
-import { readWarmChipVariant } from './ChipRound'
-import { readModalVariant } from './ModalRound'
-import { COMPLEXITY_LEVEL, expansionChipColor, PANEL_COLOR, PANEL_COLOR_LIGHT, tagColor, tagLabel } from './tagColors'
+import { COMPLEXITY_LEVEL, expansionChipColor, PANEL_COLOR, tagColor, tagLabel } from './tagColors'
 import { activeConfigTier, tierColor } from './tierColors'
 
 /** panel-theming #03: the modal's one colour source, injected as CSS custom properties on the
@@ -25,8 +23,6 @@ function panelVars(colour: Record<'surface' | 'raised' | 'edge' | 'text' | 'body
 }
 
 const PANEL_VARS = panelVars(PANEL_COLOR)
-/** ROUND 04 (island-retheme) — THROWAWAY: ticket #04's "flip to light" candidate. */
-const PANEL_VARS_LIGHT = panelVars(PANEL_COLOR_LIGHT)
 
 /** Coloured tier chip for one configuration, read from the active configurations-list (#17).
  * Colour is the label's position in that list's own vocabulary; an absent key renders an
@@ -105,15 +101,13 @@ export function SpiritDetail({
   const activeList = tierStore.getActiveList()
   const base = import.meta.env.BASE_URL
   const level = COMPLEXITY_LEVEL[spirit.complexity]
-  const chipVariant = readWarmChipVariant()
-  const expansionColor = expansionChipColor(spirit.expansion, chipVariant)
-  const panelVarsForModal = readModalVariant() === 'flip' ? PANEL_VARS_LIGHT : PANEL_VARS
+  const expansionColor = expansionChipColor(spirit.expansion)
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div
         className="modal spirit-detail"
-        style={panelVarsForModal}
+        style={PANEL_VARS}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-label={spirit.name}
@@ -143,7 +137,7 @@ export function SpiritDetail({
                   <span
                     key={tag}
                     className="spirit-tile-tag-chip"
-                    style={{ borderColor: tagColor(tag, chipVariant), color: tagColor(tag, chipVariant) }}
+                    style={{ borderColor: tagColor(tag), color: tagColor(tag) }}
                   >
                     {tagLabel(tag)}
                   </span>

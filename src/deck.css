@@ -32,7 +32,7 @@
 }
 
 :root {
-  /* island-retheme: ticket 02's owner-picked B (warm-dark, nature accent) — see
+  /* island-retheme: the owner-picked warm-dark, nature-accent direction — see
      .scratch/island-retheme/MAP.md and token-palette.md for provenance. */
   --deck-bg: #1c160e;
   --deck-panel: #241d12;
@@ -59,19 +59,12 @@ body {
   display: grid;
   grid-template-columns: 264px 1fr;
   min-height: 100vh;
-  /* ROUND 02 (island-retheme): `body`'s own background/color (below) resolve `var(--deck-*)`
-     at the `body` element, which sits *outside* `.deck` — a `.deck.theme-X` override never
-     reaches it. Repeating the resolution here, scoped to `.deck`, is what actually makes the
-     round's CSS-var overrides visible; a no-op for the baseline (unthemed) app since these
-     match `body`'s values exactly. */
-  background: var(--deck-bg);
-  color: var(--deck-body);
 }
 
 .deck-side {
   /* qa-revision #01 (owner picked prototype variant C, "inverted-parchment"): the sidebar is the
-     printed parchment against the dark main pane — the panel scans' sampled hexes, the same roles
-     PANEL_COLOR_LIGHT documents (tagColors.ts). Scoped token re-pointing, so everything inside
+     printed parchment against the dark main pane — the panel scans' sampled hexes, the same
+     parchment roles the panel vibe sheet documents. Scoped token re-pointing, so everything inside
      the sidebar (nav, knobs, selects) inverts with it; the dark tokens resume at `.deck-main`.
      The accent darkens to hold contrast on parchment (presence-green #3fae6a reads washed-out
      there). Provenance: .scratch/qa-revision/issues/01 + screenshots-01/. */
@@ -1951,113 +1944,16 @@ button:disabled {
   }
 }
 
-/* --- ROUND 02 (island-retheme) — THROWAWAY, delete on ship -------------------------------
-   `?theme=A|B|C` overrides the shell's own `--deck-*` tokens (`src/components/tagColors.ts` and
-   inline chip/tier colours are untouched — see `.scratch/island-retheme/token-palette.md` for
-   the reconciliation notes and `tierColors.ts`'s `variant` param for the one flagged re-tune).
-   Base palette / surface / light-dark only — no ornament in this round. Delete this whole block
-   + `.variant-switcher` (shared with prior rounds; check no other round still needs it before
-   deleting) + `ThemeRound.tsx` + the `theme-${theme}` class in `AppShell.tsx`. */
-.deck.theme-A {
-  --deck-bg: #f2e7c8;
-  --deck-panel: #e7d19c;
-  --deck-panel-2: #cdb88c;
-  --deck-line: #a89368;
-  --deck-line-soft: #c8b282;
-  --deck-text: #2e2520;
-  --deck-body: #5b4e2d;
-  --deck-dim: #8a7a5a;
-  --deck-accent: #239850;
-  --deck-accent-bg: #d7ead9;
-  --deck-warn: #a4562f;
-}
-.deck.theme-B {
-  --deck-bg: #1c160e;
-  --deck-panel: #241d12;
-  --deck-panel-2: #150f09;
-  --deck-line: #463a24;
-  --deck-line-soft: #33291a;
-  --deck-text: #e7d19c;
-  --deck-body: #c8b78f;
-  --deck-dim: #6e5c3a;
-  --deck-accent: #3fae6a;
-  --deck-accent-bg: #14351f;
-  --deck-warn: #c56a3a;
-}
-.deck.theme-C {
-  --deck-bg: #1c160e;
-  --deck-panel: #241d12;
-  --deck-panel-2: #150f09;
-  --deck-line: #463a24;
-  --deck-line-soft: #33291a;
-  --deck-text: #e7d19c;
-  --deck-body: #c8b78f;
-  --deck-dim: #6e5c3a;
-  --deck-accent: #2992dc;
-  --deck-accent-bg: #16344a;
-  --deck-warn: #dd631f;
-}
 
-/* ROUND 03 (island-retheme) added the stack wrapper so ticket 02's theme switcher and this
-   ticket's chip switcher can both float bottom-right without overlapping; each `.variant-switcher`
-   itself is no longer individually fixed-positioned. Delete the stack too if every round using it
-   ships/is abandoned. */
-.variant-switcher-stack {
-  position: fixed;
-  right: 12px;
-  bottom: 12px;
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: flex-end;
-}
-.variant-switcher {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 0.6rem;
-  background: var(--deck-panel-2);
-  border: 1px solid var(--deck-line);
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-  font-size: 11px;
-}
-.variant-switcher-tag {
-  color: var(--deck-dim);
-  white-space: nowrap;
-}
-.variant-switcher-buttons {
-  display: flex;
-  gap: 0.25rem;
-}
-.variant-switcher-buttons button {
-  min-width: 1.8rem;
-  padding: 0.15rem 0.4rem;
-  background: var(--deck-panel);
-  border: 1px solid var(--deck-line);
-  border-radius: 4px;
-  color: var(--deck-text);
-  cursor: pointer;
-}
-.variant-switcher-buttons button[data-active='true'] {
-  background: var(--deck-accent);
-  border-color: var(--deck-accent);
-  color: #10141a;
-}
-
-/* --- ROUND 05 (island-retheme) — THROWAWAY, delete on ship -------------------------------
-   `?ornament=rules|corners|vines` dresses two anchor surfaces (app shell sidebar, Browse tiles)
-   with a CSS-only motif, meant to be viewed against `?theme=B` (the corrected base-direction
-   pick). No new art assets: every shape below is a gradient, border, or pseudo-element. Delete
-   this whole block + `OrnamentRound.tsx` + the `ornament-${ornament}` class in `AppShell.tsx`. */
-
-/* candidate 1: minimal accent rules only */
-.deck.ornament-rules .deck-brand-button {
+/* --- island-retheme #05: shipped ornament — minimal accent rules ------------------------------
+   Owner's pick after four candidates (rules/corners/vines/floral, screenshots-05/): a thin accent
+   gradient under the logo, a hairline rule closing the nav block, and a fading underline under
+   each tile's name row. See MAP.md's terminal-deliverable entry. */
+.deck-brand-button {
   position: relative;
   padding-bottom: 0.6rem;
 }
-.deck.ornament-rules .deck-brand-button::after {
+.deck-brand-button::after {
   content: '';
   position: absolute;
   left: 10%;
@@ -2066,15 +1962,15 @@ button:disabled {
   height: 2px;
   background: linear-gradient(90deg, transparent, var(--deck-accent), transparent);
 }
-.deck.ornament-rules .deck-nav {
+.deck-nav {
   border-bottom: 1px solid var(--deck-line);
   padding-bottom: 0.75rem;
 }
-.deck.ornament-rules .spirit-tile-name-row {
+.spirit-tile-name-row {
   position: relative;
   padding-bottom: 0.3rem;
 }
-.deck.ornament-rules .spirit-tile-name-row::after {
+.spirit-tile-name-row::after {
   content: '';
   position: absolute;
   left: 0;
@@ -2084,133 +1980,6 @@ button:disabled {
   background: linear-gradient(90deg, var(--deck-accent), transparent 70%);
 }
 
-/* candidate 2: corner flourishes (picture-frame corner marks) */
-.deck.ornament-corners .deck-side {
-  position: relative;
-}
-.deck.ornament-corners .deck-side::before,
-.deck.ornament-corners .deck-side::after {
-  content: '';
-  position: absolute;
-  width: 18px;
-  height: 18px;
-  border: 2px solid var(--deck-accent);
-  opacity: 0.7;
-}
-.deck.ornament-corners .deck-side::before {
-  top: 8px;
-  left: 8px;
-  border-right: none;
-  border-bottom: none;
-}
-.deck.ornament-corners .deck-side::after {
-  bottom: 8px;
-  left: 8px;
-  border-right: none;
-  border-top: none;
-}
-.deck.ornament-corners .spirit-tile-art-wrap::before,
-.deck.ornament-corners .spirit-tile-art-wrap::after {
-  content: '';
-  position: absolute;
-  width: 14px;
-  height: 14px;
-  border: 2px solid var(--deck-accent);
-  z-index: 1;
-}
-.deck.ornament-corners .spirit-tile-art-wrap::before {
-  top: 4px;
-  left: 4px;
-  border-right: none;
-  border-bottom: none;
-}
-.deck.ornament-corners .spirit-tile-art-wrap::after {
-  bottom: 4px;
-  right: 4px;
-  border-left: none;
-  border-top: none;
-}
-
-/* candidate 3: leaf/vine dividers (a dotted "bud" run standing in for a vine, CSS-only) */
-.deck.ornament-vines .deck-nav {
-  position: relative;
-  padding-bottom: 0.9rem;
-  margin-bottom: 1.75rem;
-}
-.deck.ornament-vines .deck-nav::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 12%;
-  bottom: 0;
-  height: 4px;
-  background-image: radial-gradient(circle, var(--deck-accent) 1.6px, transparent 1.8px);
-  background-size: 10px 4px;
-  background-repeat: repeat-x;
-  opacity: 0.85;
-}
-.deck.ornament-vines .spirit-tile-name-row {
-  position: relative;
-  padding-bottom: 0.35rem;
-}
-.deck.ornament-vines .spirit-tile-name-row::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 30%;
-  bottom: 0;
-  height: 4px;
-  background-image: radial-gradient(circle, var(--deck-accent) 1.4px, transparent 1.6px);
-  background-size: 8px 4px;
-  background-repeat: repeat-x;
-  opacity: 0.85;
-}
-
-/* candidate 4: leaf/vine dividers, floral variant — a repeating leaf silhouette (a small
-   vesica-shaped `mask-image`, authored inline below, not a sourced image) painted in the accent
-   colour, standing in for the same "vine of leaf buds" idea as candidate 3 but reading more
-   botanical than a plain dot run. Added after the owner found candidate 3's dots too plain. */
-.deck.ornament-floral .deck-nav {
-  position: relative;
-  padding-bottom: 0.9rem;
-  margin-bottom: 1.75rem;
-}
-.deck.ornament-floral .deck-nav::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 12%;
-  bottom: 0;
-  height: 9px;
-  background-color: var(--deck-accent);
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='11' viewBox='0 0 18 11'%3E%3Cpath d='M9 0C13 1 18 4 18 5.5C18 7 13 10 9 11C5 10 0 7 0 5.5C0 4 5 1 9 0Z'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='11' viewBox='0 0 18 11'%3E%3Cpath d='M9 0C13 1 18 4 18 5.5C18 7 13 10 9 11C5 10 0 7 0 5.5C0 4 5 1 9 0Z'/%3E%3C/svg%3E");
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
-  -webkit-mask-size: 18px 11px;
-  mask-size: 18px 11px;
-  opacity: 0.85;
-}
-.deck.ornament-floral .spirit-tile-name-row {
-  position: relative;
-  padding-bottom: 0.35rem;
-}
-.deck.ornament-floral .spirit-tile-name-row::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 30%;
-  bottom: 0;
-  height: 7px;
-  background-color: var(--deck-accent);
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M7 0C10 1 14 3 14 4.5C14 6 10 8 7 9C4 8 0 6 0 4.5C0 3 4 1 7 0Z'/%3E%3C/svg%3E");
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M7 0C10 1 14 3 14 4.5C14 6 10 8 7 9C4 8 0 6 0 4.5C0 3 4 1 7 0Z'/%3E%3C/svg%3E");
-  -webkit-mask-repeat: repeat-x;
-  mask-repeat: repeat-x;
-  -webkit-mask-size: 14px 9px;
-  mask-size: 14px 9px;
-  opacity: 0.85;
-}
 
 /* --- Deck UpSet + dashboard controls (deck-dashboard #03, owner's pick after 4 prototype
  * rounds: classic UpSet with filters, element icons, set-size colours, pill controls) --- */

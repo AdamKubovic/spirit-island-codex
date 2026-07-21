@@ -1,7 +1,10 @@
 # PRD — Island retheme: a Spirit-Island-aligned visual identity, app-wide
 
-Status: ready-for-agent
+Status: done
 Assembled: 2026-07-17 (from the [island-retheme wayfinder map](MAP.md); the map remains the work plan)
+Resolved: 2026-07-21 — the round is decided (theme B, chips/modal unchanged, ornament rules),
+shipped as the unconditional default, and the prototype scaffolding deleted. The handed-off
+rollout spec is `PRD-2.md`.
 
 **This is a contract for a *decision* effort, not an implementation spec.** It locks the process and
 the constraints. It deliberately does **not** decide the palette, light-vs-dark, or the ornament

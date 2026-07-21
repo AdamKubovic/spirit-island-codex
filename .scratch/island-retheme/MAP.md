@@ -91,19 +91,27 @@ app-wide rollout is executed later, off this map.
 
 <!-- fog toward the destination; graduates as tickets resolve -->
 
-- **The terminal deliverable.** Assembling the picked direction into locked design tokens + a
-  v6-style rollout PRD with per-surface issues. Blocked on
-  [05](issues/05-ornament-vocabulary.md) — candidates are now built (`?ornament=rules|corners|
-  vines`, against `?theme=B` per the correction below) and waiting on the owner's pick
-  (`needs-info`); graduates once that pick lands.
+Nothing. The terminal deliverable (below) is done — this map's own destination (a decided
+direction + locked tokens + a handed-off rollout spec) has been reached.
 
 **Early ship of B, ahead of the terminal deliverable (2026-07-17):** owner asked for the warm-dark
 palette live on the bare URL rather than only behind `?theme=B`, out of the standing "shipping
-deferred to the terminal ticket" convention. `:root` in `src/deck.css` now carries B's values
-directly (`--deck-bg: #1c160e`, etc. — the `.deck.theme-B` block's own numbers); `?theme=A/B/C`
-scaffolding is untouched and still works (`?theme=B` is now visually a no-op against the new
-default). Chips/modal stay at their already-settled picks (original chips, stay modal) — unaffected
-by this. Ticket 05 (ornament) remains open and independent of this early ship.
+deferred to the terminal ticket" convention. `:root` in `src/deck.css` carried B's values directly
+from that point on, ahead of the full ship below.
+
+**The terminal deliverable (2026-07-21):** ticket [05](issues/05-ornament-vocabulary.md) resolved
+— a fourth candidate (`floral`) was built alongside the original three after the owner's first
+reaction (`corners`) was reconsidered; final pick **`rules`** (minimal accent rules). With every
+round now decided (theme B, chips original/unchanged, modal stay/unchanged, ornament rules), the
+whole `?theme=`/`?chips=`/`?modal=`/`?ornament=` prototype scaffolding shipped and was deleted:
+`ThemeRound.tsx`, `ChipRound.tsx`, `ModalRound.tsx`, `OrnamentRound.tsx`, `chipRoundColors.test.ts`,
+every `*_WARM` map + `PANEL_COLOR_LIGHT` + `variant`/`chipVariant` param in `tagColors.ts` and its
+seven consuming components, `tierColors.ts`'s `LIGHT_PALETTE` + `variant` param, and the
+`deck.css` "ROUND 02/03/05" blocks — replaced by the `rules` CSS applied unconditionally. The app
+now looks, unconditionally and without any query param, exactly like the winning candidate did
+behind one. Locked tokens: `token-palette.md` (already the live source, now unconditional via
+`:root`). Rollout spec: `PRD-2.md`, handing off the app-wide sweep beyond the four anchor surfaces
+as its own future v6 effort (per Out of scope, below) — this map's job (decide + spec) is done.
 
 ## Out of scope
 

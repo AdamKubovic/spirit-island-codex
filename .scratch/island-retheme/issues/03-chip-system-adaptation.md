@@ -111,3 +111,8 @@ No code change follows from this by itself: `*_WARM` maps, `ChipRound.tsx`, and
 `?chips=warm` as the app default), matching the standing "shipping deferred to the terminal
 ticket" convention. If the terminal ticket ships B as the app-wide default, it ships the
 *original* chip colours alongside it, not the warm re-tint.
+
+**2026-07-21 — shipped.** The terminal deliverable (05, MAP.md) resolved the last open pick
+(ornament: `rules`) and shipped every round's decision as the unconditional default, deleting the
+`?theme=`/`?chips=`/`?modal=`/`?ornament=` prototype scaffolding this ticket built. See MAP.md's
+terminal-deliverable entry.
