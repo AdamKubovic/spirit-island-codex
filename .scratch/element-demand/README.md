@@ -1,5 +1,7 @@
 # element-demand — the Dashboard's Minor/Major view, conditioned on the spirit
 
+Status: done
+
 Replaces the UpSet plot on the Dashboard's Minor/Major segments with a spirit-conditioned
 element demand/supply block.
 
@@ -18,3 +20,5 @@ uneven and need no conditioning.
 `issues/` — `grep '^Status:' issues/*.md` is the authoritative view. Two tickets: **01 (domain)
 blocks 02 (view)**. The Counts/% toggle removal rides in 02 rather than standing alone, because it
 touches the same `DashboardTab` lines.
+
+Both tickets shipped (`ac37432`, `659c652`) and are on `main`.
