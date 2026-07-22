@@ -61,3 +61,15 @@ src/components/__tests__/appSmoke.test.tsx
 ## Blocked by
 
 - [01-element-demand-domain-module.md](01-element-demand-domain-module.md)
+
+## Comments
+
+- 2026-07-22 — Implemented in `659c652` (single session, AFK agent) and pushed to `main`.
+  `DeckUpset.tsx`/`DeckGapOdds.tsx` deleted; `ElementIcon` rehomed to `ElementIcon.tsx`, `DeckUnit`
+  removed entirely (Counts/% toggle gone, `DeckFacets` shows counts only). New `DeckDemand.tsx`
+  renders the prompt/headline-stat/per-element-bars/footer states straight off
+  `computeElementDemand`, driven by the same pool cards and draw count the existing compositions
+  already used. Verification: 505 tests green (appSmoke rewritten for the new markup, no loosened
+  UpSet/gap-odds assertions), tsc + oxlint clean, manually exercised in a browser (no-spirit prompt,
+  and Lightning's Swift Strike showing Fire/Air demand bars plus Water as ceiling-only/off-affinity,
+  matching the domain module's tripwire-pinned numbers).
