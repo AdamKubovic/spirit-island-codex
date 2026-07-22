@@ -110,9 +110,20 @@ An element requirement that unlocks a step of a spirit's innate power — e.g. 2
 spirit's `InnatePower` carries its thresholds in order, each a partial map of element → count;
 only element counts are recorded (effect text, range and target are deliberately omitted —
 omitting is safer than paraphrasing), sourced from wiki `{{Threshold}}` wikitext cross-checked
-against the TTS mod's element strings (`source: "wiki+tts"`). Feeds the dashboard's element-gap
-draw odds.
+against the TTS mod's element strings (`source: "wiki+tts"`). The demand half of **element demand /
+supply**.
 _Avoid_: innate requirement; element cost (that means a power card's `cost`).
+
+**Element demand / supply**:
+The Dashboard's subject, and a deliberate pair. **Demand** is what the picked spirit's innate
+thresholds ask for — the *first* rung's count is the number (what gets the innate online at all),
+the highest rung its ceiling. **Supply** is how many cards in the segment carry that element, and
+the odds of drawing demand-many in the next N draws. Neither half means anything alone: supply is
+uniform across all eight elements by design (38–39 of 101 minors each, 29–31 of 78 majors), so only
+the *gap* between demand and supply carries information (ADR 0013). 29 of 37 spirits demand an
+element they have no affinity for — that gap is the point.
+_Avoid_: element coverage, element odds (each names one half as if it were the whole); affinity
+(that means a spirit's printed `elements`, which is not demand).
 
 **Collection**:
 The expansions the user owns, at expansion granularity. Surfaces annotate unowned content by

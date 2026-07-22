@@ -63,7 +63,7 @@ function nCr(n: number, r: number): bigint {
  * 1 - P(X < minHits), summing the hypergeometric pmf via exact `nCr` — safe from overflow because
  * every combinatorial call converts to `Number` only in the final ratio, not mid-computation.
  */
-function probAtLeast(deckSize: number, elementCount: number, n: number, minHits: number): number {
+export function probAtLeast(deckSize: number, elementCount: number, n: number, minHits: number): number {
   if (deckSize <= 0 || elementCount <= 0) return 0
   const total = nCr(deckSize, n)
   if (total === 0n) return 0
