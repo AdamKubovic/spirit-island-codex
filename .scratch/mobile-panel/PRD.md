@@ -1,6 +1,6 @@
 # PRD — Mobile panel: a phone-legible layout for the command deck
 
-Status: ready-for-agent
+Status: done
 Assembled: 2026-07-21 (from a grill-with-docs session; single-session build, no ticket split)
 
 ## Problem Statement
@@ -167,3 +167,17 @@ untouched.
   chrome (nav) and controls (knobs) *out of the content's scroll flow* on a phone, each into the
   place that fits its job — nav into an overlay it's fine to hide, controls into the pane whose
   content they drive.
+
+## Comments
+
+- 2026-07-22 — Implemented in `99afd98` (single session, AFK agent) and deployed to GitHub Pages;
+  owner verified the live mobile view and confirmed working. Verification: 488 tests green
+  (3 new appSmoke pins: hamburger ARIA + closed-drawer nav, disclosure collapsed above results,
+  matrix default-hidden with both views), tsc + oxlint clean, screenshots in `screenshots/`
+  (390px phone set, desktop-1280 + tablet-768 sanity). Two-axis /code-review findings resolved
+  pre-commit: ADR 0011 tokenization (topbar shares `.deck-side`'s parchment token scope), drawer
+  is the `<nav>` landmark itself, DeckFacets got its explicit phone spacing rule, breakpoint
+  SSOT deviation documented (media queries can't consume custom properties — the one media block
+  is the recorded value). Judgment calls logged in the commit message: modal-scrim value reused
+  for the backdrop (0.74), combo filters/"Showing X of Y" hidden in the collapsed totals view,
+  `initialPhase` test seam on `RecommenderProvider`, no `aria-controls` on the matrix toggle.
