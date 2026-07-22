@@ -1,6 +1,6 @@
 # Demand block replaces the UpSet and gap-odds table
 
-Status: ready-for-agent
+Status: done
 
 ## Parent
 

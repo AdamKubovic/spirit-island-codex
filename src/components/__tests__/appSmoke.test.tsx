@@ -6,11 +6,9 @@ import { subtypeLabel } from '../tagColors'
 import App from '../../App'
 import { collectionStore } from '../../domain/collectionStore'
 import { tierStore } from '../../domain/tierStore'
-import { computeDeckComposition } from '../../domain/deckComposition'
 import type { FearCard } from '../../domain/impactBreakdown'
 import type { EventCard } from '../../domain/valenceBreakdown'
 import { DashboardTab } from '../DashboardTab'
-import { DeckUpset } from '../DeckUpset'
 import { EventValenceView } from '../EventValenceView'
 import { FearImpactView } from '../FearImpactView'
 import { RecommenderMain, RecommenderProvider, RecommenderSide } from '../Recommender'
@@ -236,25 +234,19 @@ describe('app smoke', () => {
     expect(html).not.toContain('Starting cards')
   })
 
-  it('the Dashboard tab renders a Minor/Major/Fear/Event segmented control, with all 8 elements as icon rows in the Minor segment (deck-dashboard #06/#03)', () => {
+  it('the Dashboard tab renders a Minor/Major/Fear/Event segmented control (deck-dashboard #06/#03)', () => {
     const html = renderToStaticMarkup(<DashboardTab />)
     expect(html).toContain('>Dashboard<')
     for (const segment of ['Minor', 'Major', 'Fear', 'Event']) {
       expect(html).toContain(`>${segment}<`)
     }
-    // #03/#14: element rows are icons, not words — each element appears as its icon's alt text,
-    // once in the must-include filter, once as a matrix row, once as a gap-odds table row.
-    for (const element of ['Sun', 'Moon', 'Fire', 'Air', 'Water', 'Earth', 'Plant', 'Animal']) {
-      expect((html.match(new RegExp(`alt="${element}"`, 'g')) ?? []).length).toBe(3)
-    }
     expect(html).toContain('cards')
   })
 
-  it('the Dashboard Minor segment defaults its draw stepper to 4 and shows per-element draw odds and the full-deck assumption label (deck-dashboard #07)', () => {
+  it('the Dashboard Minor segment defaults its draw stepper to 4 and shows the full-deck assumption label (deck-dashboard #07)', () => {
     const html = renderToStaticMarkup(<DashboardTab />)
     expect(html).toContain('value="4"')
     expect(html).toContain('Odds assume a full deck, nothing drawn.')
-    expect(html).toContain('deck-upset-odds')
   })
 
   it('the Dashboard expansion picker lists all 7 expansions, checked by default (owns-everything Collection), no unowned annotation (deck-dashboard #08)', () => {
@@ -268,88 +260,60 @@ describe('app smoke', () => {
     expect(html).not.toContain('unowned-note')
   })
 
-  it('the Dashboard Minor segment shows the element-combination UpSet matrix and the speed/cost facets (deck-dashboard #09/#03)', () => {
+  it('the Dashboard Minor segment shows the speed/cost facets (deck-dashboard #09/#03)', () => {
     const html = renderToStaticMarkup(<DashboardTab />)
-    expect(html).toContain('deck-upset-grid')
-    expect(html).toContain('deck-upset-dot')
-    expect(html).toContain('element sets')
     expect(html).toContain('Facets')
     expect(html).toContain('Fast')
     expect(html).toContain('Slow')
   })
 
-  it('the UpSet phone fallback: totals and matrix both render, matrix default-hidden behind a show-full-matrix toggle (mobile-panel)', () => {
+  it('reads at phone width like the rest of the mobile-panel treatment: no UpSet-only phone chrome is left behind', () => {
     const html = renderToStaticMarkup(<DashboardTab />)
-    // Both representations are in the DOM; CSS (not unmounting) gates the matrix on phone.
-    expect(html).toContain('data-matrix-open="false"')
-    expect(html).toContain('>Show full matrix<')
-    expect(html).toContain('deck-upset-grid')
-    expect(html).toContain('deck-upset-dot')
-    expect(html).toContain('deck-upset-totaltrack')
+    expect(html).not.toContain('deck-upset')
+    expect(html).not.toContain('Show full matrix')
   })
 
-  it('the Dashboard shows the element-gap odds block on both the Minor and Major segments (deck-dashboard #14)', () => {
-    const minorHtml = renderToStaticMarkup(<DashboardTab />)
-    expect(minorHtml).toContain('Element-gap odds')
-    expect(minorHtml).toContain('dashboard-gap-odds-table')
-    expect(minorHtml).toContain('≥1')
-    expect(minorHtml).toContain('≥2')
-    expect(minorHtml).toContain('≥3')
-
-    const majorHtml = renderToStaticMarkup(<DashboardTab initialSegment="Major" />)
-    expect(majorHtml).toContain('Element-gap odds')
-    expect(majorHtml).toContain('dashboard-gap-odds-table')
+  it('with no spirit picked, the Minor segment shows a prompt, not a chart (element-demand #02)', () => {
+    const html = renderToStaticMarkup(<DashboardTab />)
+    expect(html).toContain('evenly across all 8')
+    expect(html).not.toContain('deck-demand-table')
+    expect(html).not.toContain('Element-gap odds')
   })
 
-  it('picking a spirit annotates the gap-odds rows its innate thresholds reference and captions base-only when an aspect changes it (deck-dashboard #16)', () => {
+  it('picking a spirit renders the demand block: headline stat, a row per demanded element, off-affinity marked (element-demand #02)', () => {
     const html = renderToStaticMarkup(<DashboardTab initialSpiritId="lightnings-swift-strike" />)
-    expect(html).toContain('dashboard-gap-odds-annotation')
-    expect(html).toContain('Thundering Destruction I wants')
+    expect(html).toMatch(/\d+% of minors hit 2 or more of what you want/)
+    expect(html).toContain('deck-demand-table')
+    expect(html).toContain('no affinity')
+    // Fire, Air, Water are demanded; Sun, Moon, Earth, Plant, Animal collapse to the footer.
+    expect(html).toContain('No innate demand:')
+  })
+
+  it('a spirit whose aspect modifies its innate(s) carries the base-thresholds caption (element-demand #02)', () => {
+    const html = renderToStaticMarkup(<DashboardTab initialSpiritId="lightnings-swift-strike" />)
     expect(html).toContain('Thresholds shown are the base spirit&#x27;s')
   })
 
-  it('a spirit whose aspects never touch its innate(s) gets rows annotated with no caption (deck-dashboard #16)', () => {
+  it('a spirit whose aspects never touch its innate(s) gets no caption (element-demand #02)', () => {
     const html = renderToStaticMarkup(<DashboardTab initialSpiritId="oceans-hungry-grasp" />)
-    expect(html).toContain('dashboard-gap-odds-annotation')
     expect(html).not.toContain('Thresholds shown are the base spirit&#x27;s')
   })
 
-  it('with no spirit picked, the gap-odds block reads unchanged (deck-dashboard #16)', () => {
-    const html = renderToStaticMarkup(<DashboardTab />)
-    expect(html).not.toContain('dashboard-gap-odds-annotation')
-    expect(html).not.toContain('Thresholds shown are the base spirit&#x27;s')
+  it('the demand block renders on both the Minor and Major segments', () => {
+    const minorHtml = renderToStaticMarkup(<DashboardTab initialSpiritId="lightnings-swift-strike" />)
+    expect(minorHtml).toContain('deck-demand-table')
+
+    const majorHtml = renderToStaticMarkup(<DashboardTab initialSegment="Major" initialSpiritId="lightnings-swift-strike" />)
+    expect(majorHtml).toContain('deck-demand-table')
   })
 
-  it('the Dashboard has a spirit picker defaulting to "No spirit", listing all 37 spirits, with no highlight rendered by default (deck-dashboard #10)', () => {
+  it('the Dashboard has a spirit picker defaulting to "No spirit", listing all 37 spirits (deck-dashboard #10)', () => {
     const html = renderToStaticMarkup(<DashboardTab />)
     expect(html).toContain('Highlight my spirit')
     expect(html).toContain('>No spirit<')
     for (const spirit of spirits) {
       expect(html).toContain(spirit.name.replace(/&/g, '&amp;').replace(/'/g, '&#x27;'))
     }
-    expect(html).not.toContain('deck-upset-rowlabel-highlight')
-    expect(html).not.toContain('deck-upset-dot-highlight')
-  })
-
-  it('DeckUpset highlights exactly the given elements, none without a highlight set (deck-dashboard #10/#03)', () => {
-    const composition = computeDeckComposition(
-      [
-        { kind: 'minor', name: 'A', expansion: 'Basegame', cost: 0, speed: 'Fast', elements: ['Fire', 'Air'], image: '' },
-        { kind: 'minor', name: 'B', expansion: 'Basegame', cost: 0, speed: 'Fast', elements: [], image: '' },
-      ],
-      4,
-    )
-    const highlighted = new Set(['Fire' as const])
-
-    const html = renderToStaticMarkup(
-      <DeckUpset composition={composition} highlightElements={highlighted} unit="count" onUnitChange={() => {}} />,
-    )
-    expect(html.match(/deck-upset-rowlabel-highlight/g)).toHaveLength(1)
-    expect(html).toContain('deck-upset-dot-highlight')
-
-    const plainHtml = renderToStaticMarkup(<DeckUpset composition={composition} unit="count" onUnitChange={() => {}} />)
-    expect(plainHtml).not.toContain('deck-upset-rowlabel-highlight')
-    expect(plainHtml).not.toContain('deck-upset-dot-highlight')
   })
 
   it('the Dashboard Fear segment shows the variant-D impact view: stat tiles, stacked bar, tag facet, hidden-subset framing copy, no by-expansion facet (deck-dashboard #19)', () => {

@@ -5,13 +5,12 @@ import powerCardsData from '../data/power-cards.json'
 import spiritsData from '../data/spirits.json'
 import { collectionStore } from '../domain/collectionStore'
 import { computeDeckComposition } from '../domain/deckComposition'
+import { computeElementDemand } from '../domain/elementDemand'
 import type { FearCard } from '../domain/impactBreakdown'
-import { innateThresholdsFor } from '../domain/innateThresholds'
 import { EXPANSIONS, type ExpansionName, type InnatePower, type OtherCard, type PowerCard, type Spirit } from '../domain/types'
 import { normalizeExpansion } from './tagColors'
+import { DeckDemand } from './DeckDemand'
 import { DeckFacets } from './DeckFacets'
-import { DeckGapOdds } from './DeckGapOdds'
-import { DeckUpset, type DeckUnit } from './DeckUpset'
 import { EventValenceView } from './EventValenceView'
 import { FearImpactView } from './FearImpactView'
 
@@ -50,32 +49,31 @@ function isChecked(expansion: string, checked: ReadonlySet<ExpansionName>): bool
 }
 
 /**
- * v6 #06/#07/#08/#09/#10/#11/#12, reshaped by #03's prototype rounds (owner picked the UpSet):
- * the Dashboard tab. The Minor/Major/Fear/Event switch leads the tab — the owner's call that
- * "what deck am I looking at" outranks the expansion picker. Minor and Major render `DeckUpset`
- * (composition, hypergeometric draw odds, filterable combination matrix) plus the speed/cost
- * facets; a Counts/% unit is lifted here so the UpSet and the facets always agree. An expansion
- * picker (session-only state, no storage key) defines the set, defaulting to the Collection;
- * unowned expansions stay listed and annotated, never hidden (PRD user story 6). A single N
- * stepper (default 4, clamped to [1, deck size] by the domain module) drives both power-deck
- * segments' odds; the assumption label keeps the static dashboard from reading as live tracking
- * (PRD user story 27). An optional spirit pick (default "no spirit") highlights that spirit's own
- * recorded elements (PRD user stories 18-20), annotates the gap-odds block's rows with that
- * spirit's innate threshold requirements — captioned as base-spirit-only when an aspect changes
- * its innate(s) (#16) — and can additionally fold that spirit's unique
- * powers into the Minor pool — labelled a hypothetical, because the physical minor deck never
- * contains them (uniques start in hand). Fear renders the ratified variant-D impact view (#19):
- * headline stat tiles, a stacked impact bar, the by-tag facet as clickable mini stacked bars, and
- * click-to-drill card chips — no by-expansion facet (owner's call from the prototype). Event
- * renders the same variant-D valence view (#20) on the harmful/mixed/beneficial axis, sharing
- * #19's stacked-bar, chip-list and hover/enlarge components. Fear's framing copy states the pool
- * is a hidden-subset fact, never a card counter (PRD user story 25); Event's empty state (a base-game-only set)
- * reads as a rule of the game, not an error (PRD user story 26). Holds no game state — a reload
- * always reverts to the Collection default, N=4, no spirit, counts (PRD user story 28).
+ * v6 #06/#07/#08/#09/#10/#11/#12, reshaped by element-demand #02 (ADR 0013: deck-wide element
+ * aggregates are near-uniform and meaningless unconditioned, so the UpSet and gap-odds table are
+ * gone): the Dashboard tab. The Minor/Major/Fear/Event switch leads the tab — the owner's call
+ * that "what deck am I looking at" outranks the expansion picker. Minor and Major lead with
+ * `DeckDemand`, a spirit-conditioned element demand/supply block (a prompt until a spirit is
+ * picked, since nothing deck-wide is worth showing), then the speed/cost facets by count. An
+ * expansion picker (session-only state, no storage key) defines the set, defaulting to the
+ * Collection; unowned expansions stay listed and annotated, never hidden (PRD user story 6). A
+ * single N stepper (default 4, clamped to [1, deck size] by the domain module) drives both
+ * power-deck segments' odds, now demand-indexed rather than fixed 1/2/3; the assumption label
+ * keeps the static dashboard from reading as live tracking (PRD user story 27). An optional spirit
+ * pick (default "no spirit") drives `computeElementDemand` and can additionally fold that spirit's
+ * unique powers into the Minor pool — labelled a hypothetical, because the physical minor deck
+ * never contains them (uniques start in hand). Fear renders the ratified variant-D impact view
+ * (#19): headline stat tiles, a stacked impact bar, the by-tag facet as clickable mini stacked
+ * bars, and click-to-drill card chips — no by-expansion facet (owner's call from the prototype).
+ * Event renders the same variant-D valence view (#20) on the harmful/mixed/beneficial axis,
+ * sharing #19's stacked-bar, chip-list and hover/enlarge components. Fear's framing copy states
+ * the pool is a hidden-subset fact, never a card counter (PRD user story 25); Event's empty state
+ * (a base-game-only set) reads as a rule of the game, not an error (PRD user story 26). Holds no
+ * game state — a reload always reverts to the Collection default, N=4, no spirit (PRD user story 28).
  */
 /** `initialSegment` mirrors `TierBoard`'s `initialSubject` — lets the server-rendered smoke test
  * reach a non-default segment without simulating a click. `initialSpiritId` is the same escape
- * hatch for #16's annotated/captioned gap-odds states. */
+ * hatch for the demand block's spirit-picked states. */
 export function DashboardTab({ initialSegment, initialSpiritId }: { initialSegment?: Segment; initialSpiritId?: string } = {}) {
   const [segment, setSegment] = useState<Segment>(initialSegment ?? 'Minor')
   const [drawCount, setDrawCount] = useState(DEFAULT_DRAW_COUNT)
@@ -84,15 +82,6 @@ export function DashboardTab({ initialSegment, initialSpiritId }: { initialSegme
   // persisted, so a reload always reverts to it.
   const [spiritId, setSpiritId] = useState(initialSpiritId ?? '')
   const [includeUniques, setIncludeUniques] = useState(false)
-  const [unit, setUnit] = useState<DeckUnit>('count')
-
-  const highlightElements = useMemo(() => {
-    if (!spiritId) return undefined
-    const spirit = SPIRITS.find((s) => s.id === spiritId)
-    return spirit ? new Set(spirit.elements) : undefined
-  }, [spiritId])
-
-  const innateThresholds = useMemo(() => (spiritId ? innateThresholdsFor(spiritId, SPIRITS, INNATE_POWERS) : undefined), [spiritId])
 
   function toggleExpansion(expansion: ExpansionName, checked: boolean) {
     setCheckedExpansions((prev) => {
@@ -107,16 +96,23 @@ export function DashboardTab({ initialSegment, initialSpiritId }: { initialSegme
     () => (includeUniques && spiritId ? UNIQUE_CARDS.filter((c) => c.spirit === spiritId) : []),
     [includeUniques, spiritId],
   )
-  const minorComposition = useMemo(
-    () => computeDeckComposition([...MINOR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), ...spiritUniques], drawCount),
-    [checkedExpansions, drawCount, spiritUniques],
+  const minorPoolCards = useMemo(
+    () => [...MINOR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), ...spiritUniques],
+    [checkedExpansions, spiritUniques],
   )
-  const majorComposition = useMemo(
-    () => computeDeckComposition(MAJOR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), drawCount),
-    [checkedExpansions, drawCount],
-  )
+  const majorPoolCards = useMemo(() => MAJOR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), [checkedExpansions])
+
+  const minorComposition = useMemo(() => computeDeckComposition(minorPoolCards, drawCount), [minorPoolCards, drawCount])
+  const majorComposition = useMemo(() => computeDeckComposition(majorPoolCards, drawCount), [majorPoolCards, drawCount])
 
   const activeComposition = segment === 'Minor' ? minorComposition : segment === 'Major' ? majorComposition : null
+  const activePoolCards = segment === 'Minor' ? minorPoolCards : segment === 'Major' ? majorPoolCards : null
+  const activePoolLabel = segment === 'Minor' ? 'minors' : 'majors'
+
+  const elementDemand = useMemo(
+    () => (spiritId && activePoolCards ? computeElementDemand(spiritId, SPIRITS, INNATE_POWERS, activePoolCards, drawCount) : undefined),
+    [spiritId, activePoolCards, drawCount],
+  )
 
   const fearCardsInPlay = useMemo(() => FEAR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), [checkedExpansions])
 
@@ -190,13 +186,11 @@ export function DashboardTab({ initialSegment, initialSpiritId }: { initialSegme
             />
             <span>of {activeComposition.deckSize}</span>
           </label>
-          <DeckUpset composition={activeComposition} highlightElements={highlightElements} unit={unit} onUnitChange={setUnit} />
+          <DeckDemand demand={elementDemand} poolLabel={activePoolLabel} />
           <p className="dashboard-assumption">Odds assume a full deck, nothing drawn.</p>
 
           <h3>Facets</h3>
-          <DeckFacets composition={activeComposition} unit={unit} />
-
-          <DeckGapOdds composition={activeComposition} thresholds={innateThresholds} />
+          <DeckFacets composition={activeComposition} />
         </div>
       )}
       {segment === 'Fear' && (

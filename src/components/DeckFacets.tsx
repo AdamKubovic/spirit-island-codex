@@ -1,16 +1,15 @@
 import type { DeckComposition } from '../domain/deckComposition'
-import type { DeckUnit } from './DeckUpset'
 
-/** deck-dashboard #09/#03: the secondary facets — fast/slow tempo and cost distribution —
- * alongside elements, so a player can weigh tempo and affordability, not just elements (PRD user
- * story 17). Speed carries the official fast/slow icons (public/elements, mirrored from the wiki)
- * and their colours; `unit` comes from the tab so these numbers agree with the UpSet's. Takes the
- * whole composition, like `DeckUpset`, rather than its fields separately — they always travel
- * together from the one call site. */
-export function DeckFacets({ composition, unit }: { composition: DeckComposition; unit: DeckUnit }) {
+/** deck-dashboard #09/#03, element-demand #02 (Counts/% toggle removed, counts only): the
+ * secondary facets — fast/slow tempo and cost distribution — alongside elements, so a player can
+ * weigh tempo and affordability, not just elements (PRD user story 17). Speed carries the official
+ * fast/slow icons (public/elements, mirrored from the wiki) and their colours. Takes the whole
+ * composition rather than its fields separately — they always travel together from the one call
+ * site. */
+export function DeckFacets({ composition }: { composition: DeckComposition }) {
   const { deckSize, speedSplit, costDistribution } = composition
   const costMax = Math.max(1, ...costDistribution.map((b) => b.count))
-  const fmt = (n: number) => (unit === 'percent' ? `${deckSize === 0 ? 0 : Math.round((n / deckSize) * 100)}%` : String(n))
+  const fmt = (n: number) => String(n)
 
   return (
     <div className="dashboard-facets">
