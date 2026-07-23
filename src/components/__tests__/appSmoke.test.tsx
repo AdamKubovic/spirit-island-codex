@@ -247,9 +247,8 @@ describe('app smoke', () => {
     expect(html).toContain('cards')
   })
 
-  it('the Dashboard Minor segment defaults its draw stepper to 4 and shows the full-deck assumption label (deck-dashboard #07)', () => {
+  it('the Dashboard Minor segment shows the full-deck assumption label (deck-dashboard #07)', () => {
     const html = renderToStaticMarkup(<DashboardTab />)
-    expect(html).toContain('value="4"')
     expect(html).toContain('Odds assume a full deck, nothing drawn.')
   })
 

@@ -18,6 +18,18 @@ import { activeConfigTier, tierColor } from './tierColors'
  * `.scratch/v5/screenshots-08/`) - a left-edge stripe and a solid chip (same colour, verified
  * identical) carry the expansion; the complexity dots carry a text word next to them; playstyle
  * tags get their own outlined chips on a separate line below the expansion chip. */
+/** Same rule/colour as the tile's own tier ribbon (`activeConfigTier` + `tierColor`), so an
+ * aspect's rank in Browse can never disagree with its rank in the modal (SpiritDetail's TierChip). */
+function AspectTierChip({ configId }: { configId: string }) {
+  const tier = activeConfigTier(configId)
+  if (!tier) return <span className="tier-chip tier-chip-unrated">unrated</span>
+  return (
+    <span className="tier-chip" style={{ backgroundColor: tierColor(tier.position) }}>
+      {tier.label}
+    </span>
+  )
+}
+
 export function SpiritTile({
   spirit,
   onSelect,
@@ -86,7 +98,7 @@ export function SpiritTile({
             <ul className="aspects">
               {spirit.aspects.map((aspect) => (
                 <li key={aspect.name}>
-                  <strong>{aspect.name}:</strong>{' '}
+                  <AspectTierChip configId={toConfigId(spirit.id, aspect.name)} /> <strong>{aspect.name}:</strong>{' '}
                   {aspect.delta ?? <em className="meta">effect not transcribed yet</em>}
                   {owned && excluded.has(aspect.expansion) && <span className="unowned-note"> · not in your collection</span>}
                 </li>

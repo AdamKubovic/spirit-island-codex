@@ -76,7 +76,7 @@ function isChecked(expansion: string, checked: ReadonlySet<ExpansionName>): bool
  * hatch for the demand block's spirit-picked states. */
 export function DashboardTab({ initialSegment, initialSpiritId }: { initialSegment?: Segment; initialSpiritId?: string } = {}) {
   const [segment, setSegment] = useState<Segment>(initialSegment ?? 'Minor')
-  const [drawCount, setDrawCount] = useState(DEFAULT_DRAW_COUNT)
+  const drawCount = DEFAULT_DRAW_COUNT
   const [checkedExpansions, setCheckedExpansions] = useState<Set<ExpansionName>>(defaultCheckedExpansions)
   // '' is the default "no spirit" state (PRD user story 20) — never a storage key, never
   // persisted, so a reload always reverts to it.
@@ -100,7 +100,10 @@ export function DashboardTab({ initialSegment, initialSpiritId }: { initialSegme
     () => [...MINOR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), ...spiritUniques],
     [checkedExpansions, spiritUniques],
   )
-  const majorPoolCards = useMemo(() => MAJOR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), [checkedExpansions])
+  const majorPoolCards = useMemo(
+    () => [...MAJOR_CARDS.filter((c) => isChecked(c.expansion, checkedExpansions)), ...spiritUniques],
+    [checkedExpansions, spiritUniques],
+  )
 
   const minorComposition = useMemo(() => computeDeckComposition(minorPoolCards, drawCount), [minorPoolCards, drawCount])
   const majorComposition = useMemo(() => computeDeckComposition(majorPoolCards, drawCount), [majorPoolCards, drawCount])
@@ -169,7 +172,7 @@ export function DashboardTab({ initialSegment, initialSpiritId }: { initialSegme
           {spiritId && (
             <label className="dashboard-spirit-picker">
               <input type="checkbox" checked={includeUniques} onChange={(e) => setIncludeUniques(e.target.checked)} />
-              Fold this spirit's unique powers into the Minor deck (hypothetical — uniques start in hand)
+              Fold this spirit's unique powers into the Minor/Major deck (hypothetical — uniques start in hand)
             </label>
           )}
         </>
@@ -178,20 +181,6 @@ export function DashboardTab({ initialSegment, initialSpiritId }: { initialSegme
       {activeComposition && (
         <div className="dashboard-deck">
           <p className="dashboard-deck-size">{activeComposition.deckSize} cards</p>
-          <label className="dashboard-pill dashboard-drawpill">
-            Draw
-            <input
-              type="number"
-              min={1}
-              max={Math.max(1, activeComposition.deckSize)}
-              // Shows the composition's own clamped drawCount, not the raw request — so a typed
-              // value that overshoots the deck size snaps back to what the odds actually used,
-              // rather than showing an N inconsistent with the percentages beside it.
-              value={activeComposition.drawCount}
-              onChange={(e) => setDrawCount(Number(e.target.value) || 1)}
-            />
-            <span>of {activeComposition.deckSize}</span>
-          </label>
           <DeckDemand demand={elementDemand} poolLabel={activePoolLabel} />
           <p className="dashboard-assumption">Odds assume a full deck, nothing drawn.</p>
 
