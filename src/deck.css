@@ -45,6 +45,10 @@
   --deck-accent: #3fae6a;
   --deck-accent-bg: #14351f;
   --deck-warn: #c56a3a;
+  /* Dashboard Fast/Slow facet bars, keyed to the icons (modal sampled from
+     public/elements/fast.png's bird and slow.png's turtle). */
+  --deck-fast: #ef3029;
+  --deck-slow: #39499c;
   --deck-mono: ui-monospace, Consolas, monospace;
 }
 
@@ -78,6 +82,8 @@ body {
   --deck-body: #5b4e2d; /* ink-soft */
   --deck-dim: #8a7a52;
   --deck-accent: #2e7a4a; /* presence-green, darkened for parchment contrast */
+  --deck-fast: #b32418; /* bird-red, darkened for parchment contrast */
+  --deck-slow: #2b3775; /* turtle-blue, darkened for parchment contrast */
 }
 
 .deck-side {
@@ -1596,10 +1602,10 @@ button:disabled {
   background: var(--deck-panel-2);
 }
 .dashboard-facet-fast {
-  background: var(--deck-accent);
+  background: var(--deck-fast);
 }
 .dashboard-facet-slow {
-  background: var(--deck-dim);
+  background: var(--deck-slow);
 }
 .dashboard-facet-legend {
   font-size: 12px;
@@ -2268,12 +2274,7 @@ button:disabled {
   width: 22px;
   height: auto;
 }
-.dashboard-facet-fast {
-  background: var(--deck-accent);
-}
-.dashboard-facet-slow {
-  background: var(--deck-dim);
-}
+/* .dashboard-facet-fast/-slow are defined once, beside .dashboard-facet-bar above. */
 .element-icon {
   width: 18px;
   height: 18px;
