@@ -95,7 +95,7 @@ export function GameLog() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stats = useMemo(() => computeLogStats(gameLog.list(), spirits), [version])
 
-  const canSubmit = adversary.trim().length > 0 && players.every((p) => p.name.trim() && p.configId)
+  const canSubmit = players.every((p) => p.name.trim() && p.configId)
   const selectedAdversary = findAdversary(adversary)
   const selectedSecondaryAdversary = findAdversary(secondaryAdversary)
   const selectedPlayerSpirits = players.map((p) => (p.configId ? spiritForConfig(p.configId) : undefined))
@@ -155,7 +155,7 @@ export function GameLog() {
     gameLog.append({
       date: new Date().toISOString(),
       players,
-      adversary: adversary.trim(),
+      adversary: adversary.trim() || undefined,
       adversaryLevel,
       secondaryAdversary: secondaryAdversary || undefined,
       secondaryAdversaryLevel: secondaryAdversary ? secondaryAdversaryLevel : undefined,
@@ -266,9 +266,9 @@ export function GameLog() {
 
         <div className="log-row">
           <label className="log-field log-field-grow">
-            <span className="log-field-label">Adversary</span>
+            <span className="log-field-label">Adversary (optional)</span>
             <select className="log-select" value={adversary} onChange={(e) => handleSetAdversary(e.target.value)}>
-              <option value="">Which adversary?</option>
+              <option value="">None</option>
               {ADVERSARIES.map((a) => (
                 <option key={a.name} value={a.name}>
                   {a.name}
@@ -284,6 +284,7 @@ export function GameLog() {
               min={selectedAdversary?.minLevel ?? 0}
               max={selectedAdversary?.maxLevel ?? 6}
               value={adversaryLevel}
+              disabled={!adversary}
               onChange={(e) => handleSetAdversaryLevel(e.target.value)}
             />
           </label>
@@ -572,8 +573,14 @@ export function GameLog() {
                     </td>
                     <td data-label="Adversary">
                       <span className="log-chip-cluster">
-                        <AvatarChip kind="adversary" name={entry.adversary} />
-                        <span className="meta">Lv {entry.adversaryLevel}</span>
+                        {entry.adversary ? (
+                          <>
+                            <AvatarChip kind="adversary" name={entry.adversary} />
+                            <span className="meta">Lv {entry.adversaryLevel}</span>
+                          </>
+                        ) : (
+                          <span className="meta">—</span>
+                        )}
                         {entry.difficulty !== undefined && <span className="log-difficulty-badge">Diff {entry.difficulty}</span>}
                       </span>
                     </td>

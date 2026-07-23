@@ -41,6 +41,13 @@ describe('gameLog', () => {
     expect(recorded.blightRemaining).toBe(3)
   })
 
+  it('accepts an entry with no adversary, storing undefined rather than a placeholder', () => {
+    const log = createGameLog(memoryStorage())
+    const recorded = log.append(entry({ adversary: undefined }))
+    expect(recorded.adversary).toBeUndefined()
+    expect('adversary' in log.list()[0] && log.list()[0].adversary).toBeFalsy()
+  })
+
   it('records a game with multiple players and configurations', () => {
     const log = createGameLog(memoryStorage())
     const recorded = log.append(

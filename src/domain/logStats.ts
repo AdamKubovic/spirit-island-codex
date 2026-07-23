@@ -65,7 +65,7 @@ export function computeLogStats(entries: LogEntry[], spirits: Spirit[]): LogStat
   for (const entry of entries) {
     const won = entry.outcome === 'win'
     if (won) overallWins += 1
-    bump(byAdversary, entry.adversary, won)
+    if (entry.adversary) bump(byAdversary, entry.adversary, won)
     if (entry.difficulty !== undefined) bump(byDifficultyBand, difficultyBand(entry.difficulty), won)
     for (const player of entry.players) {
       bump(byConfiguration, player.configId, won)

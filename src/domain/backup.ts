@@ -8,7 +8,9 @@ export interface LogEntry {
   id: string
   date: string
   players: { name: string; configId: string }[]
-  adversary: string
+  /** Optional since the log-browse-dashboard-polish batch: a no-adversary game stores
+   * `undefined`, never a fabricated placeholder. */
+  adversary?: string
   adversaryLevel: number
   scenario?: string
   outcome: 'win' | 'loss'

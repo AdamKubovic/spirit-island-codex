@@ -110,6 +110,12 @@ describe('computeLogStats', () => {
     expect(stats.byAdversary.Sweden).toEqual({ wins: 0, total: 1, rate: undefined })
   })
 
+  it('excludes no-adversary entries from the by-adversary breakdown, but still counts them overall', () => {
+    const stats = computeLogStats([entry({ adversary: undefined, outcome: 'win' })], spirits)
+    expect(stats.byAdversary).toEqual({})
+    expect(stats.overall.total).toBe(1)
+  })
+
   it('a multi-player game counts once toward gamesPlayed and overall, but per-player toward byConfiguration', () => {
     const stats = computeLogStats(
       [
