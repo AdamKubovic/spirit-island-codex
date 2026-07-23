@@ -77,70 +77,76 @@ export function Browser({
   return (
     <section>
       <h2>Browse spirits</h2>
-      <div className="filters">
-        <label className="search-field-label">
-          Search by name
-          <span className="search-field">
-            <input
-              type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Spirit or aspect name…"
-            />
-          </span>
-        </label>
-        <label>
-          Expansion
-          <select value={expansion} onChange={(e) => setExpansion(e.target.value)}>
-            <option value="">All</option>
-            {EXPANSIONS.map((e) => (
-              <option key={e} value={e}>
-                {e}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Complexity
-          <select value={complexity} onChange={(e) => setComplexity(e.target.value)}>
-            <option value="">All</option>
-            {COMPLEXITIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Tag
-          <select value={tag} onChange={(e) => setTag(e.target.value)}>
-            <option value="">All</option>
-            {TAGS.map((t) => (
-              <option key={t} value={t}>
-                {t}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Strong in
-          <select value={strongIn} onChange={(e) => setStrongIn(e.target.value as '' | keyof OCFDU)}>
-            <option value="">Any</option>
-            {RATING_AXES.map((axis) => (
-              <option key={axis} value={axis}>
-                {axis[0].toUpperCase() + axis.slice(1)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Sort by
-          <select value={sortKey} onChange={(e) => setSortKey(e.target.value as SortKey)}>
-            <option value="name">Name</option>
-            <option value="tier">Tier</option>
-            <option value="expansion">Expansion</option>
-          </select>
-        </label>
+      {/* Same stacked shape as Archive's CardFilters: search on its own row, selects wrapped
+          in one row below. `.filters` stays as the companion class that styles label/select. */}
+      <div className="card-filters">
+        <div className="card-filters-row">
+          <label className="search-field-label">
+            Search by name
+            <span className="search-field">
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Spirit or aspect name…"
+              />
+            </span>
+          </label>
+        </div>
+        <div className="card-filters-row filters">
+          <label>
+            Expansion
+            <select value={expansion} onChange={(e) => setExpansion(e.target.value)}>
+              <option value="">All</option>
+              {EXPANSIONS.map((e) => (
+                <option key={e} value={e}>
+                  {e}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Complexity
+            <select value={complexity} onChange={(e) => setComplexity(e.target.value)}>
+              <option value="">All</option>
+              {COMPLEXITIES.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Tag
+            <select value={tag} onChange={(e) => setTag(e.target.value)}>
+              <option value="">All</option>
+              {TAGS.map((t) => (
+                <option key={t} value={t}>
+                  {t}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Strong in
+            <select value={strongIn} onChange={(e) => setStrongIn(e.target.value as '' | keyof OCFDU)}>
+              <option value="">Any</option>
+              {RATING_AXES.map((axis) => (
+                <option key={axis} value={axis}>
+                  {axis[0].toUpperCase() + axis.slice(1)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label>
+            Sort by
+            <select value={sortKey} onChange={(e) => setSortKey(e.target.value as SortKey)}>
+              <option value="name">Name</option>
+              <option value="tier">Tier</option>
+              <option value="expansion">Expansion</option>
+            </select>
+          </label>
+        </div>
       </div>
       <label className="deck-field-inline">
         <input type="checkbox" checked={hardFilter} onChange={(e) => setHardFilter(e.target.checked)} />

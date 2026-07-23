@@ -1,4 +1,4 @@
-Status: ready-for-agent
+Status: done
 
 # Browse filter layout parity with Archive
 
@@ -19,15 +19,26 @@ up any now-fully-superseded `.filters` CSS rules.
 
 ## Acceptance criteria
 
-- [ ] On Browse, the search input renders in its own row above the filter selects.
-- [ ] The five filter selects render together in one wrapping row below the search row.
-- [ ] The markup reuses Archive's `.card-filters` / `.card-filters-row` classes rather than
+- [x] On Browse, the search input renders in its own row above the filter selects.
+- [x] The five filter selects render together in one wrapping row below the search row.
+- [x] The markup reuses Archive's `.card-filters` / `.card-filters-row` classes rather than
       introducing new parallel CSS.
-- [ ] Browse's filter behavior (filtering, sorting) is unchanged — this is a layout-only change.
-- [ ] Verified visually at both a wide and a narrow viewport width that filters no longer get
+- [x] Browse's filter behavior (filtering, sorting) is unchanged — this is a layout-only change.
+- [x] Verified visually at both a wide and a narrow viewport width that filters no longer get
       squeezed by the search box.
-- [ ] Now-unused `.filters`-specific CSS rules (if any are fully superseded) are removed.
+- [x] Now-unused `.filters`-specific CSS rules (if any are fully superseded) are removed.
 
 ## Blocked by
 
 None — can start immediately.
+
+## Comments
+
+Browser's filter markup now wraps in `.card-filters` with two `.card-filters-row` rows: search
+alone in row 1, the five selects in row 2 with the existing `card-filters-row filters` companion
+pattern (same as CardsTab's sort/group row), so the select/label styling still comes from
+`.filters`. The `.filters` CSS rules were NOT removed — they remain in use by CardFilters.tsx,
+CardsTab.tsx and OtherCardFilters.tsx as that companion class; only Browse's bare
+`className="filters"` usage went away. No new CSS added. Verified via Playwright at 1280px and
+700px: search renders above the selects row at both widths, the five selects share one wrapping
+row, and name search still narrows the grid (37 -> 1).
