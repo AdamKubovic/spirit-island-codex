@@ -35,6 +35,14 @@ describe('sortPowerCards', () => {
     expect(sortPowerCards(CARDS, 'cost-desc').map((c) => c.name)).toEqual(['A', 'B', 'D', 'C'])
   })
 
+  it("'name-asc' sorts alphabetically A -> Z", () => {
+    expect(sortPowerCards(CARDS, 'name-asc').map((c) => c.name)).toEqual(['A', 'B', 'C', 'D'])
+  })
+
+  it("'name-desc' sorts alphabetically Z -> A", () => {
+    expect(sortPowerCards(CARDS, 'name-desc').map((c) => c.name)).toEqual(['D', 'C', 'B', 'A'])
+  })
+
   it('returns a copy, never mutating the input', () => {
     const input = [...CARDS]
     sortPowerCards(input, 'cost-asc')

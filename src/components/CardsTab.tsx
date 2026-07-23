@@ -123,6 +123,8 @@ export function CardsTab() {
                 <option value="none">Deck order</option>
                 <option value="cost-asc">Cost (low → high)</option>
                 <option value="cost-desc">Cost (high → low)</option>
+                <option value="name-asc">Name (A → Z)</option>
+                <option value="name-desc">Name (Z → A)</option>
               </select>
             </label>
             <label>

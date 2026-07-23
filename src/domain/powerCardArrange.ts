@@ -1,6 +1,6 @@
 import { ELEMENTS, EXPANSIONS, type PowerCard } from './types'
 
-export type PowerSort = 'none' | 'cost-asc' | 'cost-desc'
+export type PowerSort = 'none' | 'cost-asc' | 'cost-desc' | 'name-asc' | 'name-desc'
 export type PowerGroup = 'none' | 'cost' | 'speed' | 'element' | 'expansion' | 'type'
 
 const CARD_KIND_ORDER: PowerCard['kind'][] = ['minor', 'major', 'unique']
@@ -9,6 +9,9 @@ const CARD_KIND_ORDER: PowerCard['kind'][] = ['minor', 'major', 'unique']
  * deck's input order, so composing with filters never reshuffles equal-cost cards. */
 export function sortPowerCards(cards: PowerCard[], sort: PowerSort): PowerCard[] {
   if (sort === 'none') return [...cards]
+  if (sort === 'name-asc' || sort === 'name-desc') {
+    return [...cards].sort((a, b) => (sort === 'name-asc' ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)))
+  }
   return [...cards].sort((a, b) => (sort === 'cost-asc' ? a.cost - b.cost : b.cost - a.cost))
 }
 
