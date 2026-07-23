@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import spiritsData from '../data/spirits.json'
+import { filterSpirits } from '../domain/browserFilter'
 import { collectionStore } from '../domain/collectionStore'
 import { toConfigId } from '../domain/configurations'
 import { tierStore } from '../domain/tierStore'
@@ -11,8 +12,6 @@ const spirits = spiritsData as Spirit[]
 
 const COMPLEXITIES: Complexity[] = ['Low', 'Moderate', 'High', 'Very High']
 const RATING_AXES: (keyof OCFDU)[] = ['offense', 'control', 'fear', 'defense', 'utility']
-// A spirit counts as "strong in" an axis at 4+ on the 1–6 OCFDU scale (owner's call, grill 2026-07-23).
-const STRONG_IN_THRESHOLD = 4
 
 const EXPANSIONS = [...new Set(spirits.map((s) => s.expansion))].sort()
 const TAGS = [...new Set(spirits.flatMap((s) => s.tags))].sort()
@@ -20,13 +19,34 @@ const TAGS = [...new Set(spirits.flatMap((s) => s.tags))].sort()
 // OCFDU is a filter axis, not a sort axis (nobody lands on Browse and sorts by Offense).
 type SortKey = 'name' | 'tier' | 'expansion'
 
-export function Browser() {
+export function Browser({
+  initialTarget,
+  onTargetConsumed,
+}: {
+  /** Set by a Recommend-result click (#02 deep link); seeds `selected`/`highlightAspect` on
+   * arrival instead of requiring the owner to find the spirit themselves. */
+  initialTarget?: { spiritId: string; aspectName?: string } | null
+  onTargetConsumed?: () => void
+} = {}) {
   const [expansion, setExpansion] = useState('')
   const [complexity, setComplexity] = useState('')
   const [tag, setTag] = useState('')
   const [strongIn, setStrongIn] = useState<'' | keyof OCFDU>('')
+  const [search, setSearch] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('name')
-  const [selected, setSelected] = useState<Spirit | null>(null)
+  // Lazy initializers, not a useEffect: App unmounts Browser on every tab switch away (App.tsx
+  // conditionally renders it), so a fresh mount is exactly the "arrival" #02 asks for - reading
+  // the prop once at construction seeds `selected` before the first paint instead of flashing
+  // an empty grid first.
+  const [selected, setSelected] = useState<Spirit | null>(
+    () => spirits.find((s) => s.id === initialTarget?.spiritId) ?? null,
+  )
+  const [highlightAspect, setHighlightAspect] = useState<string | undefined>(() => initialTarget?.aspectName)
+
+  useEffect(() => {
+    if (initialTarget) onTargetConsumed?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- consumed once per mount, not per render of onTargetConsumed
+  }, [])
   // The active configurations tier list's ranks (0 strongest .. 1 weakest), keyed by configId;
   // unrated spirits are absent, so they sort last. Read once — a view preference, like the rest.
   const rankPrior = useMemo(() => tierStore.getRankPrior(), [])
@@ -38,14 +58,7 @@ export function Browser() {
   const excluded = useMemo(() => new Set(collectionStore.getExcluded()), [])
 
   const shown = useMemo(() => {
-    const filtered = spirits.filter(
-      (s) =>
-        (!expansion || s.expansion === expansion) &&
-        (!complexity || s.complexity === complexity) &&
-        (!tag || s.tags.includes(tag)) &&
-        (!strongIn || s.ratings[strongIn] >= STRONG_IN_THRESHOLD) &&
-        (!hardFilter || !excluded.has(s.expansion)),
-    )
+    const filtered = filterSpirits(spirits, { expansion, complexity, tag, strongIn, search, hardFilter }, excluded)
     const byName = (a: Spirit, b: Spirit) => a.name.localeCompare(b.name)
     const order = EXPANSION_ORDER as readonly string[]
     return [...filtered].sort((a, b) => {
@@ -59,12 +72,21 @@ export function Browser() {
       }
       return byName(a, b)
     })
-  }, [expansion, complexity, tag, strongIn, sortKey, hardFilter, excluded, rankPrior])
+  }, [expansion, complexity, tag, strongIn, search, sortKey, hardFilter, excluded, rankPrior])
 
   return (
     <section>
       <h2>Browse spirits</h2>
       <div className="filters">
+        <label>
+          Search by name
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Spirit or aspect name…"
+          />
+        </label>
         <label>
           Expansion
           <select value={expansion} onChange={(e) => setExpansion(e.target.value)}>
@@ -132,14 +154,26 @@ export function Browser() {
           <SpiritTile
             key={spirit.id}
             spirit={spirit}
-            onSelect={setSelected}
+            onSelect={(s) => {
+              setSelected(s)
+              setHighlightAspect(undefined)
+            }}
             owned={!excluded.has(spirit.expansion)}
             excluded={excluded}
           />
         ))}
       </ul>
 
-      {selected && <SpiritDetail spirit={selected} onClose={() => setSelected(null)} />}
+      {selected && (
+        <SpiritDetail
+          spirit={selected}
+          highlightAspect={highlightAspect}
+          onClose={() => {
+            setSelected(null)
+            setHighlightAspect(undefined)
+          }}
+        />
+      )}
     </section>
   )
 }

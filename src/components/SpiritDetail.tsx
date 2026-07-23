@@ -1,5 +1,6 @@
-import { useRef, useState, type CSSProperties } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { toConfigId } from '../domain/configurations'
+import { stepGalleryIndex } from '../domain/gallerySequence'
 import { tierStore } from '../domain/tierStore'
 import type { Spirit } from '../domain/types'
 import { CardViewer } from './CardViewer'
@@ -94,7 +95,10 @@ export function SpiritDetail({
   /** #17: opened from an aspect tile — scroll to the Aspects section with this row highlighted. */
   highlightAspect?: string
 }) {
-  const [enlarged, setEnlarged] = useState<{ src: string; alt: string } | null>(null)
+  // #01: panel front, panel back, then starting cards 0-3 (only the ones that exist), as one
+  // arrow-navigable sequence. `index` is present only for images in this sequence - an aspect
+  // image's `enlarged` has no index, so it stays single-image/click-to-close only.
+  const [enlarged, setEnlarged] = useState<{ src: string; alt: string; index?: number } | null>(null)
   // "Lands scrolled" is a one-time act: without this guard the inline callback ref re-fires on
   // every re-render (e.g. enlarging a card image) and snaps scroll back to the aspect row.
   const scrolledToAspect = useRef(false)
@@ -102,6 +106,31 @@ export function SpiritDetail({
   const base = import.meta.env.BASE_URL
   const level = COMPLEXITY_LEVEL[spirit.complexity]
   const expansionColor = expansionChipColor(spirit.expansion)
+
+  const galleryImages = useMemo(() => {
+    const images = [
+      { src: `${base}panels/${spirit.id}-front.webp`, alt: `${spirit.name} panel front` },
+      { src: `${base}panels/${spirit.id}-back.webp`, alt: `${spirit.name} panel back` },
+    ]
+    spirit.startingCards?.forEach((cardName, i) => {
+      images.push({ src: `${base}cards/${spirit.id}-${i}.webp`, alt: cardName })
+    })
+    return images
+  }, [spirit, base])
+
+  useEffect(() => {
+    if (enlarged?.index === undefined) return
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
+      setEnlarged((current) => {
+        if (current?.index === undefined) return current
+        const next = stepGalleryIndex(current.index, e.key === 'ArrowRight' ? 'right' : 'left', galleryImages.length)
+        return { ...galleryImages[next], index: next }
+      })
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [enlarged?.index, galleryImages])
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -163,11 +192,8 @@ export function SpiritDetail({
 
         <h3>Panel</h3>
         <div className="spirit-detail-panels">
-          {[
-            { src: `${base}panels/${spirit.id}-front.webp`, alt: `${spirit.name} panel front` },
-            { src: `${base}panels/${spirit.id}-back.webp`, alt: `${spirit.name} panel back` },
-          ].map(({ src, alt }) => (
-            <button key={src} type="button" className="spirit-detail-panel" onClick={() => setEnlarged({ src, alt })}>
+          {galleryImages.slice(0, 2).map(({ src, alt }, i) => (
+            <button key={src} type="button" className="spirit-detail-panel" onClick={() => setEnlarged({ src, alt, index: i })}>
               <DetailImage spirit={spirit} src={src} alt={alt} />
             </button>
           ))}
@@ -178,15 +204,15 @@ export function SpiritDetail({
             <h3>Starting cards</h3>
             <ul className="spirit-detail-cards">
               {spirit.startingCards.map((cardName, i) => {
-                const src = `${base}cards/${spirit.id}-${i}.webp`
+                const { src, alt } = galleryImages[i + 2]
                 return (
                   <li key={cardName}>
                     <button
                       type="button"
                       className="spirit-detail-card"
-                      onClick={() => setEnlarged({ src, alt: cardName })}
+                      onClick={() => setEnlarged({ src, alt, index: i + 2 })}
                     >
-                      <DetailImage spirit={spirit} src={src} alt={cardName} />
+                      <DetailImage spirit={spirit} src={src} alt={alt} />
                       <span className="spirit-detail-card-name">{cardName}</span>
                     </button>
                   </li>

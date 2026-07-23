@@ -196,12 +196,18 @@ export function RecommenderSide() {
 
 /* ------------------------------ main pane ------------------------------ */
 
-export function RecommenderMain() {
+export function RecommenderMain({
+  onSelectConfiguration,
+}: {
+  /** #02: clicking a recommended configuration jumps the owner to Browse with that spirit's
+   * modal open (and its aspect highlighted, if any) - App owns the tab switch. */
+  onSelectConfiguration?: (configId: string) => void
+} = {}) {
   const { phase } = useRecommender()
   if (phase === 'random') return <RandomChooser />
   if (phase === 'wizard') return <Wizard />
   if (phase === 'resume') return <ResumePrompt />
-  return <ResultsBoard />
+  return <ResultsBoard onSelectConfiguration={onSelectConfiguration} />
 }
 
 /** Shown once on load when answers were restored from a previous visit, instead of silently
@@ -244,6 +250,7 @@ function ResultRow({
   weights,
   tiers,
   owned,
+  onSelectConfiguration,
 }: {
   config: Configuration
   score: number
@@ -251,6 +258,7 @@ function ResultRow({
   weights: Weights
   tiers: Record<string, string>
   owned: boolean
+  onSelectConfiguration?: (configId: string) => void
 }) {
   const [open, setOpen] = useState(false)
   const { spirit, aspect } = config
@@ -276,6 +284,19 @@ function ResultRow({
         <HeatStrip ratings={spirit.ratings} weights={weights} />
         <span className="deck-score">{score.toFixed(2)}</span>
       </button>
+
+      {onSelectConfiguration && (
+        <button
+          type="button"
+          className="deck-ghost"
+          onClick={(e) => {
+            e.stopPropagation()
+            onSelectConfiguration(config.configId)
+          }}
+        >
+          View in Browse
+        </button>
+      )}
 
       {open && (
         <div className="deck-row-body">
@@ -322,7 +343,7 @@ function ResultRow({
   )
 }
 
-function ResultsBoard() {
+function ResultsBoard({ onSelectConfiguration }: { onSelectConfiguration?: (configId: string) => void }) {
   const { setPhase, rerollWildcard, hardFilter, setHardFilter } = useRecommender()
   const { weights, ranked, wildcard, excluded } = useRanking()
   const shortlist = ranked.slice(0, SHORTLIST_SIZE)
@@ -360,6 +381,7 @@ function ResultsBoard() {
             weights={weights}
             tiers={tiers}
             owned={isConfigurationOwned(config, excluded)}
+            onSelectConfiguration={onSelectConfiguration}
           />
         ))}
       </ol>

@@ -29,6 +29,13 @@ export function toConfigId(spiritId: string, aspectName?: string): string {
   return aspectName ? `${spiritId}::${aspectName}` : spiritId
 }
 
+/** Inverse of `toConfigId` — #02's Recommend→Browse deep link splits a result's configId back
+ * into what `Browser`/`SpiritDetail` need (a spirit id, and an aspect name only if there is one). */
+export function fromConfigId(configId: string): { spiritId: string; aspectName?: string } {
+  const [spiritId, aspectName] = configId.split('::')
+  return { spiritId, aspectName }
+}
+
 /** Pure: a base configuration for every spirit, plus one per aspect. Fit is inherited from
  * the base spirit's OCFDU unmodified - aspects have no printed OCFDU and none will be invented.
  * `complexityOverrides` (spiritId -> Complexity, e.g. from complexityStore.getAll()) feeds only

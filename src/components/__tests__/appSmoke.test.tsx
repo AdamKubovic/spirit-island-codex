@@ -19,6 +19,26 @@ import { RecommenderMain, RecommenderProvider, RecommenderSide } from '../Recomm
 import { Settings } from '../Settings'
 import { SpiritDetail } from '../SpiritDetail'
 import { TierBoard } from '../TierBoard'
+import { Browser } from '../Browser'
+import { CardFilters } from '../CardFilters'
+import { OtherCardFilters } from '../OtherCardFilters'
+import powerCardsData from '../../data/power-cards.json'
+import otherCardsData from '../../data/other-cards.json'
+import { filterPowerCards, EMPTY_POWER_CARD_FILTER } from '../../domain/powerCardFilter'
+import { filterOtherCards, EMPTY_OTHER_CARD_FILTER } from '../../domain/otherCardFilter'
+import { filterSpirits, type BrowserFilterState } from '../../domain/browserFilter'
+import { stepGalleryIndex } from '../../domain/gallerySequence'
+import { fromConfigId, toConfigId } from '../../domain/configurations'
+import type { OtherCard, PowerCard } from '../../domain/types'
+
+const EMPTY_BROWSER_FILTER: BrowserFilterState = {
+  expansion: '',
+  complexity: '',
+  tag: '',
+  strongIn: '',
+  search: '',
+  hardFilter: false,
+}
 
 const spirits = spiritsData as Spirit[]
 
@@ -510,5 +530,151 @@ describe('app smoke', () => {
     } finally {
       collectionStore.resetAll()
     }
+  })
+
+  it('gallery arrow-nav (#01): builds panel-front, panel-back, card 0-3 as one sequence, omitting absent starting cards', () => {
+    const withCards = spirits.find((s) => s.id === 'lightnings-swift-strike')!
+    const html = renderToStaticMarkup(<SpiritDetail spirit={withCards} onClose={() => {}} />)
+    // Panel buttons and card buttons all exist and render in document order (front, back, then cards).
+    const frontIdx = html.indexOf(`${withCards.id}-front.webp`)
+    const backIdx = html.indexOf(`${withCards.id}-back.webp`)
+    const card0Idx = html.indexOf(`${withCards.id}-0.webp`)
+    expect(frontIdx).toBeGreaterThan(-1)
+    expect(backIdx).toBeGreaterThan(frontIdx)
+    expect(card0Idx).toBeGreaterThan(backIdx)
+
+    const noCards: Spirit = { ...withCards, id: 'no-cards-test-spirit', startingCards: undefined }
+    const htmlNoCards = renderToStaticMarkup(<SpiritDetail spirit={noCards} onClose={() => {}} />)
+    expect(htmlNoCards).not.toContain('Starting cards')
+    expect(htmlNoCards).toContain('panels/no-cards-test-spirit-front.webp')
+    expect(htmlNoCards).toContain('panels/no-cards-test-spirit-back.webp')
+  })
+
+  it('gallery arrow-nav (#01): the keydown step clamps at both ends rather than wrapping (SpiritDetail delegates to this)', () => {
+    const length = 6
+    // Walking right past the last index stays clamped at the last index, not wraps to 0.
+    expect(stepGalleryIndex(length - 1, 'right', length)).toBe(length - 1)
+    expect(stepGalleryIndex(3, 'right', length)).toBe(4)
+    // Walking left past the first index stays clamped at 0, not wraps to the last index.
+    expect(stepGalleryIndex(0, 'left', length)).toBe(0)
+    expect(stepGalleryIndex(2, 'left', length)).toBe(1)
+  })
+
+  it('Recommend→Browse (#02): configId round-trips through fromConfigId for both a base spirit and an aspect', () => {
+    expect(fromConfigId(toConfigId('lightnings-swift-strike'))).toEqual({ spiritId: 'lightnings-swift-strike', aspectName: undefined })
+    expect(fromConfigId(toConfigId('lightnings-swift-strike', 'Sparking'))).toEqual({
+      spiritId: 'lightnings-swift-strike',
+      aspectName: 'Sparking',
+    })
+  })
+
+  it('Recommend→Browse (#02): a recommended configuration renders a "View in Browse" action once App wires onSelectConfiguration in', () => {
+    const html = renderToStaticMarkup(
+      <RecommenderProvider initialPhase="board">
+        <RecommenderMain onSelectConfiguration={() => {}} />
+      </RecommenderProvider>,
+    )
+    expect(html).toContain('View in Browse')
+
+    const htmlWithoutHandler = renderToStaticMarkup(
+      <RecommenderProvider initialPhase="board">
+        <RecommenderMain />
+      </RecommenderProvider>,
+    )
+    expect(htmlWithoutHandler).not.toContain('View in Browse')
+  })
+
+  it('Recommend→Browse (#02): Browser seeds itself from an initialTarget prop, highlighting the aspect when one is given', () => {
+    const lightning = spirits.find((s) => s.id === 'lightnings-swift-strike')!
+    const html = renderToStaticMarkup(
+      <Browser initialTarget={{ spiritId: lightning.id, aspectName: 'Sparking' }} />,
+    )
+    expect(html).toContain('role="dialog"')
+    expect(html.match(/aspect-row-highlight/g)).toHaveLength(1)
+
+    const htmlBase = renderToStaticMarkup(<Browser initialTarget={{ spiritId: lightning.id }} />)
+    expect(htmlBase).toContain('role="dialog"')
+    expect(htmlBase).not.toContain('aspect-row-highlight')
+  })
+
+  it('Browse name search (#03): a text input is present in the rendered filter bar', () => {
+    const html = renderToStaticMarkup(<Browser />)
+    expect(html).toContain('Search by name')
+    expect(html).toContain(`${spirits.length} of ${spirits.length} spirits`)
+  })
+
+  it('Browse name search (#03): narrows by spirit/aspect name only, and combines with an existing dropdown filter', () => {
+    const excluded = new Set<string>()
+    const byName = filterSpirits(spirits, { ...EMPTY_BROWSER_FILTER, search: 'lightning' }, excluded)
+    expect(byName.map((s) => s.id)).toEqual(['lightnings-swift-strike'])
+    // Substring, case-insensitive.
+    expect(filterSpirits(spirits, { ...EMPTY_BROWSER_FILTER, search: 'LIGHT' }, excluded).map((s) => s.id)).toContain(
+      'lightnings-swift-strike',
+    )
+    // Matches an aspect name too, even when it isn't the spirit's own name.
+    const bySparkingAspect = filterSpirits(spirits, { ...EMPTY_BROWSER_FILTER, search: 'sparking' }, excluded)
+    expect(bySparkingAspect.map((s) => s.id)).toContain('lightnings-swift-strike')
+    // Doesn't match on summary text.
+    const lightning = spirits.find((s) => s.id === 'lightnings-swift-strike')!
+    const summaryWord = lightning.summary.split(' ').find((w) => w.length > 5)
+    if (summaryWord && !lightning.name.toLowerCase().includes(summaryWord.toLowerCase())) {
+      expect(filterSpirits(spirits, { ...EMPTY_BROWSER_FILTER, search: summaryWord }, excluded).map((s) => s.id)).not.toContain(
+        lightning.id,
+      )
+    }
+    // Combines with an existing filter (expansion) - narrows to the intersection, not either alone.
+    const nameOnly = filterSpirits(spirits, { ...EMPTY_BROWSER_FILTER, search: 'a' }, excluded)
+    const nameAndExpansion = filterSpirits(
+      spirits,
+      { ...EMPTY_BROWSER_FILTER, search: 'a', expansion: lightning.expansion },
+      excluded,
+    )
+    expect(nameAndExpansion.length).toBeLessThan(nameOnly.length)
+    expect(nameAndExpansion.every((s) => s.expansion === lightning.expansion)).toBe(true)
+    // Clearing the search (empty string, same as never having typed one) restores the
+    // previously-filtered (non-search) result set for the same dropdown filter.
+    expect(filterSpirits(spirits, { ...EMPTY_BROWSER_FILTER, search: '', expansion: lightning.expansion }, excluded)).toEqual(
+      filterSpirits(spirits, { ...EMPTY_BROWSER_FILTER, expansion: lightning.expansion }, excluded),
+    )
+  })
+
+  it('Archive name search (#04): power-card and fear/event/blight filter bars each render a name search input', () => {
+    const html = renderToStaticMarkup(
+      <CardFilters filter={EMPTY_POWER_CARD_FILTER} onChange={() => {}} expansions={['Base']} />,
+    )
+    expect(html).toContain('Search by name')
+
+    const htmlOther = renderToStaticMarkup(
+      <OtherCardFilters segment="Fear" filter={EMPTY_OTHER_CARD_FILTER} onChange={() => {}} expansions={['Base']} />,
+    )
+    expect(htmlOther).toContain('Search by name')
+  })
+
+  it('Archive name search (#04): power-card and fear/event/blight filters narrow by name only, combined with an existing filter', () => {
+    const powerCards = powerCardsData as PowerCard[]
+    const target = powerCards[0]
+    const term = target.name.slice(0, 3).toUpperCase()
+    const matched = filterPowerCards(powerCards, { ...EMPTY_POWER_CARD_FILTER, name: term })
+    expect(matched.length).toBeGreaterThan(0)
+    expect(matched.every((c) => c.name.toLowerCase().includes(term.toLowerCase()))).toBe(true)
+    expect(filterPowerCards(powerCards, { ...EMPTY_POWER_CARD_FILTER, name: 'zzz-no-such-card-zzz' })).toHaveLength(0)
+    // Combines with an existing filter (expansion) - narrows further, doesn't replace it.
+    const nameAndExpansion = filterPowerCards(powerCards, { ...EMPTY_POWER_CARD_FILTER, name: term, expansion: target.expansion })
+    expect(nameAndExpansion.every((c) => c.expansion === target.expansion && c.name.toLowerCase().includes(term.toLowerCase()))).toBe(
+      true,
+    )
+
+    const otherCards = otherCardsData as OtherCard[]
+    const otherTarget = otherCards[0]
+    const otherTerm = otherTarget.name.slice(0, 3).toUpperCase()
+    const matchedOther = filterOtherCards(otherCards, { ...EMPTY_OTHER_CARD_FILTER, name: otherTerm })
+    expect(matchedOther.length).toBeGreaterThan(0)
+    expect(filterOtherCards(otherCards, { ...EMPTY_OTHER_CARD_FILTER, name: 'zzz-no-such-card-zzz' })).toHaveLength(0)
+    const otherNameAndExpansion = filterOtherCards(otherCards, {
+      ...EMPTY_OTHER_CARD_FILTER,
+      name: otherTerm,
+      expansion: otherTarget.expansion,
+    })
+    expect(otherNameAndExpansion.every((c) => c.expansion === otherTarget.expansion)).toBe(true)
   })
 })

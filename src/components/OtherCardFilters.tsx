@@ -24,7 +24,7 @@ export function OtherCardFilters({
   expansions: string[]
 }) {
   const isCleared =
-    !filter.expansion && !filter.eventClass && !filter.fearTags?.length && !filter.blightTags?.length
+    !filter.expansion && !filter.eventClass && !filter.fearTags?.length && !filter.blightTags?.length && !filter.name
 
   function toggleFearTag(tag: FearTag | 'unclassified') {
     const has = filter.fearTags?.includes(tag) ?? false
@@ -38,6 +38,17 @@ export function OtherCardFilters({
 
   return (
     <div className="card-filters">
+      <div className="card-filters-row">
+        <label>
+          Search by name
+          <input
+            type="text"
+            value={filter.name ?? ''}
+            onChange={(e) => onChange({ ...filter, name: e.target.value || undefined })}
+            placeholder="Card name…"
+          />
+        </label>
+      </div>
       {segment === 'Fear' && (
         <div className="card-filters-row">
           <span className="card-filters-label">Sub-type</span>

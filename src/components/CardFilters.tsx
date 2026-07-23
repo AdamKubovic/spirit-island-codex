@@ -32,7 +32,12 @@ export function CardFilters({
   // maxCost === 0 (Cost ≤ 0) is a real selection, so test for `undefined`, not falsiness —
   // otherwise Clear greys out while the More-filters badge still counts it.
   const isCleared =
-    filter.elements.length === 0 && filter.kinds.length === 0 && filter.maxCost === undefined && !filter.speed && !filter.expansion
+    filter.elements.length === 0 &&
+    filter.kinds.length === 0 &&
+    filter.maxCost === undefined &&
+    !filter.speed &&
+    !filter.expansion &&
+    !filter.name
 
   function toggleElement(el: Element) {
     const has = filter.elements.includes(el)
@@ -55,6 +60,17 @@ export function CardFilters({
 
   return (
     <div className="card-filters">
+      <div className="card-filters-row">
+        <label>
+          Search by name
+          <input
+            type="text"
+            value={filter.name ?? ''}
+            onChange={(e) => onChange({ ...filter, name: e.target.value || undefined })}
+            placeholder="Card name…"
+          />
+        </label>
+      </div>
       <div className="card-filters-row">
         <span className="card-filters-label">Elements (must have all selected)</span>
         <div className="card-filters-elements">
@@ -133,7 +149,12 @@ export function CardFilters({
         </div>
       </details>
 
-      <button type="button" className="card-filters-clear" disabled={isCleared} onClick={() => onChange({ elements: [], kinds: [] })}>
+      <button
+        type="button"
+        className="card-filters-clear"
+        disabled={isCleared}
+        onClick={() => onChange({ elements: [], kinds: [] })}
+      >
         Clear filters
       </button>
     </div>

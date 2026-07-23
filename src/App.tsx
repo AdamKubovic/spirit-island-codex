@@ -6,6 +6,7 @@ import { DashboardTab } from './components/DashboardTab'
 import { GameLog } from './components/GameLog'
 import { GlossaryTab } from './components/GlossaryTab'
 import { Homepage } from './components/Homepage'
+import { fromConfigId } from './domain/configurations'
 import { RecommenderMain, RecommenderProvider, RecommenderSide } from './components/Recommender'
 import { Settings } from './components/Settings'
 import { TierBoard } from './components/TierBoard'
@@ -29,6 +30,14 @@ const NAV: NavItem<Tab>[] = [
 
 function App() {
   const [tab, setTab] = useState<Tab>('home')
+  // #02: a Recommend-result click sets this and jumps to Browse; Browser seeds itself from it
+  // on arrival and reports back once consumed so a stale target can't re-fire on a later visit.
+  const [browseTarget, setBrowseTarget] = useState<{ spiritId: string; aspectName?: string } | null>(null)
+
+  function goToConfiguration(configId: string) {
+    setBrowseTarget(fromConfigId(configId))
+    setTab('browser')
+  }
 
   return (
     <RecommenderProvider>
@@ -40,8 +49,10 @@ function App() {
         side={tab === 'recommender' ? <RecommenderSide /> : null}
       >
         {tab === 'home' && <Homepage onNavigate={setTab} />}
-        {tab === 'recommender' && <RecommenderMain />}
-        {tab === 'browser' && <Browser />}
+        {tab === 'recommender' && <RecommenderMain onSelectConfiguration={goToConfiguration} />}
+        {tab === 'browser' && (
+          <Browser initialTarget={browseTarget} onTargetConsumed={() => setBrowseTarget(null)} />
+        )}
         {tab === 'cards' && <CardsTab />}
         {tab === 'dashboard' && <DashboardTab />}
         {tab === 'tiers' && <TierBoard />}
