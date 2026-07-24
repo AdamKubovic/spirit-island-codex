@@ -122,6 +122,43 @@ describe('gameLog', () => {
     })
   })
 
+  describe('update', () => {
+    it('modifies an existing entry in place and returns it, id preserved', () => {
+      const log = createGameLog(memoryStorage())
+      const recorded = log.append(entry())
+      const updated = log.update(recorded.id, { ...entry({ outcome: 'loss', notes: 'corrected' }), date: recorded.date })
+      expect(updated).toBeDefined()
+      expect(updated!.id).toBe(recorded.id)
+      expect(updated!.outcome).toBe('loss')
+      expect(updated!.notes).toBe('corrected')
+      expect(log.list()).toEqual([updated])
+    })
+
+    it('keeps the entry at its original position, not appended at the end', () => {
+      const log = createGameLog(memoryStorage())
+      const a = log.append(entry({ players: [{ name: 'A', configId: 'a' }] }))
+      const b = log.append(entry({ players: [{ name: 'B', configId: 'b' }] }))
+      log.update(a.id, { ...entry({ outcome: 'loss' }), date: a.date })
+      expect(log.list().map((e) => e.id)).toEqual([a.id, b.id])
+    })
+
+    it('is a no-op returning undefined for an unknown id', () => {
+      const log = createGameLog(memoryStorage())
+      log.append(entry())
+      expect(log.update('nope', entry({ outcome: 'loss' }))).toBeUndefined()
+      expect(log.list()).toHaveLength(1)
+      expect(log.list()[0].outcome).toBe('win')
+    })
+
+    it('timesPlayed reflects an updated player list', () => {
+      const log = createGameLog(memoryStorage())
+      const recorded = log.append(entry({ players: [{ name: 'A', configId: 'a' }] }))
+      log.update(recorded.id, entry({ players: [{ name: 'A', configId: 'b' }] }))
+      expect(log.timesPlayed('a')).toBe(0)
+      expect(log.timesPlayed('b')).toBe(1)
+    })
+  })
+
   describe('remove', () => {
     it('drops exactly that entry and leaves others', () => {
       const log = createGameLog(memoryStorage())

@@ -85,6 +85,10 @@ export function GameLog() {
   const [endTime, setEndTime] = useState('')
   const [undoEntry, setUndoEntry] = useState<LogEntry | null>(null)
   const undoTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
+  // Edit mode (#07): the id of the entry loaded into the form, null = create mode. Same fields,
+  // same canSubmit gate — submitting calls update() instead of append().
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const formPanel = useRef<HTMLFieldSetElement | null>(null)
 
   useEffect(() => {
     return () => {
@@ -147,16 +151,36 @@ export function GameLog() {
 
   // Re-seeds the editable difficulty field whenever the setup that produced the suggestion
   // changes; doesn't fire on keystrokes in the difficulty field itself, so an override survives
-  // until the owner changes adversary/level/board/scenario again.
+  // until the owner changes adversary/level/board/scenario again. In edit mode it never reseeds:
+  // the entry's recorded figure stays unless the owner edits it by hand (loading an entry would
+  // otherwise immediately overwrite a corrected value with a fresh suggestion).
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
+    if (editingId) return
     setDifficulty(difficultyBreakdown.total !== undefined ? String(difficultyBreakdown.total) : '')
-  }, [difficultyBreakdown.total])
+  }, [difficultyBreakdown.total, editingId])
+
+  const resetForm = () => {
+    setPlayers([{ ...EMPTY_PLAYER }])
+    setAdversary('')
+    setAdversaryLevel(0)
+    setSecondaryAdversary('')
+    setSecondaryAdversaryLevel(0)
+    setBoardType('classic')
+    setScenario('')
+    setOutcome('win')
+    setTerrorLevel('')
+    setBlightRemaining('')
+    setNotes('')
+    setDifficulty('')
+    setStartTime('')
+    setEndTime('')
+    setEditingId(null)
+  }
 
   const handleSubmit = () => {
     if (!canSubmit) return
-    gameLog.append({
-      date: new Date().toISOString(),
+    const fields = {
       players,
       adversary: adversary.trim() || undefined,
       adversaryLevel,
@@ -174,22 +198,42 @@ export function GameLog() {
       difficulty: clampOptionalInt(difficulty, 0),
       startTime: startTime || undefined,
       endTime: endTime || undefined,
-    })
-    setPlayers([{ ...EMPTY_PLAYER }])
-    setAdversary('')
-    setAdversaryLevel(0)
-    setSecondaryAdversary('')
-    setSecondaryAdversaryLevel(0)
-    setBoardType('classic')
-    setScenario('')
-    setOutcome('win')
-    setTerrorLevel('')
-    setBlightRemaining('')
-    setNotes('')
-    setDifficulty('')
-    setStartTime('')
-    setEndTime('')
+    }
+    if (editingId) {
+      // date is not a form field - the entry's recorded date is preserved through the update.
+      const original = entries.find((e) => e.id === editingId)
+      if (original) gameLog.update(editingId, { ...fields, date: original.date })
+    } else {
+      gameLog.append({ ...fields, date: new Date().toISOString() })
+    }
+    resetForm()
     setVersion((v) => v + 1)
+  }
+
+  const handleEdit = (entry: LogEntry) => {
+    setEditingId(entry.id)
+    setPlayers(entry.players.map((p) => ({ ...p })))
+    setAdversary(entry.adversary ?? '')
+    setAdversaryLevel(entry.adversaryLevel)
+    setSecondaryAdversary(entry.secondaryAdversary ?? '')
+    setSecondaryAdversaryLevel(entry.secondaryAdversaryLevel ?? 0)
+    setBoardType(entry.boardType ?? 'classic')
+    setScenario(entry.scenario ?? '')
+    setOutcome(entry.outcome)
+    setTerrorLevel(entry.terrorLevel !== undefined ? String(entry.terrorLevel) : '')
+    setBlightRemaining(entry.blightRemaining !== undefined ? String(entry.blightRemaining) : '')
+    setNotes(entry.notes ?? '')
+    setDifficulty(entry.difficulty !== undefined ? String(entry.difficulty) : '')
+    setStartTime(entry.startTime ?? '')
+    setEndTime(entry.endTime ?? '')
+    // The entry being corrected is not also pending deletion - drop any stale undo toast.
+    setUndoEntry(null)
+    if (undoTimer.current !== undefined) clearTimeout(undoTimer.current)
+    formPanel.current?.scrollIntoView({ behavior: 'smooth' })
+  }
+
+  const handleCancelEdit = () => {
+    resetForm()
   }
 
   const handleDelete = (id: string) => {
@@ -217,8 +261,13 @@ export function GameLog() {
         only in this browser — the backup export in Settings is the durable copy.
       </p>
 
-      <fieldset className="log-panel">
-        <legend>Record a game</legend>
+      <fieldset className="log-panel" ref={formPanel}>
+        <legend>{editingId ? 'Edit game' : 'Record a game'}</legend>
+        {editingId && (
+          <p className="meta">
+            Editing a logged game — submitting updates the existing entry in place; its date and history position are kept.
+          </p>
+        )}
 
         {players.map((player, i) => (
           <div key={i} className="log-row">
@@ -455,8 +504,13 @@ export function GameLog() {
 
         <div className="log-row">
           <button type="button" className="log-submit" onClick={handleSubmit} disabled={!canSubmit}>
-            Record game
+            {editingId ? 'Update game' : 'Record game'}
           </button>
+          {editingId && (
+            <button type="button" className="log-chip-button" onClick={handleCancelEdit}>
+              Cancel edit
+            </button>
+          )}
         </div>
       </fieldset>
 
@@ -598,6 +652,9 @@ export function GameLog() {
                       <NotesCell notes={entry.notes} />
                     </td>
                     <td data-label="Actions">
+                      <button type="button" className="log-delete" onClick={() => handleEdit(entry)} aria-label="Edit game">
+                        Edit
+                      </button>
                       <button type="button" className="log-delete" onClick={() => handleDelete(entry.id)} aria-label="Delete game">
                         Delete
                       </button>

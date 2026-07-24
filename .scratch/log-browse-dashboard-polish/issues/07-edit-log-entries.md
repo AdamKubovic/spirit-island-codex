@@ -1,4 +1,4 @@
-Status: ready-for-agent
+Status: done
 
 # Edit log entries
 
@@ -21,23 +21,43 @@ creation — no parallel edit-only form.
 
 ## Acceptance criteria
 
-- [ ] `createGameLog()` exposes an `update(id, patch)` method alongside the existing
+- [x] `createGameLog()` exposes an `update(id, patch)` method alongside the existing
       `append`/`list`/`remove`/`timesPlayed`/`replaceAll`.
-- [ ] `update()` correctly modifies the stored entry's fields while preserving its `id`, and is a
+- [x] `update()` correctly modifies the stored entry's fields while preserving its `id`, and is a
       no-op or clearly-handled case if the id doesn't exist.
-- [ ] Each History row has an "Edit" button alongside "Delete".
-- [ ] Clicking Edit populates every Log form field (spirits, outcome, adversary, board type,
+- [x] Each History row has an "Edit" button alongside "Delete".
+- [x] Clicking Edit populates every Log form field (spirits, outcome, adversary, board type,
       scenario, notes, blight remaining, etc.) from that entry's data.
-- [ ] The form visibly indicates it's in edit mode (vs. create mode).
-- [ ] A Cancel control exits edit mode without modifying the entry and returns the form to a blank
+- [x] The form visibly indicates it's in edit mode (vs. create mode).
+- [x] A Cancel control exits edit mode without modifying the entry and returns the form to a blank
       create state.
-- [ ] Submitting in edit mode updates the existing entry in place (verified in History: same
+- [x] Submitting in edit mode updates the existing entry in place (verified in History: same
       position/id, updated field values) rather than appending a new entry.
-- [ ] Edit-mode submission is gated by the same `canSubmit` validation as entry creation.
-- [ ] `src/domain/__tests__/gameLog.test.ts` covers `update()`: successful update, id preservation,
+- [x] Edit-mode submission is gated by the same `canSubmit` validation as entry creation.
+- [x] `src/domain/__tests__/gameLog.test.ts` covers `update()`: successful update, id preservation,
       and the not-found case.
 
 ## Blocked by
 
 - Optional Adversary field
 - Blighted Island board type
+
+## Comments
+
+`gameLog.update(id, patch)` replaces the entry's fields in place (same id, same array position,
+unknown id is a no-op returning undefined, mirroring `remove`'s contract). The patch is the
+form's full field set; `date` isn't a form field, so the caller passes the original date through
+— recorded date and history position are preserved.
+
+GameLog.tsx tracks `editingId`; handleEdit copies every entry field into the form state (players
+deep-copied), drops any pending delete-undo toast, and scrolls the form panel into view. The
+fieldset legend switches "Record a game" -> "Edit game" with an explanatory meta line, the
+submit button reads "Update game", and a "Cancel edit" button resets to blank create mode.
+Submission branches on editingId (update vs append) behind the same canSubmit gate. One judgment
+call: the difficulty auto-suggestion effect does NOT reseed while in edit mode — loading an
+entry would otherwise immediately overwrite the recorded figure (possibly a hand-corrected one)
+with a fresh suggestion. The breakdown lines still render, so the owner sees the current
+suggestion and can adjust by hand. Domain tests cover update success, id preservation, position
+preservation, not-found no-op, and timesPlayed reflecting the updated players. Verified via
+Playwright: create -> Edit populates adversary/board/notes -> Update keeps id+date and shows the
+corrected values in History -> Cancel discards edits and returns to create mode.

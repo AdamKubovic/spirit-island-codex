@@ -49,6 +49,17 @@ export function createGameLog(storage: KeyValueStorage = defaultStorage()) {
       )
       return removed
     },
+    /** Replaces an entry's fields in place (log-browse-dashboard-polish #07): same id, same
+     * position — a correction, not a delete-and-re-append. The patch carries the form's whole
+     * field set (id and date stay as recorded); unknown id is a no-op returning undefined. */
+    update(id: string, patch: Omit<LogEntry, 'id'>): LogEntry | undefined {
+      const entries = readEntries(storage)
+      const index = entries.findIndex((e) => e.id === id)
+      if (index === -1) return undefined
+      const updated: LogEntry = { ...patch, id }
+      writeEntries(storage, entries.map((e, i) => (i === index ? updated : e)))
+      return updated
+    },
     /** Counts entries where some player played this configuration. A fact, not a score. */
     timesPlayed(configId: string): number {
       return readEntries(storage).filter((entry) => entry.players.some((p) => p.configId === configId)).length
