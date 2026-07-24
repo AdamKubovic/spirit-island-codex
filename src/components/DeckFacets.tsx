@@ -1,4 +1,5 @@
 import type { DeckComposition } from '../domain/deckComposition'
+import { costColor } from './costColors'
 
 /** deck-dashboard #09/#03, element-demand #02 (Counts/% toggle removed, counts only): the
  * secondary facets — fast/slow tempo and cost distribution — alongside elements, so a player can
@@ -37,7 +38,8 @@ export function DeckFacets({ composition }: { composition: DeckComposition }) {
             <div className="dashboard-cost-row" key={cost}>
               <span className="dashboard-cost-label">{cost}</span>
               <span className="deck-element-track">
-                <span className="deck-element-fill" style={{ width: `${(count / costMax) * 100}%` }} />
+                {/* Per-cost sequential shade (costColors), not the element-demand bars' accent fill. */}
+                <span className="dashboard-cost-fill" style={{ width: `${(count / costMax) * 100}%`, background: costColor(cost) }} />
               </span>
               <span className="deck-element-count">{fmt(count)}</span>
             </div>
