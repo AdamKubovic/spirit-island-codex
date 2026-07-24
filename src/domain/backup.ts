@@ -21,7 +21,7 @@ export interface LogEntry {
   /** v4 (difficulty-and-glossary): a second, supporting adversary + its level. */
   secondaryAdversary?: string
   secondaryAdversaryLevel?: number
-  boardType?: 'classic' | 'thematic-base' | 'thematic-rebalanced'
+  boardType?: 'classic' | 'thematic-base' | 'thematic-rebalanced' | 'blighted-island'
   /** The computed suggestion, editable by the owner at submit time — see domain/difficulty.ts. */
   difficulty?: number
   startTime?: string

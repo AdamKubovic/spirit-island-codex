@@ -99,7 +99,7 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
 
   // Difficulty — the additive model computed by domain/difficulty.ts.
   difficulty: {
-    text: 'An ≈ approximate suggestion, additive from: the primary adversary\'s printed per-level number, plus (if a second adversary is set) the higher of the two difficulties plus ~60% of the lower, plus a board modifier (Thematic·base +3, Thematic·rebalanced +1, Classic +0), plus the picked scenario\'s printed difficulty. Per-level adversary numbers are official (printed on the panel); the board and second-adversary modifiers are the community difficulty chart\'s own approximations. The stored value is editable — this is a starting point, not a locked score.',
+    text: 'An ≈ approximate suggestion, additive from: the primary adversary\'s printed per-level number, plus (if a second adversary is set) the higher of the two difficulties plus ~60% of the lower, plus a board modifier (Thematic·base +3, Thematic·rebalanced +1, Classic +0, Blighted Island +0 — no sourced chart modifier exists for it), plus the picked scenario\'s printed difficulty. Per-level adversary numbers are official (printed on the panel); the board and second-adversary modifiers are the community difficulty chart\'s own approximations. The stored value is editable — this is a starting point, not a locked score.',
     source: 'owner',
   },
 }

@@ -25,6 +25,10 @@ describe('computeDifficulty', () => {
     expect(computeDifficulty({ adversary: 'England', adversaryLevel: 0, boardType: 'classic' }).total).toBe(1)
     expect(computeDifficulty({ adversary: 'England', adversaryLevel: 0, boardType: 'thematic-base' }).total).toBe(4)
     expect(computeDifficulty({ adversary: 'England', adversaryLevel: 0, boardType: 'thematic-rebalanced' }).total).toBe(2)
+    // Blighted Island has no sourced community-chart modifier, so it contributes nothing (same
+    // as classic) rather than an estimated figure.
+    expect(computeDifficulty({ adversary: 'England', adversaryLevel: 0, boardType: 'blighted-island' }).total).toBe(1)
+    expect(computeDifficulty({ adversary: 'England', adversaryLevel: 0, boardType: 'blighted-island' }).lines).toHaveLength(1)
   })
 
   it('adversary with no difficultyByLevel yields undefined total and no lines', () => {

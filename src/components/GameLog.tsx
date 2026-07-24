@@ -15,6 +15,7 @@ const BOARD_TYPES: { value: BoardType; label: string }[] = [
   { value: 'classic', label: 'Classic' },
   { value: 'thematic-base', label: 'Thematic · base' },
   { value: 'thematic-rebalanced', label: 'Thematic · rebalanced' },
+  { value: 'blighted-island', label: 'Blighted Island' },
 ]
 
 const spirits = spiritsData as Spirit[]
@@ -31,6 +32,8 @@ function spiritForConfig(configId: string): Spirit | undefined {
   const baseId = configId.split('::')[0]
   return spiritById.get(baseId)
 }
+
+const BOARD_TYPE_LABEL = new Map(BOARD_TYPES.map(({ value, label }) => [value, label]))
 
 /** "60% (3/5)", or just the count below the small-sample threshold. */
 function formatRate(stat: RateStat): string {
@@ -551,6 +554,10 @@ export function GameLog() {
                           {entry.terrorLevel !== undefined && entry.blightRemaining !== undefined ? ' · ' : null}
                           {entry.blightRemaining !== undefined ? `Blight remaining ${entry.blightRemaining}` : null}
                         </span>
+                      )}
+                      {/* Board context for "Blight remaining"; classic stays silent as the default. */}
+                      {entry.boardType && entry.boardType !== 'classic' && (
+                        <span className="meta log-outcome-meta">{BOARD_TYPE_LABEL.get(entry.boardType)}</span>
                       )}
                       {formatDuration(entry.startTime, entry.endTime) && (
                         <span className="meta log-outcome-meta">{formatDuration(entry.startTime, entry.endTime)}</span>

@@ -48,6 +48,14 @@ describe('gameLog', () => {
     expect('adversary' in log.list()[0] && log.list()[0].adversary).toBeFalsy()
   })
 
+  it('round-trips an entry with boardType blighted-island through storage', () => {
+    const log = createGameLog(memoryStorage())
+    const recorded = log.append(entry({ boardType: 'blighted-island', blightRemaining: 5 }))
+    expect(recorded.boardType).toBe('blighted-island')
+    expect(log.list()[0].boardType).toBe('blighted-island')
+    expect(log.list()[0].blightRemaining).toBe(5)
+  })
+
   it('records a game with multiple players and configurations', () => {
     const log = createGameLog(memoryStorage())
     const recorded = log.append(

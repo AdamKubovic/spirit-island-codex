@@ -1,12 +1,15 @@
 import { findAdversary } from './adversaries'
 import { SCENARIOS } from './scenarios'
 
-export type BoardType = 'classic' | 'thematic-base' | 'thematic-rebalanced'
+export type BoardType = 'classic' | 'thematic-base' | 'thematic-rebalanced' | 'blighted-island'
 
 const BOARD_MODIFIER: Record<BoardType, number> = {
   classic: 0,
   'thematic-base': 3,
   'thematic-rebalanced': 1,
+  // No sourced community-chart modifier exists for Blighted Island, so it contributes nothing
+  // rather than an estimated figure — absent beats fabricated.
+  'blighted-island': 0,
 }
 
 export interface DifficultyLine {
