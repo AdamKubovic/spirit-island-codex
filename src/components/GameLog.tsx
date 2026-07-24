@@ -202,7 +202,10 @@ export function GameLog() {
     if (editingId) {
       // date is not a form field - the entry's recorded date is preserved through the update.
       const original = entries.find((e) => e.id === editingId)
-      if (original) gameLog.update(editingId, { ...fields, date: original.date })
+      const updated = original && gameLog.update(editingId, { ...fields, date: original.date })
+      // The entry was deleted while being edited: keep the form populated and in edit mode so
+      // the owner's corrections aren't silently discarded (update() itself is a tested no-op).
+      if (!updated) return
     } else {
       gameLog.append({ ...fields, date: new Date().toISOString() })
     }
