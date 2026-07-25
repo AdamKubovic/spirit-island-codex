@@ -15,7 +15,6 @@ export interface LogEntry {
   scenario?: string
   outcome: 'win' | 'loss'
   terrorLevel?: number
-  blightRemaining?: number
   /** Optional free-text recap. Absent on older entries; never stored as "". */
   notes?: string
   /** v4 (difficulty-and-glossary): a second, supporting adversary + its level. */

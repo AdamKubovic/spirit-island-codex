@@ -33,12 +33,11 @@ describe('gameLog', () => {
     expect(a.id).not.toBe(b.id)
   })
 
-  it('accepts optional scenario, terrorLevel and blightRemaining', () => {
+  it('accepts optional scenario and terrorLevel', () => {
     const log = createGameLog(memoryStorage())
-    const recorded = log.append(entry({ scenario: 'The Great River', terrorLevel: 2, blightRemaining: 3 }))
+    const recorded = log.append(entry({ scenario: 'The Great River', terrorLevel: 2 }))
     expect(recorded.scenario).toBe('The Great River')
     expect(recorded.terrorLevel).toBe(2)
-    expect(recorded.blightRemaining).toBe(3)
   })
 
   it('accepts an entry with no adversary, storing undefined rather than a placeholder', () => {
@@ -50,10 +49,9 @@ describe('gameLog', () => {
 
   it('round-trips an entry with boardType blighted-island through storage', () => {
     const log = createGameLog(memoryStorage())
-    const recorded = log.append(entry({ boardType: 'blighted-island', blightRemaining: 5 }))
+    const recorded = log.append(entry({ boardType: 'blighted-island' }))
     expect(recorded.boardType).toBe('blighted-island')
     expect(log.list()[0].boardType).toBe('blighted-island')
-    expect(log.list()[0].blightRemaining).toBe(5)
   })
 
   it('records a game with multiple players and configurations', () => {

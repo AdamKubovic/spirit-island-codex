@@ -78,7 +78,6 @@ export function GameLog() {
   const [scenario, setScenario] = useState('')
   const [outcome, setOutcome] = useState<'win' | 'loss'>('win')
   const [terrorLevel, setTerrorLevel] = useState('')
-  const [blightRemaining, setBlightRemaining] = useState('')
   const [notes, setNotes] = useState('')
   const [difficulty, setDifficulty] = useState('')
   const [startTime, setStartTime] = useState('')
@@ -170,7 +169,6 @@ export function GameLog() {
     setScenario('')
     setOutcome('win')
     setTerrorLevel('')
-    setBlightRemaining('')
     setNotes('')
     setDifficulty('')
     setStartTime('')
@@ -193,7 +191,6 @@ export function GameLog() {
       // Terror Level 4); clamped here, not only in the input's advisory `max`, so a typed or
       // pasted out-of-range value can't be recorded.
       terrorLevel: clampOptionalInt(terrorLevel, 1, 3),
-      blightRemaining: clampOptionalInt(blightRemaining, 0),
       notes: notes.trim() || undefined,
       difficulty: clampOptionalInt(difficulty, 0),
       startTime: startTime || undefined,
@@ -224,7 +221,6 @@ export function GameLog() {
     setScenario(entry.scenario ?? '')
     setOutcome(entry.outcome)
     setTerrorLevel(entry.terrorLevel !== undefined ? String(entry.terrorLevel) : '')
-    setBlightRemaining(entry.blightRemaining !== undefined ? String(entry.blightRemaining) : '')
     setNotes(entry.notes ?? '')
     setDifficulty(entry.difficulty !== undefined ? String(entry.difficulty) : '')
     setStartTime(entry.startTime ?? '')
@@ -442,17 +438,6 @@ export function GameLog() {
               placeholder="—"
             />
           </label>
-          <label className="log-field">
-            <span className="log-field-label">Blight remaining</span>
-            <input
-              className="log-input log-input-narrow"
-              type="number"
-              min={0}
-              value={blightRemaining}
-              onChange={(e) => setBlightRemaining(e.target.value)}
-              placeholder="—"
-            />
-          </label>
         </div>
 
         <div className="log-row">
@@ -605,14 +590,9 @@ export function GameLog() {
                       <span className="log-outcome" data-outcome={entry.outcome}>
                         {entry.outcome === 'win' ? 'Win' : 'Loss'}
                       </span>
-                      {(entry.terrorLevel !== undefined || entry.blightRemaining !== undefined) && (
-                        <span className="meta log-outcome-meta">
-                          {entry.terrorLevel !== undefined ? `Terror ${entry.terrorLevel}` : null}
-                          {entry.terrorLevel !== undefined && entry.blightRemaining !== undefined ? ' · ' : null}
-                          {entry.blightRemaining !== undefined ? `Blight remaining ${entry.blightRemaining}` : null}
-                        </span>
+                      {entry.terrorLevel !== undefined && (
+                        <span className="meta log-outcome-meta">{`Terror ${entry.terrorLevel}`}</span>
                       )}
-                      {/* Board context for "Blight remaining"; classic stays silent as the default. */}
                       {entry.boardType && entry.boardType !== 'classic' && (
                         <span className="meta log-outcome-meta">{BOARD_TYPE_LABEL.get(entry.boardType)}</span>
                       )}
