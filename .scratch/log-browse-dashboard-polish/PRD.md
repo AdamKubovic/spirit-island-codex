@@ -1,4 +1,4 @@
-Status: ready-for-agent
+Status: done
 
 # Log, Browse & Dashboard polish batch
 
