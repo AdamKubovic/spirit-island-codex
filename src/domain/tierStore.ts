@@ -1,6 +1,8 @@
 import ownersBoard from '../data/tier-lists/owners-board.json'
 import siaFavoritesFunSolo from '../data/tier-lists/sia-favorites-fun-solo-2026.json'
 import threeMbgStrengthSolo from '../data/tier-lists/3mbg-strength-solo-2025.json'
+import siaMinorPowers from '../data/tier-lists/sia-minor-powers-2023.json'
+import siaRedMajorPowers from '../data/tier-lists/sia-red-major-powers-2023.json'
 import type { Configuration } from './configurations'
 import { defaultStorage, type KeyValueStorage } from './storage'
 import type { TierList, TierListSubject, TierListType } from './types'
@@ -9,6 +11,8 @@ const SHIPPED_LISTS: TierList[] = [
   ownersBoard as TierList,
   siaFavoritesFunSolo as TierList,
   threeMbgStrengthSolo as TierList,
+  siaMinorPowers as TierList,
+  siaRedMajorPowers as TierList,
 ]
 
 /** Override value meaning "the user un-rated this" (#15). Lives only in the override layer —

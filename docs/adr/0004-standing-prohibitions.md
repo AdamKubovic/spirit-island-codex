@@ -26,10 +26,12 @@ means reopening this ADR with a source that removes the objection.
 - **The game log feeds scoring exactly one fact: `timesPlayed`.** Outcomes (win/loss) are recorded
   and displayed but never scored — n is too small, and scoring them would silently corrupt
   owner-authored tiers and weights (v2).
-- **No rating, tiering or ranking of cards.** The tier machinery is spirit-shaped and so are its
-  sources; ranking 471 cards would be this repo inventing data. Cards may carry *descriptive*
-  sub-types (what a card does) but never an *evaluative* axis — the "aggressive/less-aggressive"
-  blight axis was dropped for exactly this reason (v4, v5). See CONTEXT.md's "Card sub-type".
+- **This repo does not *author* card ratings.** Cards may carry *descriptive* sub-types (what a
+  card does) but never an *evaluative* axis of this repo's own devising — the
+  "aggressive/less-aggressive" blight axis was dropped for exactly this reason (v4, v5). See
+  CONTEXT.md's "Card sub-type". **Cited card tier lists are permitted**, per ADR 0002's subject
+  axis and ADR 0001's cited-document rules: transcribing a named creator's published ranking
+  invents nothing. See "Amended" below.
 - **No adversary subtype axis.** Canon defines none (checked the wiki's Adversary glossary, the
   Category:Adversaries index, and three adversary pages); the premise was mistaken, not a sourcing
   gap. `adversaries.json`'s existing fields are complete (legibility-pass #03).
@@ -40,6 +42,28 @@ means reopening this ADR with a source that removes the objection.
   debate.
 - The distinction that keeps card sub-typing legal — descriptive vs evaluative — is written down,
   so a future "just rank the fear cards" request is recognisably over the line.
+
+## Amended — 2026-07-26, the card-ranking bullet
+
+The bullet above originally read "No rating, tiering or ranking of cards … the tier machinery is
+spirit-shaped and so are its sources". Reopened under this ADR's own clause ("Reversing any of
+them means reopening this ADR with a source that removes the objection"), because both halves of
+that claim had stopped being true:
+
+- **It was never a permanent decision.** It began as an *Out of scope* line in `.scratch/v4/MAP.md`
+  (2026-07-12) — scoping for that map — carried forward verbatim by v5. The backfill commit
+  `38990f5` (2026-07-21) that created this ADR promoted it to "out of scope **permanently** — not
+  deferred, not 'not yet'". That escalation is not in either source document.
+- **It already contradicted ADR 0002** (2026-07-13), which added `minor-powers` and `major-powers`
+  as tier-list subjects and states outright that "a card tier list ships the same way a spirit list
+  does". 0002 is the later decision and the backfill did not reconcile with it.
+- **The source now exists.** Spirit Island Archive's Minor Power Tier List (3 parts) and Red's
+  Major Power Tier List (5 parts) rank the card decks. "The sources are spirit-shaped" was a
+  statement about what had been found, not about what exists.
+
+What survives is the part that was always the real principle, and it is unchanged: this repo does
+not invent an evaluative axis. A `cited` card list is somebody else's opinion, transcribed with a
+citation and pinned by a canon tripwire — the same standing as every spirit list here.
 
 ## Left open, deliberately
 

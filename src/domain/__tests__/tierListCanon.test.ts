@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import ownersBoard from '../../data/tier-lists/owners-board.json'
 import siaFavoritesFunSolo from '../../data/tier-lists/sia-favorites-fun-solo-2026.json'
 import threeMbgStrengthSolo from '../../data/tier-lists/3mbg-strength-solo-2025.json'
+import siaMinorPowers from '../../data/tier-lists/sia-minor-powers-2023.json'
+import siaRedMajorPowers from '../../data/tier-lists/sia-red-major-powers-2023.json'
 import powerCardsData from '../../data/power-cards.json'
 import spiritsData from '../../data/spirits.json'
 import { expand } from '../configurations'
@@ -26,6 +28,8 @@ const SHIPPED_LISTS: TierList[] = [
   ownersBoard as TierList,
   siaFavoritesFunSolo as TierList,
   threeMbgStrengthSolo as TierList,
+  siaMinorPowers as TierList,
+  siaRedMajorPowers as TierList,
 ]
 
 /**
@@ -218,6 +222,134 @@ describe('tier list canon', () => {
 
   it('3mbg-strength-solo-2025 never rates Fathomless Mud of the Swamp', () => {
     expect('fathomless-mud-of-the-swamp' in threeMbgStrengthSolo.tiers).toBe(false)
+  })
+
+  describe('the card lists - deliberately partial, and pinned that way', () => {
+    // Both lists were transcribed from auto-generated captions, which carry no section
+    // boundaries. A card is rated only where it is named verbatim inside a part that announces
+    // it covers exactly ONE band, so the band is the video's own declaration rather than
+    // proximity to a spoken tier letter. The rest await owner adjudication
+    // (.scratch/card-tier-lists/extraction/near-miss-review.md).
+    //
+    // These key sets are pinned longhand, the deliberate duplication this file already practises
+    // for the owner's board and 3MBG: a later agent "helpfully filling the gaps" must fail CI
+    // loudly. Adding an adjudicated key is a deliberate edit HERE as well as in the JSON.
+
+    /** Minor Part 2 (B tier) is the only single-band minor part, so every key is B. */
+    const MINOR_EXPECTED_KEYS = [
+      'Birds Cry Warning',
+      'Confounding Mists',
+      'Dark and Tangled Woods',
+      'Dire Metamorphosis',
+      'Disorienting Landscape',
+      'Guardian Serpents',
+      "Nature's Resilience",
+      'Scour the Land',
+      'Strong And Constant Currents',
+      'Sucking Ooze',
+      'Swarming Wasps',
+      'Territorial Strife',
+      'Voracious Growth',
+    ]
+
+    /** Major Parts 2-5 are single-band (C, B, A, S). Part 1 covers F *and* D, so this list
+     * rates nothing at F or D. */
+    const MAJOR_EXPECTED_KEYS = [
+      'Angry Bears',
+      'Bargains of Power and Protection',
+      'Bombard with Boulders and Stinging Seeds',
+      'Draw Towards a Consuming Void',
+      'Entwined Power',
+      'Exaltation of the Incandescent Sky',
+      'Flocking Red-Talons',
+      'Flow like Water, Reach like Air',
+      'Infestation of Venomous Spiders',
+      'Insatiable Hunger of the Swarm',
+      'Irresistible Call',
+      'Paralyzing Fright',
+      'Pent-Up Calamity',
+      'Poisoned Land',
+      'Ravaged Undergrowth Slithers Back to Life',
+      'Sea Monsters',
+      'Smothering Infestation',
+      'Spill Bitterness into the Earth',
+      'Storm-Swath',
+      'Sweep into the Sea',
+      'Talons of Lightning',
+      'Terrifying Nightmares',
+      'Transformative Sacrifice',
+      'Trees Radiate Celestial Brilliance',
+      'Tsunami',
+      "Unleash a Torrent of the Self's Own Essence",
+      'Voice of Command',
+      'Walls of Rock and Thorn',
+      'Weave Together the Fabric of Place',
+      'Winds of Rust and Atrophy',
+    ]
+
+    it('sia-minor-powers-2023 rates exactly the 13 cards the captions place beyond doubt', () => {
+      expect(Object.keys(siaMinorPowers.tiers).sort()).toEqual([...MINOR_EXPECTED_KEYS].sort())
+    })
+
+    it('sia-red-major-powers-2023 rates exactly the 30 cards the captions place beyond doubt', () => {
+      expect(Object.keys(siaRedMajorPowers.tiers).sort()).toEqual([...MAJOR_EXPECTED_KEYS].sort())
+    })
+
+    it('pins how partial each list is, so partialness is itself a tested fact', () => {
+      expect(Object.keys(siaMinorPowers.tiers)).toHaveLength(13) // of 101 minor powers
+      expect(Object.keys(siaRedMajorPowers.tiers)).toHaveLength(30) // of 78 major powers
+    })
+
+    it('uses the vocabulary its own videos state, and the minors series has no D band', () => {
+      // Minor Part 1: "an S and a a b tier and then a CNF" - S, A, B, C, F and no D.
+      expect(siaMinorPowers.tierLabels).toEqual(['S', 'A', 'B', 'C', 'F'])
+      // Major Part 1 defines F and D and defers C to Part 2; Parts 2-5 cover C, B, A, S.
+      expect(siaRedMajorPowers.tierLabels).toEqual(['S', 'A', 'B', 'C', 'D', 'F'])
+    })
+
+    it('never admits X as a band', () => {
+      // X means two contradictory things in this creator's lists. On the owner's board (spirits)
+      // it is a band ABOVE S. In the minors video a blue X drawn over a card means the card was
+      // REMOVED BY ERRATA - Growth through Sacrifice sits in S tier *with* an X overlay. So X is
+      // an annotation here, never a band, and must never enter a card list's vocabulary or reach
+      // the rank prior as "stronger than S".
+      expect(siaMinorPowers.tierLabels).not.toContain('X')
+      expect(siaRedMajorPowers.tierLabels).not.toContain('X')
+      expect(Object.values(siaMinorPowers.tiers)).not.toContain('X')
+      expect(Object.values(siaRedMajorPowers.tiers)).not.toContain('X')
+    })
+
+    it('leaves the errata-marked card unrated rather than guessing its band', () => {
+      // Growth through Sacrifice is S tier in Minor Part 1 - but Part 1 covers S *and* A, so the
+      // captions alone do not fix which. It is in the near-miss batch, and absent until the owner
+      // rules. Absence here means "not yet transcribed", which ADR 0001 makes a real value.
+      expect('Growth through Sacrifice' in siaMinorPowers.tiers).toBe(false)
+    })
+
+    it('rates no card at a band that only a two-band part covers', () => {
+      // Major Part 1 is the only source of F and D, and it covers both, so neither can be
+      // attributed. If an F or D key appears here, band inference has crept back in.
+      expect(Object.values(siaRedMajorPowers.tiers)).not.toContain('F')
+      expect(Object.values(siaRedMajorPowers.tiers)).not.toContain('D')
+    })
+
+    it('ships as unverified cited lists - nobody has re-checked them against the videos', () => {
+      for (const list of [siaMinorPowers, siaRedMajorPowers]) {
+        expect(list.origin).toBe('cited')
+        expect(list.verified).toBe(false)
+      }
+    })
+
+    it('names every part id and the band it covers in the methodology', () => {
+      for (const id of ['DdZFT5myaDI', 'bjd98MBYA5U', '-uT5_RQTolE']) {
+        expect(siaMinorPowers.methodology).toContain(id)
+      }
+      for (const id of ['dHe0_n86nq4', 'rkuXUmf7kpM', 'Hc3bLAkiO5o', 'Olm9L9CnHfc', 'Hnm_rD4ziRc']) {
+        expect(siaRedMajorPowers.methodology).toContain(id)
+      }
+      // The two [OUTDATED] major videos are superseded; the exclusion is recorded, not silent.
+      expect(siaRedMajorPowers.methodology).toContain('OUTDATED')
+    })
   })
 
   describe('sia-favorites-fun-solo-2026 - the dash/"None" edge case', () => {

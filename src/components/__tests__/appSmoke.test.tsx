@@ -127,6 +127,18 @@ describe('app smoke', () => {
     expect(settings.match(/<h3>/g)).toHaveLength(4)
   })
 
+  it('renders a card subject on the same board, with the card list in the picker', () => {
+    // ADR 0002 claimed a card list ships as data alone. This asserts that claim rather than
+    // trusting it: no component changed when the two card lists landed.
+    const board = renderToStaticMarkup(<TierBoard initialSubject="major-powers" />)
+    expect(board).toContain('Talons of Lightning') // a rated card renders in its band
+    expect(board).toContain('rated 30 of 78') // and the board is honest about the other 48
+    // Both card lists reach the picker, under their own subject headings.
+    const picker = renderToStaticMarkup(<TierBoard />)
+    expect(picker).toContain('<optgroup label="Minor powers">')
+    expect(picker).toContain('<optgroup label="Major powers">')
+  })
+
   it('the credit line renders for the default boot state, and a cited list credits author, title and link (#18)', () => {
     // Default boot is now Red's Final Tier List — a cited list credits its author, title and link.
     // The author is the channel; "Red" stays in the list's own name, where the source puts it.

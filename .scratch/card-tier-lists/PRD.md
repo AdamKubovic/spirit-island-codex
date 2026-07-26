@@ -1,4 +1,4 @@
-Status: in-progress
+Status: done
 
 # Card tier lists — Spirit Island Archive's minor & major power rankings
 
@@ -264,3 +264,18 @@ deliberately partial cited list, with its absences pinned as assertions), and it
   re-checked it.
 
 ## Comments
+Shipped 2026-07-26. Both lists are live and deliberately partial: 13/101 minors, 30/78 majors,
+with the key sets and coverage counts pinned longhand in `tierListCanon.test.ts`.
+
+Two departures from the spec as written, both decided with the owner:
+
+- **ADR 0004 needed amending after all.** The PRD said "an ADR is not required". It missed that
+  0004 carried a bullet prohibiting card ranking "permanently". Tracing it showed the bullet began
+  as an *Out of scope* line in `.scratch/v4/MAP.md` — scoping for that map, whose stated reason was
+  "the sources are spirit-shaped" — and was escalated to a permanent prohibition by the docs
+  backfill commit `38990f5`, which also did not reconcile it with ADR 0002 eight days earlier.
+  0004 is now amended: this repo does not *author* card ratings; cited card lists are permitted.
+- **Bands, not names, were the hard part.** The PRD expected 40-60 name near-misses. The real
+  ambiguity is which band a mention sits under, because captions have no section boundaries. The
+  86-entry review batch in `extraction/near-miss-review.md` is the remaining work; adjudicating it
+  is what raises the two coverage counts.

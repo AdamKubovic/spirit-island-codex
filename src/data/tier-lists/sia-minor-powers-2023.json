@@ -1,0 +1,33 @@
+{
+  "id": "sia-minor-powers-2023",
+  "name": "Minor Power Tier List",
+  "type": "strength",
+  "subject": "minor-powers",
+  "origin": "cited",
+  "tierLabels": ["S", "A", "B", "C", "F"],
+  "methodology": "Transcribed from the three-part Minor Power Tier List by Spirit Island Archive, from yt-dlp auto-generated captions (scripts/fetch-transcripts.mjs, scripts/extract-card-tiers.mjs). Each part announces the band it covers: Part 1 (DdZFT5myaDI) S and A tier, Part 2 (bjd98MBYA5U) B tier, Part 3 (-uT5_RQTolE) C and F tier. A card is rated here ONLY where the captions name it verbatim inside a part that covers exactly one band, so the band comes from the video's own declaration rather than from proximity to a spoken tier letter - the reviewer back-references other bands constantly mid-section, which makes proximity unreliable. This list is therefore visibly partial: Part 2 (B tier) is the only single-band part, so S, A, C and F are unrated here pending owner adjudication of the near-miss batch in .scratch/card-tier-lists/extraction/near-miss-review.md. An absent card means this list does not record what the source said about it - never that the source rated it poorly. The series has no D band: Part 1 describes its own split as 'an S and a a b tier and then a CNF'. The source draws a blue X over Growth through Sacrifice; that marks the card as removed by errata and is NOT a tier band. It sits in S tier in the video and is among the entries awaiting adjudication.",
+  "source": {
+    "author": "Spirit Island Archive",
+    "title": "Spirit Island: Minor Power Tier List, Parts 1-3",
+    "url": "https://www.youtube.com/watch?v=DdZFT5myaDI",
+    "published": "2023-01-01",
+    "retrievedAt": "2026-07-26",
+    "method": "yt-dlp auto-generated captions, verbatim name matching only"
+  },
+  "verified": false,
+  "tiers": {
+    "Birds Cry Warning": "B",
+    "Confounding Mists": "B",
+    "Dark and Tangled Woods": "B",
+    "Dire Metamorphosis": "B",
+    "Disorienting Landscape": "B",
+    "Guardian Serpents": "B",
+    "Nature's Resilience": "B",
+    "Scour the Land": "B",
+    "Strong And Constant Currents": "B",
+    "Sucking Ooze": "B",
+    "Swarming Wasps": "B",
+    "Territorial Strife": "B",
+    "Voracious Growth": "B"
+  }
+}

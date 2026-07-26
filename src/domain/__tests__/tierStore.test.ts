@@ -484,7 +484,9 @@ describe('tierStore', () => {
     })
 
     it('every editing read is safely empty for a subject with no lists', () => {
-      const store = createTierStore(memoryStorage())
+      // Every subject now has a shipped list, so the empty case is injected rather than
+      // borrowed from major-powers (which shipped a cited list in card-tier-lists).
+      const store = createTierStore(memoryStorage(), [])
       expect(store.getAll('major-powers')).toEqual({})
       expect(store.getTier('Accelerated Rot', 'major-powers')).toBeUndefined()
       expect(store.isCustomised('major-powers')).toBe(false)

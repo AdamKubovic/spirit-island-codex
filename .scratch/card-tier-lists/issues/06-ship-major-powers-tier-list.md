@@ -1,4 +1,4 @@
-Status: needs-info
+Status: done
 
 # Ship the major powers tier list
 
@@ -70,3 +70,12 @@ what keeps it that way.
 
 - Prefactor: canon test accepts any known subject
 - Extract card ratings and produce the near-miss review
+
+## Comments
+
+Shipped as `src/data/tier-lists/sia-red-major-powers-2023.json` with **30 of 78** keys, spanning
+`S`, `A`, `B`, `C`. See #05's comment for why bands come only from single-band parts. Parts 2-5
+are single-band (C, B, A, S); Part 1 covers F *and* D, so this list rates nothing at either — the
+canon test asserts that, since an F or D key appearing later means band inference crept back in.
+
+`unresolved` is absent, not empty — the 36 major near-misses are unadjudicated, not rejected.

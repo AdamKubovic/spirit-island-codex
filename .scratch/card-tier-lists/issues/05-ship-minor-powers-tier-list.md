@@ -1,4 +1,4 @@
-Status: needs-info
+Status: done
 
 # Ship the minor powers tier list
 
@@ -76,3 +76,18 @@ The file already practises this deliberate duplication for the owner's board (68
 
 - Prefactor: canon test accepts any known subject
 - Extract card ratings and produce the near-miss review
+
+## Comments
+
+Shipped as `src/data/tier-lists/sia-minor-powers-2023.json` with **13 of 101** keys, all at `B`.
+
+Auto-captions carry no section boundaries, and the reviewer back-references other bands
+constantly mid-section, so band-by-proximity provably fabricates ratings (it put five Part 1
+A-tier cards in `S`). A key therefore ships only where the card is named verbatim inside a part
+that declares it covers exactly one band. Part 2 (B tier) is the minors series' only single-band
+part, so S, A, C and F are unrated here.
+
+`unresolved` is absent rather than empty: no near-miss has been rejected yet, because none has
+been adjudicated. The 50 minor entries in `extraction/near-miss-review.md` are still open, and
+Growth through Sacrifice (the errata-X card, S tier in the video) is among them — the canon test
+pins its absence so it cannot be quietly filled in.
