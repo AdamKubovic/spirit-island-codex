@@ -48,9 +48,9 @@ export interface TierList {
   /** false until a human has checked the list against its source. */
   verified: boolean
   tiers: Record<string, string>
-  /** configIds the source rated but the scraper wasn't confident in. */
+  /** Tier keys (in this list's subject namespace) the source rated but the scraper wasn't confident in. */
   uncertain?: string[]
-  /** Names the source used that could not be resolved to a configId. */
+  /** Names the source used that could not be resolved to a tier key. */
   unresolved?: { heard: string; at?: string }[]
 }
 

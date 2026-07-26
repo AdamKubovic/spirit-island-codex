@@ -129,8 +129,9 @@ describe('app smoke', () => {
 
   it('the credit line renders for the default boot state, and a cited list credits author, title and link (#18)', () => {
     // Default boot is now Red's Final Tier List — a cited list credits its author, title and link.
+    // The author is the channel; "Red" stays in the list's own name, where the source puts it.
     const board = renderToStaticMarkup(<TierBoard />)
-    expect(board).toContain('By Red')
+    expect(board).toContain('By Spirit Island Archive')
     // The apostrophe renders HTML-escaped (Red&#x27;s), so assert an apostrophe-free substring.
     expect(board).toContain('Final Tier List: Part 11: UPDATED 2/20/2025')
     expect(board).toContain('href="https://www.youtube.com/watch?v=LoP2T4GO4xo"')

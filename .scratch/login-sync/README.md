@@ -34,6 +34,12 @@ does append-and-dedupe merges by `id` — the exact shape a "push local → remo
 local" sync needs. Keep entry `id`s stable and keep the log a plain serialisable array and this
 stays cheap to bolt on later.
 
+## What else is waiting on this
+
+`.scratch/community-lists/README.md` — upvoting the shipped tier lists — is gated on exactly this
+backend decision, for the same reason: it needs distinguishable users, which needs accounts.
+Neither note is actionable without the other.
+
 ## Out of scope for the Log modernization effort
 
 The Log work (form/table/chips/notes/undo) stays purely local-first. This note only records the

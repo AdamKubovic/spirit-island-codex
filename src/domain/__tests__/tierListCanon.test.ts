@@ -5,6 +5,7 @@ import threeMbgStrengthSolo from '../../data/tier-lists/3mbg-strength-solo-2025.
 import powerCardsData from '../../data/power-cards.json'
 import spiritsData from '../../data/spirits.json'
 import { expand } from '../configurations'
+import { TIER_LIST_SUBJECTS } from '../types'
 import type { PowerCard, Spirit, TierList, TierListSubject } from '../types'
 
 const spirits = spiritsData as Spirit[]
@@ -148,9 +149,12 @@ const THREE_MBG_EXPECTED_KEYS = [
 ]
 
 describe('tier list canon', () => {
-  it('every shipped list declares subject: configurations (#12 data migration — extend, never drop, when a card list ships)', () => {
+  it('every shipped list declares a known subject (#12 data migration — extend, never drop, when a card list ships)', () => {
     for (const list of SHIPPED_LISTS) {
-      expect(list.subject, `${list.id} has no subject`).toBe('configurations')
+      expect(
+        TIER_LIST_SUBJECTS,
+        `${list.id} declares unknown subject "${list.subject}"`,
+      ).toContain(list.subject)
     }
   })
 
