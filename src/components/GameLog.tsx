@@ -78,6 +78,7 @@ export function GameLog({ onSelectConfiguration }: { onSelectConfiguration?: (co
   const [scenario, setScenario] = useState('')
   const [outcome, setOutcome] = useState<'win' | 'loss'>('win')
   const [terrorLevel, setTerrorLevel] = useState('')
+  const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10))
   const [notes, setNotes] = useState('')
   const [difficulty, setDifficulty] = useState('')
   const [startTime, setStartTime] = useState('')
@@ -101,7 +102,7 @@ export function GameLog({ onSelectConfiguration }: { onSelectConfiguration?: (co
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const stats = useMemo(() => computeLogStats(gameLog.list(), spirits), [version])
 
-  const canSubmit = players.every((p) => p.name.trim() && p.configId)
+  const canSubmit = players.every((p) => p.name.trim() && p.configId) && date !== ''
   const selectedAdversary = findAdversary(adversary)
   const selectedSecondaryAdversary = findAdversary(secondaryAdversary)
   const selectedPlayerSpirits = players.map((p) => (p.configId ? spiritForConfig(p.configId) : undefined))
@@ -169,6 +170,7 @@ export function GameLog({ onSelectConfiguration }: { onSelectConfiguration?: (co
     setScenario('')
     setOutcome('win')
     setTerrorLevel('')
+    setDate(new Date().toISOString().slice(0, 10))
     setNotes('')
     setDifficulty('')
     setStartTime('')
@@ -197,14 +199,12 @@ export function GameLog({ onSelectConfiguration }: { onSelectConfiguration?: (co
       endTime: endTime || undefined,
     }
     if (editingId) {
-      // date is not a form field - the entry's recorded date is preserved through the update.
-      const original = entries.find((e) => e.id === editingId)
-      const updated = original && gameLog.update(editingId, { ...fields, date: original.date })
+      const updated = gameLog.update(editingId, { ...fields, date })
       // The entry was deleted while being edited: keep the form populated and in edit mode so
       // the owner's corrections aren't silently discarded (update() itself is a tested no-op).
       if (!updated) return
     } else {
-      gameLog.append({ ...fields, date: new Date().toISOString() })
+      gameLog.append({ ...fields, date })
     }
     resetForm()
     setVersion((v) => v + 1)
@@ -221,6 +221,7 @@ export function GameLog({ onSelectConfiguration }: { onSelectConfiguration?: (co
     setScenario(entry.scenario ?? '')
     setOutcome(entry.outcome)
     setTerrorLevel(entry.terrorLevel !== undefined ? String(entry.terrorLevel) : '')
+    setDate(entry.date.slice(0, 10))
     setNotes(entry.notes ?? '')
     setDifficulty(entry.difficulty !== undefined ? String(entry.difficulty) : '')
     setStartTime(entry.startTime ?? '')
@@ -264,7 +265,7 @@ export function GameLog({ onSelectConfiguration }: { onSelectConfiguration?: (co
         <legend>{editingId ? 'Edit game' : 'Record a game'}</legend>
         {editingId && (
           <p className="meta">
-            Editing a logged game — submitting updates the existing entry in place; its date and history position are kept.
+            Editing a logged game — submitting updates the existing entry in place; its history position is kept.
           </p>
         )}
 
@@ -437,6 +438,10 @@ export function GameLog({ onSelectConfiguration }: { onSelectConfiguration?: (co
               onChange={(e) => setTerrorLevel(e.target.value)}
               placeholder="—"
             />
+          </label>
+          <label className="log-field">
+            <span className="log-field-label">Date</span>
+            <input className="log-input log-input-narrow" type="date" value={date} onChange={(e) => setDate(e.target.value)} />
           </label>
         </div>
 
