@@ -67,7 +67,7 @@ function NotesCell({ notes }: { notes?: string }) {
 
 /** Record a played game and browse history. A journal, not a feedback loop - see gameLog.ts:
  * outcomes are shown here, never fed back into scoring. */
-export function GameLog() {
+export function GameLog({ onSelectConfiguration }: { onSelectConfiguration?: (configId: string) => void }) {
   const [version, setVersion] = useState(0)
   const [players, setPlayers] = useState<PlayerRow[]>([{ ...EMPTY_PLAYER }])
   const [adversary, setAdversary] = useState('')
@@ -606,7 +606,13 @@ export function GameLog() {
                           const spirit = spiritForConfig(p.configId)
                           const label = `${p.name}: ${configLabel(p.configId)}`
                           return spirit ? (
-                            <AvatarChip key={i} kind="spirit" spirit={spirit} name={label} />
+                            <AvatarChip
+                              key={i}
+                              kind="spirit"
+                              spirit={spirit}
+                              name={label}
+                              onClick={onSelectConfiguration ? () => onSelectConfiguration(p.configId) : undefined}
+                            />
                           ) : (
                             <span key={i} className="avatar-chip">
                               <span className="avatar-chip-name">{label}</span>

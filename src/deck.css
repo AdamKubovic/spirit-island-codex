@@ -2791,6 +2791,13 @@ button:disabled {
   font-size: 12px;
   color: var(--deck-text);
 }
+button.avatar-chip-clickable {
+  font-family: inherit;
+  cursor: pointer;
+}
+button.avatar-chip-clickable:hover {
+  background: var(--deck-panel);
+}
 .avatar-chip-art {
   width: 28px;
   height: 28px;

@@ -35,7 +35,7 @@ function EntityArt({ kind, name }: { kind: 'adversary' | 'scenario'; name: strin
 }
 
 export type AvatarChipProps =
-  | { kind: 'spirit'; spirit: Spirit; name: string }
+  | { kind: 'spirit'; spirit: Spirit; name: string; onClick?: () => void }
   | { kind: 'adversary'; name: string }
   | { kind: 'scenario'; name: string }
 
@@ -45,14 +45,22 @@ export type AvatarChipProps =
  * PlaceholderArt fallback); adversary/scenario art resolves via slugify with an initials tile.
  */
 export function AvatarChip(props: AvatarChipProps) {
-  return (
-    <span className="avatar-chip">
+  const content = (
+    <>
       {props.kind === 'spirit' ? (
         <SpiritArt spirit={props.spirit} className="avatar-chip-art" />
       ) : (
         <EntityArt kind={props.kind} name={props.name} />
       )}
       <span className="avatar-chip-name">{props.name}</span>
-    </span>
+    </>
   )
+  if (props.kind === 'spirit' && props.onClick) {
+    return (
+      <button type="button" className="avatar-chip avatar-chip-clickable" onClick={props.onClick}>
+        {content}
+      </button>
+    )
+  }
+  return <span className="avatar-chip">{content}</span>
 }

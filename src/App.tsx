@@ -56,7 +56,7 @@ function App() {
         {tab === 'cards' && <CardsTab />}
         {tab === 'dashboard' && <DashboardTab />}
         {tab === 'tiers' && <TierBoard />}
-        {tab === 'log' && <GameLog />}
+        {tab === 'log' && <GameLog onSelectConfiguration={goToConfiguration} />}
         {tab === 'glossary' && <GlossaryTab />}
         {tab === 'settings' && <Settings />}
       </AppShell>
