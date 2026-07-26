@@ -3,8 +3,8 @@
     {
       "subject": "minor-powers",
       "pool": 101,
-      "proposed": 21,
-      "review": 42,
+      "proposed": 13,
+      "review": 50,
       "silent": 38,
       "parts": [
         {
@@ -12,7 +12,11 @@
           "videoId": "DdZFT5myaDI",
           "title": "Spirit Island: Minor Power Tier List: Part 1",
           "published": "20230101",
-          "bands": [
+          "covers": [
+            "S",
+            "A"
+          ],
+          "bandUtterances": [
             "S",
             "B",
             "A",
@@ -24,7 +28,10 @@
           "videoId": "bjd98MBYA5U",
           "title": "Spirit Island: Minor Power Tier List: Part 2",
           "published": "20230102",
-          "bands": [
+          "covers": [
+            "B"
+          ],
+          "bandUtterances": [
             "B",
             "F",
             "S",
@@ -37,7 +44,11 @@
           "videoId": "-uT5_RQTolE",
           "title": "Spirit Island: Minor Power Tier List: Part 3",
           "published": "20230103",
-          "bands": [
+          "covers": [
+            "C",
+            "F"
+          ],
+          "bandUtterances": [
             "F",
             "S",
             "A",
@@ -50,8 +61,8 @@
     {
       "subject": "major-powers",
       "pool": 78,
-      "proposed": 27,
-      "review": 39,
+      "proposed": 30,
+      "review": 36,
       "silent": 12,
       "parts": [
         {
@@ -59,7 +70,11 @@
           "videoId": "dHe0_n86nq4",
           "title": "Spirit Island: Red's Major Power Tier List: Part 1",
           "published": "20231101",
-          "bands": [
+          "covers": [
+            "F",
+            "D"
+          ],
+          "bandUtterances": [
             "A",
             "F",
             "D",
@@ -71,7 +86,10 @@
           "videoId": "rkuXUmf7kpM",
           "title": "Spirit Island: Red's Major Power Tier List: Part 2",
           "published": "20231102",
-          "bands": [
+          "covers": [
+            "C"
+          ],
+          "bandUtterances": [
             "C",
             "B",
             "D",
@@ -85,7 +103,10 @@
           "videoId": "Hc3bLAkiO5o",
           "title": "Spirit Island: Red's Major Power Tier List: Part 3",
           "published": "20231218",
-          "bands": [
+          "covers": [
+            "B"
+          ],
+          "bandUtterances": [
             "B",
             "C",
             "A",
@@ -97,7 +118,10 @@
           "videoId": "Olm9L9CnHfc",
           "title": "Spirit Island: Red's Major Power Tier List: Part 4",
           "published": "20240101",
-          "bands": [
+          "covers": [
+            "A"
+          ],
+          "bandUtterances": [
             "A",
             "S",
             "B"
@@ -108,7 +132,10 @@
           "videoId": "Hnm_rD4ziRc",
           "title": "Spirit Island: Red's Major Power Tier List: Part 5",
           "published": "20240102",
-          "bands": [
+          "covers": [
+            "S"
+          ],
+          "bandUtterances": [
             "S",
             "A",
             "B"

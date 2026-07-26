@@ -6,34 +6,42 @@ outputs are proposals plus a human gate.
 
 ## Accounting
 
-| Subject | Pool | Proposed (verbatim + unambiguous band) | Sent to review | Never mentioned |
+| Subject | Pool | Proposed (verbatim + band fixed by the video) | Sent to review | Never mentioned |
 | --- | --- | --- | --- | --- |
-| minor-powers | 101 | 21 | 42 | 38 |
-| major-powers | 78 | 27 | 39 | 12 |
+| minor-powers | 101 | 13 | 50 | 38 |
+| major-powers | 78 | 30 | 36 | 12 |
 
 Every card is in exactly one column. Proposals live in `proposed-minor-powers.json` /
 `proposed-major-powers.json` (with per-key evidence: file, timestamp, quoted context), the
 review batch in `near-miss-review.md`, the never-mentioned lists in each proposal file's
 `notMentioned`.
 
-The review batch is larger than the PRD's 40–60 estimate (81 total). The estimate assumed
-near-misses were mostly mangled *names*; in practice the commoner ambiguity is the *band* — a
-card is named verbatim, but the last band announced before the mention belongs to a recap
-rather than to the section actually being rated. Those go to the gate rather than being
-guessed. Each review entry states why it is there.
+The review batch is much larger than the PRD's 40–60 estimate (86 total). The estimate assumed
+near-misses were mostly mangled *names*; in practice the commoner ambiguity is the **band**.
+Captions give no section boundaries, and the reviewer utters other band letters constantly
+mid-section ("it's not as good as the s tier cards", "this is why it's in a tier and not in B
+tier"). A first attempt that inferred the band from the nearest utterance produced provably
+wrong ratings — five Minor Part 1 cards from the A-tier section came out as `S` — so that
+inference was removed rather than tuned. Bands now come only from what a video *declares* it
+covers.
 
 ## How a rating was allowed to be proposed
 
 1. The card's name from `power-cards.json` appears verbatim (case- and punctuation-insensitive)
    in a transcript.
-2. The band announced most recently before that mention is one the part itself says it covers
-   (see the band map below). Mentions under any other band are treated as back-references and
-   discarded, not rated.
-3. All surviving mentions of that card agree on one band.
+2. It appears in **exactly one part**, and that part announces in its own intro that it covers
+   **exactly one band** (see the band map below). The band is that band.
 
-Anything failing 2 or 3 goes to `near-miss-review.md`. So does any unmatched card whose
-distinctive content words cluster in one passage (the mangled-name case — e.g. captions hear
-"rotting bog" for **Roiling Bog and Snagging Thorn**).
+That is the only route. It means Minor Part 1 (S *and* A), Minor Part 3 (C *and* F) and Major
+Part 1 (F *and* D) propose nothing at all — a two-band video does not fix which of its two
+bands a card sits in, and the captions carry no reliable boundary between the sections. It also
+means a card named in more than one part proposes nothing, because one of those mentions is a
+back-reference rather than a rating.
+
+Everything else goes to `near-miss-review.md`, each entry carrying the nearest band utterance as
+a *suggestion* plus the quoted context to rule on. So does any unmatched card whose distinctive
+content words cluster in one passage (the mangled-name case — e.g. captions hear "rotting bog"
+for **Roiling Bog and Snagging Thorn**).
 
 ## Band each part covers — for the citation `methodology`
 
@@ -70,7 +78,14 @@ card ships at band `S`; the errata is described in `methodology`.
 
 ## What the owner needs to do next
 
-Work through `near-miss-review.md` and fill in each `verdict:` line with `approve` (with the
+**First**: settle ADR 0004. `docs/adr/0004-standing-prohibitions.md` says "No rating, tiering or
+ranking of cards … out of scope **permanently**", with the reversal clause "Reversing any of them
+means reopening this ADR". The PRD does not cite it. The prohibition's stated reason — "ranking
+471 cards would be this repo inventing data" — arguably does not bite a *cited* list, which is
+the carve-out ADR 0001 already makes for spirits, but that is an amendment to write down, not one
+to assume. Nothing has shipped to `src/data/` yet, so this is decidable cheaply now.
+
+**Then**: work through `near-miss-review.md` and fill in each `verdict:` line with `approve` (with the
 band, if the entry offers a choice) or `reject`. Issues 05 and 06 are blocked until that file
 comes back adjudicated: approved entries become tier keys, rejected ones become `unresolved`
 entries in the shipped JSON.

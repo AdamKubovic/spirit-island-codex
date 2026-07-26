@@ -48,8 +48,10 @@ function loadTranscript(file) {
   return { file, meta, lines, text, index }
 }
 
-/** Band announcements. "tier list" is not a band; "s tier"/"tier s"/"looking at a tier" are. */
-const BAND_RE = /\b(?:looking at |moving on to |now (?:for )?|on to |into |next up )?\b([sabcdf]) tier\b|\btier ([sabcdf])\b/g
+/** Every band letter uttered anywhere. Note this is NOT a section boundary: the reviewer
+ * back-references other bands constantly mid-section ("it's not as good as the s tier cards"),
+ * so the most recent utterance is a weak signal, never a rating on its own. */
+const BAND_RE = /\b([sabcdf]) tier\b|\btier ([sabcdf])\b/g
 
 function bandTimeline(t) {
   const marks = []
@@ -104,11 +106,15 @@ for (const f of readdirSync(TRANSCRIPT_DIR).sort()) {
 
 const report = []
 const reviewEntries = []
+/** Parse each transcript once; every pass below reads from here. */
+const loaded = new Map(
+  [...SUBJECTS['minor-powers'].files, ...SUBJECTS['major-powers'].files].map((f) => [f, loadTranscript(f)]),
+)
+const marksBy = new Map([...loaded].map(([f, t]) => [f, bandTimeline(t)]))
 
 for (const [subject, cfg] of Object.entries(SUBJECTS)) {
   const pool = cards.filter((c) => c.kind === cfg.kind)
-  const transcripts = cfg.files.map(loadTranscript)
-  const marksBy = new Map(transcripts.map((t) => [t.file, bandTimeline(t)]))
+  const transcripts = cfg.files.map((f) => loaded.get(f))
 
   const proposed = {}
   const evidence = []
@@ -138,26 +144,29 @@ for (const [subject, cfg] of Object.entries(SUBJECTS)) {
       unmatched.push(card)
       continue
     }
-    const bands = [...new Set(hits.map((h) => h.band).filter(Boolean))]
-    if (bands.length === 1) {
-      const hit = hits.find((h) => h.band === bands[0])
-      proposed[card.name] = bands[0]
-      evidence.push({ card: card.name, ...hit, mentions: hits.length })
+    // A rating is only proposed where the *video itself* fixes the band: the card is named in
+    // exactly one part, and that part announces it covers exactly one band. Everything else —
+    // a two-band part, or a card named across parts — goes to the human gate, because the
+    // nearest band utterance is not a section boundary and guessing from it fabricates ratings.
+    const parts = [...new Set(hits.map((h) => h.file))]
+    const covered = parts.length === 1 ? partBands(parts[0]) : []
+    if (covered.length === 1) {
+      proposed[card.name] = covered[0]
+      evidence.push({ card: card.name, ...hits[0], band: covered[0], mentions: hits.length, basis: `${parts[0]} covers ${covered[0]} tier only` })
     } else {
-      // Ambiguous or bandless: the transcript does not unambiguously place this card, so it
-      // goes to the human gate rather than being guessed at.
-      const hit = hits[0]
+      const suggest = [...new Set(hits.map((h) => h.band).filter(Boolean))]
       reviewEntries.push({
         subject,
         heard: card.name,
         candidate: card.name,
-        reason: bands.length
-          ? `named verbatim but mentioned under ${bands.length} different bands (${bands.join(', ')})`
-          : 'named verbatim but no band was announced before any mention',
-        file: hit.file,
-        at: hit.at,
-        band: bands.join(' or ') || null,
-        quote: hits.map((h) => `[${h.file} @ ${h.at}, band ${h.band ?? '?'}] ${h.quote}`).join(' … '),
+        reason:
+          parts.length > 1
+            ? `named verbatim in ${parts.length} parts — one of them is a back-reference, not a rating`
+            : `named verbatim in ${parts[0]}, which covers ${partBands(parts[0]).join(' and ') || 'no announced band'} — the part does not fix the band by itself`,
+        file: hits[0].file,
+        at: hits[0].at,
+        band: suggest.join(' or ') || null,
+        quote: hits.map((h) => `[${h.file} @ ${h.at}, nearest band utterance ${h.band ?? '?'}] ${h.quote}`).join(' … '),
       })
     }
   }
@@ -205,13 +214,15 @@ for (const [subject, cfg] of Object.entries(SUBJECTS)) {
     JSON.stringify({ subject, tiers: proposed, evidence, notMentioned: silent }, null, 2) + '\n',
   )
 
-  // Band coverage per part, and every band announcement, for the citation methodology.
+  // Per part: the band it announces it covers (for the citation `methodology`), alongside every
+  // band letter it utters — the two differ, which is exactly why utterances can't fix a rating.
   const parts = transcripts.map((t) => ({
     file: t.file,
     videoId: t.meta.videoId,
     title: t.meta.title,
     published: t.meta.published,
-    bands: [...new Set(marksBy.get(t.file).map((m) => m.band))],
+    covers: partBands(t.file),
+    bandUtterances: [...new Set(marksBy.get(t.file).map((m) => m.band))],
   }))
 
   report.push({ subject, pool: pool.length, proposed: Object.keys(proposed).length, review: reviewEntries.filter((e) => e.subject === subject).length, silent: silent.length, parts })
@@ -219,8 +230,8 @@ for (const [subject, cfg] of Object.entries(SUBJECTS)) {
 
 // The `X` trap: in the minors video a blue X over a card means "removed by errata", not a band.
 const xMarkers = []
-for (const t of [...SUBJECTS['minor-powers'].files, ...SUBJECTS['major-powers'].files].map(loadTranscript)) {
-  const marks = bandTimeline(t)
+for (const t of loaded.values()) {
+  const marks = marksBy.get(t.file)
   const re = /\b(?:blue x|x through it|has an x|an x through)\b/g
   let m
   while ((m = re.exec(t.text))) {
