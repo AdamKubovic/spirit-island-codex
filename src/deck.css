@@ -925,6 +925,22 @@ button:disabled {
   width: 116px;
   margin: 0;
 }
+/* The zoom affordance wraps only the art, so the tier select below it stays a sibling rather than
+   a control nested inside a button. Stripped to nothing visually — the tile's look is unchanged
+   from before the button existed — except the zoom-in cursor and a real focus ring. */
+.tier-tile-card-zoom {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  border-radius: 4px;
+}
+.tier-tile-card-zoom:focus-visible {
+  outline: 2px solid var(--deck-accent);
+  outline-offset: 2px;
+}
 .tier-tile-card-art {
   display: block;
   width: 100%;
@@ -1736,6 +1752,13 @@ button:disabled {
   max-width: min(92vw, 900px);
   max-height: 90vh;
   border-radius: 8px;
+}
+.card-enlarge-backdrop .card-enlarge-missing {
+  color: var(--deck-text);
+  border: 1px dashed var(--deck-line);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
 }
 
 /* --- Cards tab filters (v4 #12) --- */

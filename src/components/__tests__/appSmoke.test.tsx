@@ -27,7 +27,7 @@ import otherCardsData from '../../data/other-cards.json'
 import { filterPowerCards, EMPTY_POWER_CARD_FILTER } from '../../domain/powerCardFilter'
 import { filterOtherCards, EMPTY_OTHER_CARD_FILTER } from '../../domain/otherCardFilter'
 import { filterSpirits, type BrowserFilterState } from '../../domain/browserFilter'
-import { stepGalleryIndex } from '../../domain/gallerySequence'
+import { powerCardGallery, stepGalleryIndex } from '../../domain/gallerySequence'
 import { fromConfigId, toConfigId } from '../../domain/configurations'
 import type { OtherCard, PowerCard } from '../../domain/types'
 
@@ -608,6 +608,35 @@ describe('app smoke', () => {
     // Walking left past the first index loops to the last.
     expect(stepGalleryIndex(0, 'left', length)).toBe(length - 1)
     expect(stepGalleryIndex(2, 'left', length)).toBe(1)
+  })
+
+  it('tier-row enlarge: the row builds a BASE_URL-prefixed gallery, alt-texted by card name', () => {
+    const row = [
+      { name: 'Absorb Corruption', image: 'cards/minor/absorb_corruption.webp' },
+      { name: 'Call to Bloodshed', image: 'cards/major/call_to_bloodshed.webp' },
+    ]
+    expect(powerCardGallery(row, '/spirit-island/')).toEqual([
+      { src: '/spirit-island/cards/minor/absorb_corruption.webp', alt: 'Absorb Corruption' },
+      { src: '/spirit-island/cards/major/call_to_bloodshed.webp', alt: 'Call to Bloodshed' },
+    ])
+    // An empty tier row yields an empty sequence rather than throwing — every board has them.
+    expect(powerCardGallery([], '/')).toEqual([])
+  })
+
+  it('tier-row enlarge: the card image is the click target, not the whole tile', () => {
+    const html = renderToStaticMarkup(<TierBoard initialSubject="major-powers" />)
+    // The image is wrapped in a real button, so it is keyboard-reachable and announced as one.
+    // Asserted attribute-by-attribute rather than as one literal tag, so reordering props here
+    // doesn't fail a test that only cares that the button exists and is labelled.
+    expect(html).toContain('class="tier-tile-card-zoom"')
+    expect(html).toMatch(/aria-label="Enlarge [^"]+"/)
+    // The figure itself stays inert — no tile-wide button role competing with the edit select,
+    // which is why enlarging can stay available during edit mode.
+    expect(html).not.toMatch(/<figure class="tier-tile"[^>]*role="button"/)
+    // Spirit tiles are untouched: they still open the detail modal tile-wide (#17).
+    const spiritBoard = renderToStaticMarkup(<TierBoard />)
+    expect(spiritBoard).not.toContain('tier-tile-card-zoom')
+    expect(spiritBoard).toMatch(/<figure class="tier-tile"[^>]*role="button"/)
   })
 
   it('Recommend→Browse (#02): configId round-trips through fromConfigId for both a base spirit and an aspect', () => {

@@ -3,13 +3,16 @@ import powerCardsData from '../data/power-cards.json'
 import spiritsData from '../data/spirits.json'
 import { collectionStore, filterOwnedConfigurations, isConfigurationOwned } from '../domain/collectionStore'
 import { expand, type Configuration } from '../domain/configurations'
+import { powerCardGallery, type GalleryImage } from '../domain/gallerySequence'
 import { groupByTier, tierStore } from '../domain/tierStore'
 import type { PowerCard, Spirit, TierList, TierListSubject } from '../domain/types'
+import { CardViewer } from './CardViewer'
 import { SpiritArt } from './SpiritArt'
 import { SpiritDetail } from './SpiritDetail'
 import { expansionChipColor, expansionColorFor } from './tagColors'
 import { tierColor } from './tierColors'
 import { TierListControls } from './TierListControls'
+import { useGalleryArrows } from './useGalleryArrows'
 
 const spirits = spiritsData as Spirit[]
 const configurations = expand(spirits)
@@ -150,13 +153,26 @@ function TierTile({
 
 /** Card art with the same missing-file posture as the rest of the app: a plain placeholder,
  * never a broken image. Card lists are ungated by the collection (#16) — like the Archive,
- * browsing the full pool is the point. */
+ * browsing the full pool is the point.
+ *
+ * The tier tile prints the card at 116px, where its rules text is unreadable — so the art is a
+ * button that enlarges it, the same affordance `SpiritDetail` gives a starting card. Only the
+ * *image* is the target, never the whole `figure`: the tile already contains the edit-mode tier
+ * select, and a tile-wide button would nest an interactive control inside a button. That also
+ * lets enlarging stay live during edit mode, unlike the spirit tile's whole-tile `onOpen` (#17) —
+ * reading a card is most useful exactly while you are deciding its tier, and there is no longer a
+ * conflicting click target to suppress.
+ *
+ * A card whose image 404s renders the placeholder and no button: there is nothing to enlarge.
+ */
 function CardTile({
   card,
   edit,
+  onEnlarge,
 }: {
   card: PowerCard
   edit?: ReactNode
+  onEnlarge?: () => void
 }) {
   const [failed, setFailed] = useState(false)
   // Raw transcribed string (`Basegame`, `Promo2`, …), so it goes through the alias-aware resolver
@@ -167,14 +183,21 @@ function CardTile({
       {failed ? (
         <span className="tier-tile-card-art tier-tile-card-missing" aria-hidden="true" />
       ) : (
-        <img
-          className="tier-tile-card-art"
-          src={`${import.meta.env.BASE_URL}${card.image}`}
-          alt={card.name}
-          loading="lazy"
-          decoding="async"
-          onError={() => setFailed(true)}
-        />
+        <button
+          type="button"
+          className="tier-tile-card-zoom"
+          onClick={onEnlarge}
+          aria-label={`Enlarge ${card.name}`}
+        >
+          <img
+            className="tier-tile-card-art"
+            src={`${import.meta.env.BASE_URL}${card.image}`}
+            alt={card.name}
+            loading="lazy"
+            decoding="async"
+            onError={() => setFailed(true)}
+          />
+        </button>
       )}
       <ExpansionStripe color={color} />
       <figcaption>{card.name}</figcaption>
@@ -195,7 +218,16 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
   const [viewedSubject, setViewedSubject] = useState<TierListSubject>(initialSubject ?? 'configurations')
   // #17: board → detail. An aspect tile opens the base spirit's modal scrolled to that aspect.
   const [detail, setDetail] = useState<{ spirit: Spirit; aspect?: string } | null>(null)
+  // The enlarged card, plus the tier row it came from so the arrows have somewhere to walk. The
+  // row is captured at click time rather than recomputed: re-tiering a card mid-enlarge must not
+  // reshuffle the sequence under the arrow keys.
+  const [enlarged, setEnlarged] = useState<{ images: GalleryImage[]; index: number } | null>(null)
   const bump = () => setVersion((v) => v + 1)
+
+  // Escape-to-close comes from `CardViewer` itself; only the row walk is this board's business.
+  useGalleryArrows(enlarged?.index, enlarged?.images.length ?? 0, (next) =>
+    setEnlarged((current) => (current ? { ...current, index: next } : current)),
+  )
 
   const viewed: TierList = tierStore.getActiveListFor(viewedSubject) ?? tierStore.getActiveList()
   const subject = viewed.subject
@@ -234,10 +266,17 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
         }
       />
     ))
-  const cardTiles = (items: PowerCard[], current: string) =>
-    items.map((card) => (
-      <CardTile key={card.name} card={card} edit={editControl(card.name, card.name, current)} />
+  const cardTiles = (items: PowerCard[], current: string) => {
+    const images = powerCardGallery(items, import.meta.env.BASE_URL)
+    return items.map((card, i) => (
+      <CardTile
+        key={card.name}
+        card={card}
+        edit={editControl(card.name, card.name, current)}
+        onEnlarge={() => setEnlarged({ images, index: i })}
+      />
     ))
+  }
 
   // Hard-filter (#06's opt-in): excluded exactly as if annotation had removed them first, rather
   // than dimmed in place. Session-only - a view preference, not collection data, so it isn't
@@ -368,6 +407,14 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
 
       {detail && (
         <SpiritDetail spirit={detail.spirit} highlightAspect={detail.aspect} onClose={() => setDetail(null)} />
+      )}
+
+      {enlarged && (
+        <CardViewer
+          src={enlarged.images[enlarged.index].src}
+          alt={enlarged.images[enlarged.index].alt}
+          onClose={() => setEnlarged(null)}
+        />
       )}
     </section>
   )

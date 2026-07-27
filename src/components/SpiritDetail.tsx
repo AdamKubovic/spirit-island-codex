@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import { useMemo, useRef, useState, type CSSProperties } from 'react'
 import { toConfigId } from '../domain/configurations'
-import { stepGalleryIndex } from '../domain/gallerySequence'
 import { tierStore } from '../domain/tierStore'
 import type { Spirit } from '../domain/types'
 import { CardViewer } from './CardViewer'
@@ -9,6 +8,7 @@ import { PlaceholderArt } from './PlaceholderArt'
 import { SpiritArt } from './SpiritArt'
 import { COMPLEXITY_LEVEL, expansionChipColor, PANEL_COLOR, tagColor, tagLabel } from './tagColors'
 import { activeConfigTier, tierColor } from './tierColors'
+import { useGalleryArrows } from './useGalleryArrows'
 
 /** panel-theming #03: the modal's one colour source, injected as CSS custom properties on the
  * modal root and consumed by the `.modal.spirit-detail` rules in deck.css. */
@@ -118,19 +118,9 @@ export function SpiritDetail({
     return images
   }, [spirit, base])
 
-  useEffect(() => {
-    if (enlarged?.index === undefined) return
-    function onKeyDown(e: KeyboardEvent) {
-      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return
-      setEnlarged((current) => {
-        if (current?.index === undefined) return current
-        const next = stepGalleryIndex(current.index, e.key === 'ArrowRight' ? 'right' : 'left', galleryImages.length)
-        return { ...galleryImages[next], index: next }
-      })
-    }
-    window.addEventListener('keydown', onKeyDown)
-    return () => window.removeEventListener('keydown', onKeyDown)
-  }, [enlarged?.index, galleryImages])
+  useGalleryArrows(enlarged?.index, galleryImages.length, (next) =>
+    setEnlarged({ ...galleryImages[next], index: next }),
+  )
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
