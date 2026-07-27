@@ -373,10 +373,18 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
           )}
         </p>
       </details>
-      <label className="deck-field-inline">
-        <input type="checkbox" checked={hardFilter} onChange={(e) => setHardFilter(e.target.checked)} />
-        Only show {subject === 'configurations' ? 'spirits' : 'cards'} I own
-      </label>
+      <div className="tier-collection-view" role="group" aria-label="Collection view">
+        <span>Collection view</span>
+        <div className="tier-collection-options">
+          <button type="button" aria-pressed={!hardFilter} onClick={() => setHardFilter(false)}>
+            Show all
+          </button>
+          <button type="button" aria-pressed={hardFilter} onClick={() => setHardFilter(true)}>
+            Owned only
+          </button>
+        </div>
+        <small>{hardFilter ? `Showing only ${subject === 'configurations' ? 'spirits' : 'cards'} in your collection.` : 'Unowned content remains visible and marked.'}</small>
+      </div>
       {canEdit && (
         <label className="deck-field-inline">
           <input type="checkbox" checked={editing} onChange={(e) => setEditing(e.target.checked)} />
