@@ -13,7 +13,7 @@
 
 set -euo pipefail
 
-WORKFLOW="deploy.yml"
+WORKFLOW="pages.yml"
 BRANCH="main"
 
 command -v gh >/dev/null || { echo "error: the GitHub CLI (gh) is required" >&2; exit 1; }
