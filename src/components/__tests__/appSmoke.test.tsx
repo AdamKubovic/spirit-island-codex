@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 import spiritsData from '../../data/spirits.json'
 import { EXPANSIONS, EVENT_CLASSES, FEAR_TAGS, type Spirit } from '../../domain/types'
-import { subtypeLabel } from '../tagColors'
+import { EXPANSION_COLOR, subtypeLabel } from '../tagColors'
 import App from '../../App'
 import { collectionStore } from '../../domain/collectionStore'
 import { gameLog } from '../../domain/gameLog'
@@ -173,6 +173,43 @@ describe('app smoke', () => {
     } finally {
       tierStore.setActiveListId('owners-board')
     }
+  })
+
+  it('theming-spread #02: tier-board spirit tiles carry an expansion stripe, coloured from EXPANSION_COLOR by the base spirit', () => {
+    const html = renderToStaticMarkup(<TierBoard />)
+    expect(html).toContain('tier-tile-expansion')
+    // Every expansion represented among the 37 spirits reaches the board as its own colour —
+    // the same value Browse's tile stripe uses, so a spirit is one colour on both surfaces.
+    for (const expansion of new Set(spirits.map((s) => s.expansion))) {
+      expect(html).toContain(`background:${EXPANSION_COLOR[expansion]}`)
+    }
+    // Colour is never the only carrier (the 116px tile has no room for a chip): the tooltip names
+    // the box in words, the same posture .unowned-badge takes. Asserted as the whole title, since
+    // a bare 'Base' would also match 'Basegame' and pin nothing.
+    expect(html).toContain('title="Ocean&#x27;s Hungry Grasp — Base"')
+  })
+
+  it('theming-spread #02: an aspect tile keeps its base spirit’s colour but its tooltip names the aspect’s own box when they differ', () => {
+    const html = renderToStaticMarkup(<TierBoard />)
+    // Lightning is Base; its Sparking aspect ships in Nature Incarnate and its Wind aspect in
+    // Jagged Earth (verified against spirits.json, not assumed). The stripe follows the spirit —
+    // one spirit is one colour everywhere — and the differing box is stated in words instead.
+    expect(html).toContain('Sparking aspect — Base; the aspect ships in Nature Incarnate')
+    expect(html).toContain('Wind aspect — Base; the aspect ships in Jagged Earth')
+    // No aspect ships in its spirit's own box, so the clause always appears — that's a fact about
+    // the dataset, pinned as such in aspectCanon.test.ts ("no aspect ships in its own spirit's
+    // expansion") rather than re-asserted here. No aspect comes from Base either, so this clause
+    // can never name it.
+    expect(html).not.toContain('the aspect ships in Base')
+  })
+
+  it('theming-spread #02: card tier tiles carry the stripe too, resolved through expansionColorFor’s raw-string mapping', () => {
+    const html = renderToStaticMarkup(<TierBoard initialSubject="major-powers" />)
+    expect(html).toContain('tier-tile-expansion')
+    // power-cards.json transcribes "Basegame"/"Promo2" etc.; the stripe must show the mapped
+    // canonical colour, never the raw string leaking through or an undefined background.
+    expect(html).toContain(`background:${EXPANSION_COLOR.Base}`)
+    expect(html).not.toContain('background:undefined')
   })
 
   it('the tier board offers Edit tiers only on a personal list; a cited list gets no affordance (#15)', () => {

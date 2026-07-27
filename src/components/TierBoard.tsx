@@ -7,6 +7,7 @@ import { groupByTier, tierStore } from '../domain/tierStore'
 import type { PowerCard, Spirit, TierList, TierListSubject } from '../domain/types'
 import { SpiritArt } from './SpiritArt'
 import { SpiritDetail } from './SpiritDetail'
+import { expansionChipColor, expansionColorFor } from './tagColors'
 import { tierColor } from './tierColors'
 import { TierListControls } from './TierListControls'
 
@@ -55,6 +56,40 @@ function TierTileEdit({
   )
 }
 
+/**
+ * theming-spread #02: expansion colour on the tier board, extending the existing single-source
+ * `EXPANSION_COLOR` mapping to a surface that showed no expansion at all (phase-4 #21 audited it
+ * as one of two gaps; the Archive's rows closed the other in legibility-pass #05).
+ *
+ * A tier tile is 116px wide with 53px of art and a figcaption already absolutely positioned over
+ * its bottom edge — there is nowhere to put the *text* chip Browse and the Archive rows use, the
+ * same constraint `.unowned-badge` documents. So the colour lands as the 4px left-edge stripe
+ * `SpiritTile` already uses for this exact signal (no new treatment invented, no new palette), and
+ * the expansion's name goes in the tile's `title` tooltip, where words do fit — colour is never the
+ * only carrier of the signal.
+ *
+ * `undefined` renders no stripe at all rather than a fallback colour, honouring
+ * `expansionColorFor`'s contract (a raw string it can't place is an honest absence, never a guess).
+ */
+function ExpansionStripe({ color }: { color: string | undefined }) {
+  if (!color) return null
+  return <span className="tier-tile-expansion" style={{ background: color }} aria-hidden="true" />
+}
+
+/** The tooltip's expansion clause. A configuration is gated by up to *two* boxes
+ * (`isConfigurationOwned` checks both the spirit's and the aspect's), but one stripe can only
+ * carry one colour — it follows the base spirit, so a spirit reads as the same colour here as on
+ * Browse. When an aspect ships in a different box, that fact can't be a colour, so it's stated in
+ * words; when it ships in the spirit's own box the clause is omitted rather than repeated. */
+function expansionTitle(config: Configuration): string {
+  const { spirit, aspect } = config
+  if (aspect && aspect.expansion !== spirit.expansion) {
+    // The caller has already named the aspect, so this clause says "the aspect", not its name.
+    return `${spirit.expansion}; the aspect ships in ${aspect.expansion}`
+  }
+  return spirit.expansion
+}
+
 /** v5 #06: a configuration outside the collection stays in its rated tier row - a tier is
  * "how good," not "do you own it," so it's dimmed and badged in place, never regrouped.
  * #17: in view mode the tile opens the spirit detail (`onOpen`); in edit mode `onOpen` is
@@ -75,6 +110,7 @@ function TierTile({
       className={owned ? 'tier-tile' : 'tier-tile tier-tile-unowned'}
       title={
         (config.aspect ? `${config.spirit.name} — ${config.aspect.name} aspect` : config.spirit.name) +
+        ` — ${expansionTitle(config)}` +
         (owned ? '' : ' (not in your collection)')
       }
       role={onOpen ? 'button' : undefined}
@@ -92,6 +128,7 @@ function TierTile({
       }
     >
       <SpiritArt spirit={config.spirit} className="tier-tile-art" />
+      <ExpansionStripe color={expansionChipColor(config.spirit.expansion)} />
       {config.aspect ? (
         <figcaption className="tier-tile-aspect">
           <span className="tier-tile-aspect-name">{config.aspect.name}</span>
@@ -122,8 +159,11 @@ function CardTile({
   edit?: ReactNode
 }) {
   const [failed, setFailed] = useState(false)
+  // Raw transcribed string (`Basegame`, `Promo2`, …), so it goes through the alias-aware resolver
+  // rather than the direct index the canonical spirit side can use.
+  const color = expansionColorFor(card.expansion)
   return (
-    <figure className="tier-tile" title={card.name}>
+    <figure className="tier-tile" title={`${card.name} — ${card.expansion}`}>
       {failed ? (
         <span className="tier-tile-card-art tier-tile-card-missing" aria-hidden="true" />
       ) : (
@@ -136,6 +176,7 @@ function CardTile({
           onError={() => setFailed(true)}
         />
       )}
+      <ExpansionStripe color={color} />
       <figcaption>{card.name}</figcaption>
       {edit}
     </figure>

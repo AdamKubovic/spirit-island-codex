@@ -37,6 +37,41 @@ describe('card chip colours', () => {
       expect(others.has(colour), colour).toBe(false)
     }
   })
+
+  /**
+   * theming-spread #02: the tier board's expansion stripe (`.tier-tile-expansion`) is a 4px
+   * overlay on full-bleed spirit/card art, so it cannot borrow contrast from a known background
+   * the way a chip on `--deck-panel` does — measured against neighbouring art the jewel tones land
+   * between 1.08:1 and 2.40:1. The CSS therefore buys legibility from an opaque dark ring drawn
+   * around the stripe, whose contrast IS knowable. This pins that floor so a future re-tune of the
+   * palette (which `tagColors` explicitly permits, forbidding only collisions) can't quietly make
+   * the stripe unreadable on a surface no other consumer cares about.
+   *
+   * The threshold is the measured floor, not an accessibility standard: WCAG 1.4.11's 3:1 doesn't
+   * bind, because the stripe is decoration and the tile's `title` carries the expansion in words.
+   * Reaching 3:1 would need a pure-black ring (3.03:1) — a colour role no `--deck-*` token holds,
+   * and ADR 0011 escalates a new role to the owner rather than inventing one. Reproduce every
+   * figure with `node .scratch/theming-spread/measure-stripe-contrast.mjs`.
+   */
+  it('no expansion colour drops below the stripe ring’s measured 2.7:1 floor (theming-spread #02)', () => {
+    // `--deck-panel-2`, the ring in `.tier-tile-expansion`'s box-shadow. Opaque on purpose: a
+    // translucent ring composites with the art, making its contrast art-dependent and unassertable.
+    const RING = '#150f09'
+    const luminance = (hex: string) => {
+      const channel = (pair: string) => {
+        const v = parseInt(pair, 16) / 255
+        return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4
+      }
+      const [r, g, b] = [hex.slice(1, 3), hex.slice(3, 5), hex.slice(5, 7)].map(channel)
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b
+    }
+    const ringLuminance = luminance(RING)
+    for (const [name, hex] of Object.entries(EXPANSION_COLOR)) {
+      const l = luminance(hex)
+      const ratio = (Math.max(l, ringLuminance) + 0.05) / (Math.min(l, ringLuminance) + 0.05)
+      expect(ratio, `${name} ${hex} is ${ratio.toFixed(2)}:1 against the ring`).toBeGreaterThanOrEqual(2.7)
+    }
+  })
 })
 
 /**

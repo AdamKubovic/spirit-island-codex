@@ -954,9 +954,48 @@ button:disabled {
   border-radius: 4px;
   background: var(--deck-panel-2);
 }
+/* theming-spread #02: the tier tile's expansion stripe — shape only; the background comes inline
+ * from tagColors' EXPANSION_COLOR / expansionColorFor, the same single-source idiom .card-row-pill
+ * and .expansion-chip use. Deliberately the same 4px left edge .spirit-tile carries as its
+ * border-left, but drawn as an overlay rather than a border: the tile is a fixed 116px and its art
+ * fills that width, so a real border would either shift the art or shrink it. Rounded on the left
+ * only, matching the art's own 4px radius.
+ *
+ * Two details are load-bearing, both measured off the real render rather than assumed
+ * (reproduce with `node .scratch/theming-spread/measure-stripe-contrast.mjs`):
+ * - The `box-shadow` **ring**. Unlike .spirit-tile's equivalent — a border *outside* the art,
+ *   against the dark panel — this stripe overlays full-bleed art, and measured against the art
+ *   beside it a jewel tone lands between 1.08:1 and 2.40:1 (Base's #4a6b8a over A Spread of
+ *   Rampant Green's blue forest: 2.27:1; Jagged Earth's #7a4a6e over Fractured Days' twilight
+ *   sky: 1.08:1 — all but invisible). Six fixed colours cannot clear a useful figure against 37
+ *   different artworks, so legibility is bought from a dark
+ *   ring *around* the stripe rather than from whatever it happens to sit on.
+ *   The ring is `--deck-panel-2` and **opaque on purpose**: a semi-transparent black composites
+ *   with the art beneath it, so its contrast would vary per artwork (over pale art an
+ *   `rgba(0,0,0,.85)` ring measured only 2.19:1 worst-case). An opaque token makes the figure
+ *   exact and art-independent — 2.75:1 at worst (Jagged Earth), 3.93:1 at best.
+ * - It runs the full tile height, *over* the figcaption (hence the higher z-index), so the colour
+ *   is one unbroken edge. Broken by the caption it read as an artefact of the art, not as chrome.
+ *
+ * On the 2.75:1 floor: the stripe is decoration, not the signal's only carrier — the tile's `title`
+ * names the expansion in words — so WCAG 1.4.11's 3:1 doesn't bind here. Reaching it would need a
+ * pure-black ring (3.03:1), which is a colour role no `--deck-*` token holds, and ADR 0011 says a
+ * new role escalates to the owner rather than being invented. Escalated in the ticket instead. */
+.tier-tile-expansion {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  z-index: 2;
+  border-radius: 4px 0 0 4px;
+  box-shadow: 0 0 0 1px var(--deck-panel-2);
+  pointer-events: none;
+}
 .tier-tile figcaption {
   position: absolute;
   inset: auto 0 0 0;
+  z-index: 1;
   padding: 2px 4px;
   font-size: 0.7rem;
   line-height: 1.2;

@@ -154,4 +154,18 @@ describe('aspect canon', () => {
     }
     expect(counts).toEqual({ 'Jagged Earth': 6, 'Feather & Flame': 5, 'Nature Incarnate': 20 })
   })
+
+  /**
+   * theming-spread #02 relies on this: no aspect ships in the same box as its own spirit, so a
+   * configuration is always gated by two different expansions. The tier board's expansion stripe
+   * follows the base spirit and states the aspect's differing box in words, which means its
+   * "same box, so say nothing" branch is currently unreachable. Pinned here rather than in the
+   * render test so aspect data that changed this fact fails as the data drift it is.
+   */
+  it('no aspect ships in its own spirit’s expansion', () => {
+    const sameBox = spirits.flatMap((spirit) =>
+      spirit.aspects.filter((aspect) => aspect.expansion === spirit.expansion).map((a) => `${spirit.name}/${a.name}`),
+    )
+    expect(sameBox).toEqual([])
+  })
 })

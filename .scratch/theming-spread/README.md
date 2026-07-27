@@ -1,6 +1,6 @@
-# theming-spread — one remaining visual-consistency thread
+# theming-spread — two visual-consistency threads, both now closed
 
-Status: backlog
+Status: done
 
 Filed 2026-07-23 as two threads raised and deliberately deferred during earlier efforts rather
 than scoped and built. **One of the two turned out to be already delivered.** See `issues/` for
@@ -14,11 +14,14 @@ each; `grep '^Status:' issues/*.md` is the authoritative view.
   owner's variant pick (theme **B**) is already live. No code was owed. The ticket's Comments record
   the full chain and the in-tree verification.
 - [02 expansion colour on more surfaces](issues/02-expansion-colour-more-surfaces.md) —
-  **still `needs-triage`.** Genuinely open, and untouched by `island-retheme`: that effort swept
-  *chrome* onto `--deck-*` tokens and deliberately left `EXPANSION_COLOR` alone as a locked
-  semantic system. Needs an owner conversation to name which surfaces gain expansion colour (tier
-  board, Archive, both) before it's `ready-for-agent`. Once scoped it's expected to be small —
-  extend consumption of the existing single-source mapping, no new palette work.
+  **`done` (2026-07-27).** Owner scoped it to the tier board *and* the Archive. Scoping split the
+  two: the **Archive rows already had it** (`legibility-pass` #05 added the `.expansion-chip` pill
+  after #21's audit, so the ticket's "neither shows it today" had gone stale), leaving the **tier
+  board** as the real change — a 4px left-edge stripe on spirit and card tiles, colour from the
+  existing single-source mapping, no new palette. Archive *tile/grid* views were deliberately left
+  alone: `archive-grouping` #01 decided "tiles show art, clean," and reversing that is the owner's
+  call, not this ticket's. Judgment calls, the aspect-vs-spirit expansion question and a measured
+  contrast fix are recorded in the ticket's Comments; screenshots in `screenshots-02/`.
 
 **Lesson for whoever files the next backlog note:** before recording a thread as deferred, check
 whether a later effort already picked it up. Chase the *forward* links — panel-theming's own MAP
