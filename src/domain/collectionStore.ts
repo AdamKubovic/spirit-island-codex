@@ -78,6 +78,27 @@ export function isConfigurationOwned(config: Configuration, excluded: ReadonlySe
   return true
 }
 
+/**
+ * Pure: whether a power card's box is in the collection.
+ *
+ * Takes the **canonical** expansion, not the card's raw transcribed string (`Basegame`, `Promo2`,
+ * …) — the alias table lives with the rest of the presentation-layer expansion handling, so the
+ * caller resolves the raw string through `normalizeExpansion` first and this stays a plain set
+ * lookup. Mirrors `isConfigurationOwned`, which can index directly because `spirits.json` is
+ * already canonical.
+ *
+ * `undefined` — a raw string the alias table can't place — counts as **owned**. Dimming it would
+ * assert the player doesn't own something the data can't actually identify; ADR 0003's rule is
+ * that an unanswerable field is absent, never estimated.
+ */
+export function isCardOwned(
+  expansion: ExpansionName | undefined,
+  excluded: ReadonlySet<ExpansionName>,
+): boolean {
+  if (!expansion) return true
+  return !excluded.has(expansion)
+}
+
 /** The opt-in hard-filter case (#06): only the configurations the collection actually owns,
  * excluded exactly as if annotation had removed them first. */
 export function filterOwnedConfigurations(configs: Configuration[], excluded: ReadonlySet<ExpansionName>): Configuration[] {

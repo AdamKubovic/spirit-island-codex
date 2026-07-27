@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react'
 import powerCardsData from '../data/power-cards.json'
 import spiritsData from '../data/spirits.json'
-import { collectionStore, filterOwnedConfigurations, isConfigurationOwned } from '../domain/collectionStore'
+import { collectionStore, filterOwnedConfigurations, isCardOwned, isConfigurationOwned } from '../domain/collectionStore'
 import { expand, type Configuration } from '../domain/configurations'
 import { powerCardGallery, type GalleryImage } from '../domain/gallerySequence'
 import { groupByTier, tierStore } from '../domain/tierStore'
@@ -9,7 +9,7 @@ import type { PowerCard, Spirit, TierList, TierListSubject } from '../domain/typ
 import { CardViewer } from './CardViewer'
 import { SpiritArt } from './SpiritArt'
 import { SpiritDetail } from './SpiritDetail'
-import { expansionChipColor, expansionColorFor } from './tagColors'
+import { expansionChipColor, expansionColorFor, normalizeExpansion } from './tagColors'
 import { tierColor } from './tierColors'
 import { TierListControls } from './TierListControls'
 import { useGalleryArrows } from './useGalleryArrows'
@@ -152,8 +152,15 @@ function TierTile({
 }
 
 /** Card art with the same missing-file posture as the rest of the app: a plain placeholder,
- * never a broken image. Card lists are ungated by the collection (#16) — like the Archive,
- * browsing the full pool is the point.
+ * never a broken image.
+ *
+ * A card outside the collection is dimmed and badged in place, exactly like an unowned spirit
+ * (`TierTile`) — a tier says "how good", never "do you own it", so it keeps its rated row. This
+ * reverses v5 #16's "card lists are ungated": that call was made when the board showed only names,
+ * where the full pool reads as a reference list. Now that tiles show art, an unowned card is
+ * visually indistinguishable from an owned one, which is the specific thing the owner asked to
+ * fix. The full pool still renders — nothing is hidden, and there is deliberately no card
+ * equivalent of the configurations board's "only show what I own" hard filter.
  *
  * The tier tile prints the card at 116px, where its rules text is unreadable — so the art is a
  * button that enlarges it, the same affordance `SpiritDetail` gives a starting card. Only the
@@ -167,10 +174,12 @@ function TierTile({
  */
 function CardTile({
   card,
+  owned,
   edit,
   onEnlarge,
 }: {
   card: PowerCard
+  owned: boolean
   edit?: ReactNode
   onEnlarge?: () => void
 }) {
@@ -179,7 +188,10 @@ function CardTile({
   // rather than the direct index the canonical spirit side can use.
   const color = expansionColorFor(card.expansion)
   return (
-    <figure className="tier-tile" title={`${card.name} — ${card.expansion}`}>
+    <figure
+      className={owned ? 'tier-tile' : 'tier-tile tier-tile-unowned'}
+      title={`${card.name} — ${card.expansion}` + (owned ? '' : ' (not in your collection)')}
+    >
       {failed ? (
         <span className="tier-tile-card-art tier-tile-card-missing" aria-hidden="true" />
       ) : (
@@ -202,6 +214,12 @@ function CardTile({
       <ExpansionStripe color={color} />
       <figcaption>{card.name}</figcaption>
       {edit}
+      {!owned && (
+        <span className="unowned-badge" aria-hidden="true">
+          ⊘
+        </span>
+      )}
+      {!owned && <span className="visually-hidden"> — not in your collection</span>}
     </figure>
   )
 }
@@ -272,6 +290,7 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
       <CardTile
         key={card.name}
         card={card}
+        owned={isCardOwned(normalizeExpansion(card.expansion), excluded)}
         edit={editControl(card.name, card.name, current)}
         onEnlarge={() => setEnlarged({ images, index: i })}
       />

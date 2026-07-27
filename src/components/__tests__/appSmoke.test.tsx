@@ -623,6 +623,24 @@ describe('app smoke', () => {
     expect(powerCardGallery([], '/')).toEqual([])
   })
 
+  it('a power card outside the collection is dimmed and badged in place, like an unowned spirit', () => {
+    const board = () => renderToStaticMarkup(<TierBoard initialSubject="major-powers" />)
+    expect(board()).not.toContain('tier-tile-unowned')
+
+    collectionStore.setOwned('Jagged Earth', false)
+    try {
+      const html = board()
+      expect(html).toContain('tier-tile-unowned')
+      expect(html).toContain('unowned-badge')
+      expect(html).toContain('(not in your collection)')
+      // Dimmed in place, never removed: the full pool still renders.
+      const pool = powerCardsData.filter((c) => c.kind === 'major').length
+      expect(html.match(/class="tier-tile[ "]/g)!.length).toBe(pool)
+    } finally {
+      collectionStore.resetAll()
+    }
+  })
+
   it('tier-row enlarge: the card image is the click target, not the whole tile', () => {
     const html = renderToStaticMarkup(<TierBoard initialSubject="major-powers" />)
     // The image is wrapped in a real button, so it is keyboard-reachable and announced as one.

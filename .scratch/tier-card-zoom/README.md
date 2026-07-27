@@ -73,3 +73,33 @@ open the detail modal tile-wide, which is the right behaviour for them.
 
 Landed in `11b48e4`. Deployed by hand via `npm run deploy`, because the `on: push` trigger still
 does not fire — see `.scratch/deploy-push-trigger/README.md`.
+
+---
+
+## Follow-up (2026-07-27): unowned power cards are dimmed
+
+Owner report: with expansions turned off in Settings, minor/major power cards on the tier board
+were indistinguishable from owned ones. Asked for the same fade the spirits get.
+
+**What reproduced, and what didn't.** The cards were not blank — a headless pass with `Jagged
+Earth` excluded found all 101 minor and 78 major tiles rendering full art, zero broken images. The
+real defect is the one the request names second: no ownership signal at all
+(`tier-tile-unowned` count was 0, against 20 on the spirit board). Fixed that; if "blank" turns out
+to mean something else on a specific surface, it is still open and needs a fresh report.
+
+**This reverses v5 #16** ("card lists are ungated by the collection — like the Archive, browsing
+the full pool is the point"). That call was made when card tiers showed names; now that they show
+art, an unowned card looks exactly like an owned one. Owner's call, recorded here because the old
+reasoning is still sound for the Archive and should not be reversed there by inference.
+
+Cards keep their rated row — a tier is "how good", never "do you own it" — and nothing is hidden:
+there is deliberately **no** card equivalent of the configurations board's "only show spirits I
+own" hard filter, which the owner didn't ask for.
+
+`isCardOwned` (`src/domain/collectionStore.ts`) takes a *canonical* expansion, so the caller
+resolves the card's raw transcribed string (`Basegame`, `Promo2`, …) through `normalizeExpansion`
+first. A raw string the alias table can't place counts as **owned**: dimming it would assert the
+player lacks something the data can't identify, which ADR 0003 forbids.
+
+Verified headless with two boxes excluded: 34/101 minor and 35/78 major dimmed at `opacity: 0.4`
+with the `⊘` badge, and enlarging still works on a dimmed card. 613 tests pass.

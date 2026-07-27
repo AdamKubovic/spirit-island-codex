@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createCollectionStore, filterOwnedConfigurations, isConfigurationOwned } from '../collectionStore'
+import { createCollectionStore, filterOwnedConfigurations, isCardOwned, isConfigurationOwned } from '../collectionStore'
 import type { Configuration } from '../configurations'
 import { memoryStorage } from '../storage'
 import type { Spirit } from '../types'
@@ -141,5 +141,27 @@ describe('filterOwnedConfigurations', () => {
   it('excludes nothing for an empty excluded set', () => {
     const configs = [config(JAGGED), config(BASE)]
     expect(filterOwnedConfigurations(configs, new Set())).toEqual(configs)
+  })
+})
+
+describe('isCardOwned', () => {
+  it('is owned when its expansion is unexcluded', () => {
+    expect(isCardOwned('Jagged Earth', new Set(['Nature Incarnate']))).toBe(true)
+  })
+
+  it('is not owned when its expansion is excluded', () => {
+    expect(isCardOwned('Jagged Earth', new Set(['Jagged Earth']))).toBe(false)
+  })
+
+  it('owns everything when nothing is excluded', () => {
+    expect(isCardOwned('Base', new Set())).toBe(true)
+  })
+
+  /** A card whose raw expansion string `normalizeExpansion` cannot place. Dimming it would assert
+   * the player doesn't own it, which the data does not support — the honest answer is to leave it
+   * alone (ADR 0003: absence is never an estimate). */
+  it('treats an unplaceable expansion as owned rather than guessing', () => {
+    expect(isCardOwned(undefined, new Set(['Jagged Earth']))).toBe(true)
+    expect(isCardOwned(undefined, new Set())).toBe(true)
   })
 })
