@@ -1922,6 +1922,10 @@ button:disabled {
   border-radius: 6px;
   overflow: hidden;
   border: 1px solid var(--deck-line);
+  /* ponytail: offscreen tiles skip paint so the browser isn't rasterizing 300+ card
+   * images at once (the cause of the black-flash-then-fill-in on the Archive grid). */
+  content-visibility: auto;
+  contain-intrinsic-size: 140px 195px;
 }
 .card-grid-tile img {
   display: block;
