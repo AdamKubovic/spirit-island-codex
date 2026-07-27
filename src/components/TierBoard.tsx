@@ -93,6 +93,36 @@ function expansionTitle(config: Configuration): string {
   return spirit.expansion
 }
 
+/**
+ * The three parts of "outside your collection" that every tier tile wears, in one place: the dim
+ * class, the ⊘ badge, and the screen-reader text the badge can't carry (it's `aria-hidden`,
+ * because a decorative glyph read aloud is noise). Spirit tiles and card tiles rendered these
+ * identically in two spots, so a badge tweak meant editing both — extracted per code review.
+ *
+ * `tierTileClass` and `unownedTitleSuffix` are separate because they land on the `figure`'s own
+ * attributes rather than in its children; a tile whose title is built differently (a spirit names
+ * its aspect's box, a card doesn't) still gets the same suffix.
+ */
+function tierTileClass(owned: boolean): string {
+  return owned ? 'tier-tile' : 'tier-tile tier-tile-unowned'
+}
+
+function unownedTitleSuffix(owned: boolean): string {
+  return owned ? '' : ' (not in your collection)'
+}
+
+function UnownedMark({ owned }: { owned: boolean }) {
+  if (owned) return null
+  return (
+    <>
+      <span className="unowned-badge" aria-hidden="true">
+        ⊘
+      </span>
+      <span className="visually-hidden"> — not in your collection</span>
+    </>
+  )
+}
+
 /** v5 #06: a configuration outside the collection stays in its rated tier row - a tier is
  * "how good," not "do you own it," so it's dimmed and badged in place, never regrouped.
  * #17: in view mode the tile opens the spirit detail (`onOpen`); in edit mode `onOpen` is
@@ -110,11 +140,11 @@ function TierTile({
 }) {
   return (
     <figure
-      className={owned ? 'tier-tile' : 'tier-tile tier-tile-unowned'}
+      className={tierTileClass(owned)}
       title={
         (config.aspect ? `${config.spirit.name} — ${config.aspect.name} aspect` : config.spirit.name) +
         ` — ${expansionTitle(config)}` +
-        (owned ? '' : ' (not in your collection)')
+        unownedTitleSuffix(owned)
       }
       role={onOpen ? 'button' : undefined}
       tabIndex={onOpen ? 0 : undefined}
@@ -141,12 +171,7 @@ function TierTile({
         <figcaption>{config.spirit.name}</figcaption>
       )}
       {edit}
-      {!owned && (
-        <span className="unowned-badge" aria-hidden="true">
-          ⊘
-        </span>
-      )}
-      {!owned && <span className="visually-hidden"> — not in your collection</span>}
+      <UnownedMark owned={owned} />
     </figure>
   )
 }
@@ -188,10 +213,7 @@ function CardTile({
   // rather than the direct index the canonical spirit side can use.
   const color = expansionColorFor(card.expansion)
   return (
-    <figure
-      className={owned ? 'tier-tile' : 'tier-tile tier-tile-unowned'}
-      title={`${card.name} — ${card.expansion}` + (owned ? '' : ' (not in your collection)')}
-    >
+    <figure className={tierTileClass(owned)} title={`${card.name} — ${card.expansion}` + unownedTitleSuffix(owned)}>
       {failed ? (
         <span className="tier-tile-card-art tier-tile-card-missing" aria-hidden="true" />
       ) : (
@@ -214,12 +236,7 @@ function CardTile({
       <ExpansionStripe color={color} />
       <figcaption>{card.name}</figcaption>
       {edit}
-      {!owned && (
-        <span className="unowned-badge" aria-hidden="true">
-          ⊘
-        </span>
-      )}
-      {!owned && <span className="visually-hidden"> — not in your collection</span>}
+      <UnownedMark owned={owned} />
     </figure>
   )
 }
