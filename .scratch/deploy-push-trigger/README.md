@@ -48,6 +48,31 @@ this is not a one-off delay: the push trigger has apparently never worked.
 - **The workflow failing.** All three runs succeeded; the site serves the pushed commits' assets
   (verified by matching the live CSS hash against the local `dist/`).
 
+## Second diagnostic pass (2026-07-27)
+
+Everything checkable from a non-org-admin token is correct, which narrows this considerably:
+
+| Check | Result |
+|---|---|
+| `repos/…` `default_branch` | `main` — matches the `branches: [main]` filter |
+| `fork` / `private` / `archived` | all `false` (public, so Actions minutes are free — not a billing block) |
+| `actions/workflows` | one workflow, **`state=active`**, `path=.github/workflows/deploy.yml` |
+| `repos/…/rulesets` | `[]` — nothing filtering the event |
+| `repos/…/actions/permissions` | `enabled:true`, `allowed_actions:"all"` |
+| `repos/…/events` | GitHub **did** record `PushEvent` on `refs/heads/main` for every push |
+| `PushEvent` actor | `AdamKubovic`, a real `User` (not a bot/app token, which *would* suppress runs) |
+| `workflows/…/runs?event=push` | **`total_count: 0`** against `total_count: 3` overall |
+| Raw `deploy.yml` bytes on `main` | `name: …\n\non:\n  push:\n    branches: [main]\n  workflow_dispatch:` — no BOM, correct nesting, `on` parses as a mapping |
+
+So the trigger is declared correctly, on the right branch, in an active workflow, and GitHub saw the
+pushes from a human account — yet created zero push-triggered runs.
+
+**The one thing not inspectable from here:** the organization's Actions policy.
+`gh api orgs/Tabletop-Atlas/actions/permissions` returns **403** ("You must be an org admin…";
+needs the `admin:org` scope, which the current token lacks — it has `repo`, `read:org`,
+`admin:public_key`, `delete_repo`, `gist`). An org policy that permits `workflow_dispatch` while
+filtering `push` would explain every observation above.
+
 ## Plausible causes, untested
 
 - **A branch/ref mismatch.** Worth confirming the default branch really is `main` and that nothing
