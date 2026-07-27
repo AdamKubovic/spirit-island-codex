@@ -1,6 +1,6 @@
 # tier-card-zoom — enlarge a power card from the tier board
 
-Status: done (owner to confirm on Pages)
+Status: done
 
 ## Origin
 
