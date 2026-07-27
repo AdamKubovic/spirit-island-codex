@@ -264,7 +264,7 @@ deliberately partial cited list, with its absences pinned as assertions), and it
   re-checked it.
 
 ## Comments
-Shipped 2026-07-26, completed 2026-07-27. Both lists are live: **101/101 minors** and **77/78
+Shipped 2026-07-26, completed 2026-07-27. Both lists are live: **101/101 minors** and **78/78
 majors**, key sets and coverage counts pinned longhand in `tierListCanon.test.ts`.
 
 Two departures from the spec as written, both decided with the owner:
@@ -283,10 +283,14 @@ Two departures from the spec as written, both decided with the owner:
   *A-tier* card. Neither was fixable by tuning. The lists were completed by reading all eight
   transcripts section by section and resolving every caption-mangled name by hand, which is what
   the "owner adjudication" gate was always going to require of whoever sat down with it.
-- **The one genuinely undecidable card.** The majors series rates `Vengeance of the Dead` twice -
-  the base printing at D in Part 1, "the exploratory version" at A in Part 4. `power-cards.json`
-  carries one card of that name, so a key could not say which printing it meant. It is absent from
-  `tiers`, recorded in `unresolved`, and pinned absent by the canon test.
+- **The two-printings card, resolved by looking.** The majors series rates `Vengeance of the Dead`
+  twice - the base printing at D in Part 1, "the exploratory version" at A in Part 4 - while
+  `power-cards.json` carries one card of that name, with cost, speed and elements identical across
+  both printings. It was briefly shipped absent. The tie is in fact decidable without judgment:
+  the card art this app itself ships (`images/cards/major/vengeance_of_the_dead.webp`) shows 3 fear
+  and "1 Damage per building/dahan destroyed", which is the base printing and matches Part 1. Hence
+  `D`. The canon test pins the band and the reasoning, and records that a card-dataset rebuild
+  shipping the exploratory art would flip it to `A`.
 - **`ratingsSource` added to `TierList`.** These ratings are a transcription judgment, not a clean
   read of a printed table, and ADR 0003 requires that to live on the data rather than in a comment.
   Both lists carry it; the canon test asserts they do.

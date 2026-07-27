@@ -339,7 +339,7 @@ describe('tier list canon', () => {
       'Weep For What Is Lost',
     ]
 
-    /** 77 of 78 majors. Vengeance of the Dead is absent by design - see below. */
+    /** All 78 majors. */
     const MAJOR_EXPECTED_KEYS = [
       'Accelerated Rot',
       'Angry Bears',
@@ -411,6 +411,7 @@ describe('tier list canon', () => {
       'Unrelenting Growth',
       'Utter a Curse of Dread and Bone',
       'Vanish Softly Away, Forgotten by All',
+      'Vengeance of the Dead',
       'Vigor of the Breaking Dawn',
       'Voice of Command',
       'Volcanic Eruption',
@@ -424,21 +425,23 @@ describe('tier list canon', () => {
       expect(Object.keys(siaMinorPowers.tiers).sort()).toEqual([...MINOR_EXPECTED_KEYS].sort())
     })
 
-    it('sia-red-major-powers-2023 rates exactly the 77 majors the source resolves', () => {
+    it('sia-red-major-powers-2023 rates exactly the 78 major powers', () => {
       expect(Object.keys(siaRedMajorPowers.tiers).sort()).toEqual([...MAJOR_EXPECTED_KEYS].sort())
     })
 
     it('pins coverage, so a later gain or loss is a deliberate edit', () => {
       expect(Object.keys(siaMinorPowers.tiers)).toHaveLength(101) // the whole minor deck
-      expect(Object.keys(siaRedMajorPowers.tiers)).toHaveLength(77) // of 78 majors
+      expect(Object.keys(siaRedMajorPowers.tiers)).toHaveLength(78) // the whole major deck
     })
 
-    it('leaves Vengeance of the Dead unrated, because the source rates two printings of it', () => {
-      // Part 1 rates the base printing D; Part 4 rates "the exploratory version" A. The card
-      // dataset carries ONE card of that name, so a key here could not say which. Absent, with
-      // the conflict recorded in `unresolved` - ADR 0001 makes absence a real value.
-      expect('Vengeance of the Dead' in siaRedMajorPowers.tiers).toBe(false)
-      expect(siaRedMajorPowers.unresolved?.[0]?.heard).toContain('Vengeance of the Dead')
+    it('rates Vengeance of the Dead at the band of the printing this app ships', () => {
+      // The source rates this card twice: the base printing D (Part 1), "the exploratory
+      // version" A (Part 4). power-cards.json carries one card of that name, and the art it
+      // ships (images/cards/major/vengeance_of_the_dead.webp) shows 3 fear and "1 Damage per
+      // building/dahan destroyed" - the BASE printing. So the key means the base card: D.
+      // If the card dataset is ever rebuilt and ships the exploratory art, this becomes A.
+      expect(siaRedMajorPowers.tiers['Vengeance of the Dead']).toBe('D')
+      expect(siaRedMajorPowers.methodology).toContain('exploratory')
     })
 
     it('uses the vocabulary its own videos state, and the minors series has no D band', () => {

@@ -85,3 +85,9 @@ canon test asserts that, since an F or D key appearing later means band inferenc
 different printings of it; that conflict is recorded in `unresolved` and its absence is pinned by
 the canon test. This is the ticket's "absence means the source never rated this" rule doing real
 work: the source rated it twice, so no single key is honest.
+
+**Update 2026-07-27 (2)** — completed to **78/78**. `Vengeance of the Dead` is resolved to `D`
+rather than left absent: the two printings the source rates share cost, speed and elements, but
+the card art this app ships shows 3 fear and "1 Damage per building/dahan destroyed" — the base
+printing, which Part 1 rates D. Decided by reading the image, not by preferring a printing.
+`unresolved` is now absent from the file because nothing is unresolved.

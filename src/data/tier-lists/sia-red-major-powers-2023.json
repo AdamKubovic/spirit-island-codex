@@ -12,7 +12,7 @@
     "D",
     "F"
   ],
-  "methodology": "Transcribed from the five-part Red's Major Power Tier List by Spirit Island Archive, from yt-dlp auto-generated captions (scripts/fetch-transcripts.mjs). Each part covers an announced band: Part 1 (dHe0_n86nq4) F and D, Part 2 (rkuXUmf7kpM) C, Part 3 (Hc3bLAkiO5o) B, Part 4 (Olm9L9CnHfc) A, Part 5 (Hnm_rD4ziRc) S. The two [OUTDATED]-titled major power videos in the same playlist are superseded and were deliberately not ingested. The captions carry no section boundaries and the reviewer back-references other bands mid-section, so every rating here was read off the transcript section the card is actually discussed in rather than inferred from proximity to a spoken tier letter. 77 of the 78 major powers are rated. The exception is Vengeance of the Dead, which the source rates twice at different bands - the base printing at D in Part 1 and 'the exploratory version' at A in Part 4. power-cards.json carries one card of that name, so which printing a key would mean is undecidable; it is recorded in unresolved and left unrated rather than guessed.",
+  "methodology": "Transcribed from the five-part Red's Major Power Tier List by Spirit Island Archive, from yt-dlp auto-generated captions (scripts/fetch-transcripts.mjs). Each part covers an announced band: Part 1 (dHe0_n86nq4) F and D, Part 2 (rkuXUmf7kpM) C, Part 3 (Hc3bLAkiO5o) B, Part 4 (Olm9L9CnHfc) A, Part 5 (Hnm_rD4ziRc) S. The two [OUTDATED]-titled major power videos in the same playlist are superseded and were deliberately not ingested. The captions carry no section boundaries and the reviewer back-references other bands mid-section, so every rating here was read off the transcript section the card is actually discussed in rather than inferred from proximity to a spoken tier letter. All 78 major powers are rated. One needed care: the source rates Vengeance of the Dead twice - the base printing at D in Part 1, and 'the exploratory version' at A in Part 4 - while power-cards.json carries a single card of that name. The tie was broken by reading the card image this app itself ships (images/cards/major/vengeance_of_the_dead.webp), which shows 3 fear and '1 Damage per building/dahan destroyed': that is the base printing, matching Part 1's description. Hence D. If the card dataset is ever rebuilt from a newer source that ships the exploratory art instead, this key becomes A and must be re-checked.",
   "source": {
     "author": "Spirit Island Archive",
     "title": "Spirit Island: Red's Major Power Tier List, Parts 1-5",
@@ -93,6 +93,7 @@
     "Unrelenting Growth": "A",
     "Utter a Curse of Dread and Bone": "C",
     "Vanish Softly Away, Forgotten by All": "C",
+    "Vengeance of the Dead": "D",
     "Vigor of the Breaking Dawn": "S",
     "Voice of Command": "A",
     "Volcanic Eruption": "D",
@@ -101,11 +102,5 @@
     "Winds of Rust and Atrophy": "B",
     "Wrap in Wings of Sunlight": "A"
   },
-  "unresolved": [
-    {
-      "heard": "Vengeance of the Dead (two printings rated differently)",
-      "at": "dHe0_n86nq4 03:12 (base, D) / Olm9L9CnHfc 10:01 (exploratory, A)"
-    }
-  ],
   "ratingsSource": "agent-transcribed from auto-generated captions; band read from the transcript section, names resolved by hand. Not verified against the video by a human."
 }
