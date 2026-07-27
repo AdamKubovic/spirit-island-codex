@@ -1,6 +1,6 @@
 # Pages deploy never fires on push — every deploy so far was a manual dispatch
 
-Status: needs-triage
+Status: needs-info (reproduced; root cause needs the `admin:org` token scope — see Resolution)
 
 ## Origin
 
@@ -95,3 +95,60 @@ main`" in `README.md`, so nobody assumes a push published anything.
 
 Redesigning the deploy pipeline. The workflow itself is fine — it builds, tests, and deploys
 correctly every time it actually runs.
+
+## Reproduced in isolation (2026-07-27)
+
+Ran the experiment this ticket asked for — a single commit pushed to `main`, then watched:
+
+```
+runs before push: 3
+  acb0d1b..95035b0  main -> main
+  t+10s  push-runs=0  total-runs=3
+  …
+  t+90s  push-runs=0  total-runs=3
+```
+
+Ninety seconds, zero new runs. Not a delay, not a one-off: the `push` event does not start this
+workflow. Combined with the table above (every repo-level setting correct, `PushEvent` recorded from
+a human account), the fault is **not in this repository's configuration**.
+
+## What was fixed, and what wasn't
+
+**Not fixed: the trigger itself.** The only remaining suspect is the organisation's Actions policy,
+and reading it needs the `admin:org` scope. The account *is* an org admin
+(`user/memberships/orgs/Tabletop-Atlas` → `role: admin`, `state: active`), so this is purely a token
+scope, not a permissions problem — but refreshing it is an interactive browser flow that can't be
+done unattended:
+
+```sh
+gh auth refresh -h github.com -s admin:org
+```
+
+With that scope, the checks to run are `gh api orgs/Tabletop-Atlas/actions/permissions` and
+`…/actions/permissions/repositories` (is this repo in a "selected repositories" allowlist that
+happens to exclude it?), plus the web UI at **Organisation → Settings → Actions → General**, which
+exposes policy the REST API doesn't.
+
+**Fixed: the silent failure.** `README.md` claimed "every push to `main` deploys automatically",
+which was false from the day the workflow landed — the docs actively misled anyone who trusted them.
+Now the README states the real situation, links here, and points at a script:
+
+```sh
+npm run deploy   # scripts/deploy.sh
+```
+
+It dispatches the workflow for the *pushed* `HEAD`, polls for the run matching that exact SHA (rather
+than grabbing the newest run, which could be someone else's), and waits on `gh run watch
+--exit-status`, so a deploy either succeeds visibly or fails loudly. It refuses to run on a dirty
+tree or when `HEAD != origin/main`, because the workflow builds the remote's commit — deploying
+local-only work would publish something nobody else can see. Both refusal paths were exercised, not
+just written:
+
+```
+error: working tree is dirty — commit or stash before deploying
+error: HEAD (9b87221) != origin/main (ec76d54)
+       push first — the workflow builds what's on the remote, not what's local.
+```
+
+This is a **stopgap**. Delete `scripts/deploy.sh`, the `deploy` npm script and the README warning
+once `on: push` fires; the workflow itself was never the problem.
