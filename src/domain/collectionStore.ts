@@ -105,6 +105,16 @@ export function filterOwnedConfigurations(configs: Configuration[], excluded: Re
   return configs.filter((c) => isConfigurationOwned(c, excluded))
 }
 
+/** The card-board equivalent of `filterOwnedConfigurations` — takes canonical expansions, so the
+ * caller resolves each card's raw string through `normalizeExpansion` first, same as `isCardOwned`. */
+export function filterOwnedCards<T extends { expansion: string }>(
+  cards: T[],
+  excluded: ReadonlySet<ExpansionName>,
+  normalize: (raw: string) => ExpansionName | undefined,
+): T[] {
+  return cards.filter((c) => isCardOwned(normalize(c.expansion), excluded))
+}
+
 /** v5 #07b: the exact candidate-pool decision the Recommender makes before calling `recommend()`
  * - hard-filter off (default) leaves the pool untouched (an unowned configuration can still
  * surface, annotated); on, it's pre-filtered so an unowned configuration never enters scoring.
