@@ -74,13 +74,25 @@ npm run build
 
 ## Deployment
 
-Pushes to `main` build the app and deploy `dist/` to GitHub Pages via
-`.github/workflows/deploy.yml`. Served from the `Tabletop-Atlas` organisation's root Pages site
-(`tabletop-atlas.github.io`), so `vite.config.ts` sets `base: '/'`.
+`.github/workflows/deploy.yml` builds the app, runs the tests, and publishes `dist/` to GitHub
+Pages. Served from the `Tabletop-Atlas` organisation's root Pages site (`tabletop-atlas.github.io`),
+so `vite.config.ts` sets `base: '/'`.
 
-**One-time human setup (the workflow cannot do this itself):** in the repo, go to
-Settings → Pages → Source = "GitHub Actions". Once enabled, every push to `main` deploys
-automatically.
+> ⚠️ **Pushing to `main` does not currently deploy.** The workflow declares `on: push`, but that
+> trigger has never fired — every deploy this repo has had was a manual dispatch. Diagnosis and
+> what's left to check: [`.scratch/deploy-push-trigger/README.md`](.scratch/deploy-push-trigger/README.md).
+>
+> Until it's fixed, publish explicitly:
+>
+> ```sh
+> npm run deploy   # dispatches the workflow for the pushed HEAD and waits for the result
+> ```
+>
+> It refuses to run on a dirty tree or when `HEAD` differs from `origin/main`, because the workflow
+> builds the remote's commit, not yours.
+
+**One-time human setup (the workflow cannot do this itself):** in the repo, Settings → Pages →
+Source = "GitHub Actions". Already done for this repo.
 
 ## Attribution
 
