@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { AppShell, type NavItem } from './components/AppShell'
 import { Browser } from './components/Browser'
 import { CardsTab } from './components/CardsTab'
@@ -7,13 +6,11 @@ import { GameLog } from './components/GameLog'
 import { GlossaryTab } from './components/GlossaryTab'
 import { Homepage } from './components/Homepage'
 import { fromConfigId } from './domain/configurations'
+import { spiritRoute, type Tab } from './domain/route'
 import { RecommenderMain, RecommenderProvider, RecommenderSide } from './components/Recommender'
 import { Settings } from './components/Settings'
 import { TierBoard } from './components/TierBoard'
-
-/** 'home' is not a nav tab (#01 decision 3): the clickable logo is the only route home, and
- * while it is current no nav item matches it, so none shows active. */
-type Tab = 'home' | 'recommender' | 'browser' | 'cards' | 'dashboard' | 'tiers' | 'log' | 'glossary' | 'settings'
+import { useRoute } from './useRoute'
 
 /** Nav is fixed at both ends (#02 decision 4): Browse first, Settings last. Customise tiers is
  * dissolved (#15): tier editing is an edit mode on the Tier list tab. */
@@ -29,14 +26,20 @@ const NAV: NavItem<Tab>[] = [
 ]
 
 function App() {
-  const [tab, setTab] = useState<Tab>('home')
-  // #02: a Recommend-result click sets this and jumps to Browse; Browser seeds itself from it
-  // on arrival and reports back once consumed so a stale target can't re-fire on a later visit.
-  const [browseTarget, setBrowseTarget] = useState<{ spiritId: string; aspectName?: string } | null>(null)
+  // spirit-link-new-tab: navigation lives in the URL, not in component state, so a spirit detail
+  // has an address a new tab can cold-load. `route.tab` replaces the old `useState<Tab>`, and the
+  // open spirit — previously `Browser`'s own `selected` — is now `route.spiritId`.
+  const [route, navigate] = useRoute()
+  const { tab } = route
 
+  const goToTab = (next: Tab) => navigate({ tab: next })
+
+  // #02's Recommend→Browse deep link lands here. It used to hand `Browser` a one-shot
+  // `initialTarget` prop that had to be reported as consumed; now it just changes the URL, and
+  // Browse renders whatever the URL says. No handshake to get wrong.
   function goToConfiguration(configId: string) {
-    setBrowseTarget(fromConfigId(configId))
-    setTab('browser')
+    const { spiritId, aspectName } = fromConfigId(configId)
+    navigate(spiritRoute(spiritId, aspectName))
   }
 
   return (
@@ -44,19 +47,23 @@ function App() {
       <AppShell
         nav={NAV}
         current={tab}
-        onNavigate={setTab}
-        onHome={() => setTab('home')}
+        onNavigate={goToTab}
+        onHome={() => goToTab('home')}
         side={tab === 'recommender' ? <RecommenderSide /> : null}
       >
-        {tab === 'home' && <Homepage onNavigate={setTab} />}
+        {tab === 'home' && <Homepage onNavigate={goToTab} />}
         {tab === 'recommender' && <RecommenderMain onSelectConfiguration={goToConfiguration} />}
         {tab === 'browser' && (
-          <Browser initialTarget={browseTarget} onTargetConsumed={() => setBrowseTarget(null)} />
+          <Browser
+            target={route.spiritId ? { spiritId: route.spiritId, aspectSlug: route.aspectSlug } : null}
+            onOpenSpirit={(spiritId, aspectName) => navigate(spiritRoute(spiritId, aspectName))}
+            onCloseDetail={() => navigate({ tab: 'browser' })}
+          />
         )}
         {tab === 'cards' && <CardsTab />}
         {tab === 'dashboard' && <DashboardTab />}
         {tab === 'tiers' && <TierBoard />}
-        {tab === 'log' && <GameLog onSelectConfiguration={goToConfiguration} />}
+        {tab === 'log' && <GameLog />}
         {tab === 'glossary' && <GlossaryTab />}
         {tab === 'settings' && <Settings />}
       </AppShell>

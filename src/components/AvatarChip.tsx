@@ -35,7 +35,21 @@ function EntityArt({ kind, name }: { kind: 'adversary' | 'scenario'; name: strin
 }
 
 export type AvatarChipProps =
-  | { kind: 'spirit'; spirit: Spirit; name: string; onClick?: () => void }
+  | {
+      kind: 'spirit'
+      spirit: Spirit
+      name: string
+      /**
+       * spirit-link-new-tab: a real `#/browse/…` link, which is what makes the native right-click
+       * "open in new tab" work — the request this effort came from. Build it with
+       * `configHref(configId)` rather than by hand.
+       *
+       * Passing `href` renders an `<a>`; the hash assignment IS the navigation, so no `onClick` is
+       * needed and none is wired — a middle-click or ⌘-click behaves exactly as the browser
+       * intends instead of being swallowed by a handler.
+       */
+      href?: string
+    }
   | { kind: 'adversary'; name: string }
   | { kind: 'scenario'; name: string }
 
@@ -55,11 +69,11 @@ export function AvatarChip(props: AvatarChipProps) {
       <span className="avatar-chip-name">{props.name}</span>
     </>
   )
-  if (props.kind === 'spirit' && props.onClick) {
+  if (props.kind === 'spirit' && props.href) {
     return (
-      <button type="button" className="avatar-chip avatar-chip-clickable" onClick={props.onClick}>
+      <a className="avatar-chip avatar-chip-clickable" href={props.href}>
         {content}
-      </button>
+      </a>
     )
   }
   return <span className="avatar-chip">{content}</span>

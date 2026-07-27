@@ -147,3 +147,25 @@ Fear, Events, Blight, Adversaries and Scenarios, each a filtered gallery. Rename
 but the Archive never *hard-filters* by collection — browsing an unowned expansion is partly how
 you decide to buy it (ADR 0009).
 _Avoid_: Cards (the old name), gallery; browser (that means the Browse spirit grid).
+
+**Route**:
+Where the app currently is, held in the URL's fragment (`#/browse/lightnings-swift-strike`) rather
+than in component state — a tab, plus optionally the spirit whose detail is open and which of its
+aspects is highlighted. Hash-based so GitHub Pages needs no SPA fallback and the app needs no
+routing dependency (ADR 0014). Because it is a real URL, a spirit detail can be linked, bookmarked
+and opened in a new tab; because the links are real `<a href>` elements, the browser's own
+right-click and ⌘-click behaviour works without any JavaScript.
+_Avoid_: page, screen (the app is one page); path (the route lives after the `#`, never in the path).
+
+**Tab slug**:
+The segment naming a tab in a route — deliberately the *reader-facing* word rather than the
+internal id, so the URL says what the nav says: `#/browse` for the `browser` tab, `#/recommend` for
+`recommender`, `#/archive` for `cards`. Home is the bare `#/`.
+_Avoid_: tab id, tab name (those are the internal union values, which differ).
+
+**Aspect slug**:
+An aspect's display name reduced to a URL-safe segment by the shared slug rule (`Dark Fire` →
+`dark-fire`), used as the last part of a spirit-detail route. Always resolved back against *that
+spirit's own* aspects, so a hand-typed or stale URL highlights nothing rather than naming an aspect
+the spirit doesn't have.
+_Avoid_: aspect id (aspects have no id; the display name is the datum), aspect key.

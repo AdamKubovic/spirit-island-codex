@@ -7,6 +7,7 @@ import { type BoardType, computeDifficulty } from '../domain/difficulty'
 import { gameLog } from '../domain/gameLog'
 import { clampOptionalInt, formatDuration } from '../domain/logEntry'
 import { computeLogStats, type RateStat } from '../domain/logStats'
+import { configHref } from '../domain/route'
 import { SCENARIOS } from '../domain/scenarios'
 import type { Spirit } from '../domain/types'
 import { AvatarChip } from './AvatarChip'
@@ -67,7 +68,11 @@ function NotesCell({ notes }: { notes?: string }) {
 
 /** Record a played game and browse history. A journal, not a feedback loop - see gameLog.ts:
  * outcomes are shown here, never fed back into scoring. */
-export function GameLog({ onSelectConfiguration }: { onSelectConfiguration?: (configId: string) => void }) {
+/** spirit-link-new-tab: the history's spirit chips used to take an `onSelectConfiguration` callback
+ * from `App` and render as buttons. They're real `<a href="#/browse/…">` links now, so the
+ * navigation needs no JavaScript and no prop — and right-click "open in new tab" works, which a
+ * click handler could never provide. */
+export function GameLog() {
   const [version, setVersion] = useState(0)
   const [players, setPlayers] = useState<PlayerRow[]>([{ ...EMPTY_PLAYER }])
   const [adversary, setAdversary] = useState('')
@@ -616,7 +621,7 @@ export function GameLog({ onSelectConfiguration }: { onSelectConfiguration?: (co
                               kind="spirit"
                               spirit={spirit}
                               name={label}
-                              onClick={onSelectConfiguration ? () => onSelectConfiguration(p.configId) : undefined}
+                              href={configHref(p.configId)}
                             />
                           ) : (
                             <span key={i} className="avatar-chip">

@@ -634,17 +634,65 @@ describe('app smoke', () => {
     expect(htmlWithoutHandler).not.toContain('View in Browse')
   })
 
-  it('Recommend→Browse (#02): Browser seeds itself from an initialTarget prop, highlighting the aspect when one is given', () => {
+  it('Recommend→Browse (#02): Browser opens the detail from its route target, highlighting the aspect when one is given', () => {
+    // spirit-link-new-tab replaced the one-shot `initialTarget` prop with `target`, fed live from
+    // the URL. Same deep link the Recommender relies on, now the same mechanism a pasted
+    // #/browse/:spiritId/:aspect URL uses — this is #02's regression guard.
     const lightning = spirits.find((s) => s.id === 'lightnings-swift-strike')!
     const html = renderToStaticMarkup(
-      <Browser initialTarget={{ spiritId: lightning.id, aspectName: 'Sparking' }} />,
+      <Browser target={{ spiritId: lightning.id, aspectSlug: 'sparking' }} />,
     )
     expect(html).toContain('role="dialog"')
     expect(html.match(/aspect-row-highlight/g)).toHaveLength(1)
 
-    const htmlBase = renderToStaticMarkup(<Browser initialTarget={{ spiritId: lightning.id }} />)
+    const htmlBase = renderToStaticMarkup(<Browser target={{ spiritId: lightning.id }} />)
     expect(htmlBase).toContain('role="dialog"')
     expect(htmlBase).not.toContain('aspect-row-highlight')
+  })
+
+  it('spirit-link-new-tab: a spirit id no dataset has resolves to no modal, not a crash', () => {
+    // The route comes from whatever a stranger pasted, so an unknown id must degrade to the plain
+    // grid — honest absence, the same posture the aspect resolver takes.
+    const html = renderToStaticMarkup(<Browser target={{ spiritId: 'not-a-spirit', aspectSlug: 'nope' }} />)
+    expect(html).not.toContain('role="dialog"')
+    expect(html).toContain('Search by name')
+  })
+
+  it('spirit-link-new-tab: an aspect slug the spirit does not own highlights nothing', () => {
+    // Deeps belongs to Ocean's Hungry Grasp. Asking for it on Lightning opens Lightning's modal
+    // with no row highlighted, rather than inventing an aspect (the repo's documented failure mode).
+    const lightning = spirits.find((s) => s.id === 'lightnings-swift-strike')!
+    const html = renderToStaticMarkup(<Browser target={{ spiritId: lightning.id, aspectSlug: 'deeps' }} />)
+    expect(html).toContain('role="dialog"')
+    expect(html).not.toContain('aspect-row-highlight')
+  })
+
+  it('spirit-link-new-tab: the Log’s spirit chips are real anchors carrying a #/browse href', () => {
+    const previous = gameLog.list()
+    gameLog.replaceAll([])
+    try {
+      gameLog.append({
+        date: '2026-07-27T12:00:00.000Z',
+        players: [
+          { name: 'Adam', configId: 'lightnings-swift-strike' },
+          { name: 'Jo', configId: 'lightnings-swift-strike::Sparking' },
+        ],
+        adversary: 'England',
+        adversaryLevel: 3,
+        scenario: 'Blitz',
+        outcome: 'win',
+        notes: '',
+      })
+      const html = renderToStaticMarkup(<GameLog />)
+      // A real <a href>, which is the only thing that gives the native right-click "open in new
+      // tab" this effort exists to deliver — a click handler cannot.
+      expect(html).toContain('<a class="avatar-chip avatar-chip-clickable" href="#/browse/lightnings-swift-strike"')
+      expect(html).toContain('href="#/browse/lightnings-swift-strike/sparking"')
+      // No leftover button-based chip in the history.
+      expect(html).not.toContain('<button type="button" class="avatar-chip avatar-chip-clickable"')
+    } finally {
+      gameLog.replaceAll(previous)
+    }
   })
 
   it('Browse name search (#03): a text input is present in the rendered filter bar', () => {

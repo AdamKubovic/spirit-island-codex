@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import spiritsData from '../data/spirits.json'
 import { filterSpirits } from '../domain/browserFilter'
 import { collectionStore } from '../domain/collectionStore'
 import { toConfigId } from '../domain/configurations'
+import { resolveAspectName } from '../domain/route'
 import { tierStore } from '../domain/tierStore'
 import { EXPANSIONS as EXPANSION_ORDER, type Complexity, type OCFDU, type Spirit } from '../domain/types'
 import { SpiritDetail } from './SpiritDetail'
@@ -20,13 +21,24 @@ const TAGS = [...new Set(spirits.flatMap((s) => s.tags))].sort()
 type SortKey = 'name' | 'tier' | 'expansion'
 
 export function Browser({
-  initialTarget,
-  onTargetConsumed,
+  target,
+  onOpenSpirit,
+  onCloseDetail,
 }: {
-  /** Set by a Recommend-result click (#02 deep link); seeds `selected`/`highlightAspect` on
-   * arrival instead of requiring the owner to find the spirit themselves. */
-  initialTarget?: { spiritId: string; aspectName?: string } | null
-  onTargetConsumed?: () => void
+  /**
+   * spirit-link-new-tab: which spirit's detail is open, straight off the URL — so a cold load of
+   * `#/browse/:spiritId/:aspect` in a fresh tab opens the modal, and #02's Recommend→Browse deep
+   * link is the same mechanism rather than a special case.
+   *
+   * This replaced a one-shot `initialTarget` prop plus local `selected` state. The URL is the
+   * single source of truth now: there is no second copy to fall out of step with it, and no
+   * "consumed" handshake to get wrong.
+   */
+  target?: { spiritId: string; aspectSlug?: string } | null
+  /** Report a tile click upward; `App` turns it into a route change, which comes back as `target`.
+   * `Browser` deliberately doesn't know the URL shape. */
+  onOpenSpirit?: (spiritId: string, aspectName?: string) => void
+  onCloseDetail?: () => void
 } = {}) {
   const [expansion, setExpansion] = useState('')
   const [complexity, setComplexity] = useState('')
@@ -34,19 +46,12 @@ export function Browser({
   const [strongIn, setStrongIn] = useState<'' | keyof OCFDU>('')
   const [search, setSearch] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('name')
-  // Lazy initializers, not a useEffect: App unmounts Browser on every tab switch away (App.tsx
-  // conditionally renders it), so a fresh mount is exactly the "arrival" #02 asks for - reading
-  // the prop once at construction seeds `selected` before the first paint instead of flashing
-  // an empty grid first.
-  const [selected, setSelected] = useState<Spirit | null>(
-    () => spirits.find((s) => s.id === initialTarget?.spiritId) ?? null,
-  )
-  const [highlightAspect, setHighlightAspect] = useState<string | undefined>(() => initialTarget?.aspectName)
+  // Derived from the route, not stored: an unknown id in a hand-typed or stale URL resolves to no
+  // modal rather than a crash, and the aspect slug is resolved against *this spirit's* own aspects
+  // (`resolveAspectName`), so a URL can never highlight an aspect the spirit doesn't have.
+  const selected = target?.spiritId ? spirits.find((s) => s.id === target.spiritId) ?? null : null
+  const highlightAspect = selected ? resolveAspectName(selected, target?.aspectSlug) : undefined
 
-  useEffect(() => {
-    if (initialTarget) onTargetConsumed?.()
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- consumed once per mount, not per render of onTargetConsumed
-  }, [])
   // The active configurations tier list's ranks (0 strongest .. 1 weakest), keyed by configId;
   // unrated spirits are absent, so they sort last. Read once — a view preference, like the rest.
   const rankPrior = useMemo(() => tierStore.getRankPrior(), [])
@@ -162,10 +167,7 @@ export function Browser({
           <SpiritTile
             key={spirit.id}
             spirit={spirit}
-            onSelect={(s) => {
-              setSelected(s)
-              setHighlightAspect(undefined)
-            }}
+            onSelect={(s) => onOpenSpirit?.(s.id)}
             owned={!excluded.has(spirit.expansion)}
             excluded={excluded}
           />
@@ -173,14 +175,7 @@ export function Browser({
       </ul>
 
       {selected && (
-        <SpiritDetail
-          spirit={selected}
-          highlightAspect={highlightAspect}
-          onClose={() => {
-            setSelected(null)
-            setHighlightAspect(undefined)
-          }}
-        />
+        <SpiritDetail spirit={selected} highlightAspect={highlightAspect} onClose={() => onCloseDetail?.()} />
       )}
     </section>
   )
