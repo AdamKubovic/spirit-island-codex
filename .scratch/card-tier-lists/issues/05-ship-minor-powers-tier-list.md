@@ -91,3 +91,11 @@ part, so S, A, C and F are unrated here.
 been adjudicated. The 50 minor entries in `extraction/near-miss-review.md` are still open, and
 Growth through Sacrifice (the errata-X card, S tier in the video) is among them — the canon test
 pins its absence so it cannot be quietly filled in.
+
+**Update 2026-07-27** — completed to **101/101**. The 13-key version was an artefact of the
+mechanical band heuristic, not of the source: the series covers the whole minor deck and rates
+all of it. Every rating was read off the transcript section the card is discussed in, and every
+caption mangling resolved by hand (`carrus land` -> Carapaced Land, `importance` -> Portents of
+Disaster, `roing bog` -> Roiling Bog and Snagging Thorn, `sure sees` -> The Shore Seethes With
+Hatred). Growth through Sacrifice is recorded at `S` with the errata explained in `methodology`,
+as the ticket asked. `unresolved` stays absent: no name resisted resolution.

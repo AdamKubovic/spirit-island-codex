@@ -47,6 +47,9 @@ export interface TierList {
   source?: SourceCitation
   /** false until a human has checked the list against its source. */
   verified: boolean
+  /** How the ratings were obtained, when that is itself judgment rather than a clean read
+   * (ADR 0003: provenance lives on the data). Absent when the source states its tiers plainly. */
+  ratingsSource?: string
   tiers: Record<string, string>
   /** Tier keys (in this list's subject namespace) the source rated but the scraper wasn't confident in. */
   uncertain?: string[]

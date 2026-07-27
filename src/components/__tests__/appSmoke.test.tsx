@@ -132,7 +132,7 @@ describe('app smoke', () => {
     // trusting it: no component changed when the two card lists landed.
     const board = renderToStaticMarkup(<TierBoard initialSubject="major-powers" />)
     expect(board).toContain('Talons of Lightning') // a rated card renders in its band
-    expect(board).toContain('rated 30 of 78') // and the board is honest about the other 48
+    expect(board).toContain('rated 77 of 78') // and the one card it cannot place stays unrated
     // Both card lists reach the picker, under their own subject headings.
     const picker = renderToStaticMarkup(<TierBoard />)
     expect(picker).toContain('<optgroup label="Minor powers">')

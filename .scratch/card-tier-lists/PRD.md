@@ -264,8 +264,8 @@ deliberately partial cited list, with its absences pinned as assertions), and it
   re-checked it.
 
 ## Comments
-Shipped 2026-07-26. Both lists are live and deliberately partial: 13/101 minors, 30/78 majors,
-with the key sets and coverage counts pinned longhand in `tierListCanon.test.ts`.
+Shipped 2026-07-26, completed 2026-07-27. Both lists are live: **101/101 minors** and **77/78
+majors**, key sets and coverage counts pinned longhand in `tierListCanon.test.ts`.
 
 Two departures from the spec as written, both decided with the owner:
 
@@ -275,7 +275,18 @@ Two departures from the spec as written, both decided with the owner:
   "the sources are spirit-shaped" — and was escalated to a permanent prohibition by the docs
   backfill commit `38990f5`, which also did not reconcile it with ADR 0002 eight days earlier.
   0004 is now amended: this repo does not *author* card ratings; cited card lists are permitted.
-- **Bands, not names, were the hard part.** The PRD expected 40-60 name near-misses. The real
-  ambiguity is which band a mention sits under, because captions have no section boundaries. The
-  86-entry review batch in `extraction/near-miss-review.md` is the remaining work; adjudicating it
-  is what raises the two coverage counts.
+- **Bands, not names, were the hard part.** The PRD expected 40-60 mangled-*name* near-misses.
+  Names were the easy half. The real ambiguity is which band a mention sits under: auto-captions
+  carry no section boundaries, and the reviewer back-references other bands constantly, including
+  *inside* single-band parts. Two successive mechanical heuristics both produced wrong ratings -
+  the second one shipped `Nature's Resilience` at B when Part 2 names it only as an example of an
+  *A-tier* card. Neither was fixable by tuning. The lists were completed by reading all eight
+  transcripts section by section and resolving every caption-mangled name by hand, which is what
+  the "owner adjudication" gate was always going to require of whoever sat down with it.
+- **The one genuinely undecidable card.** The majors series rates `Vengeance of the Dead` twice -
+  the base printing at D in Part 1, "the exploratory version" at A in Part 4. `power-cards.json`
+  carries one card of that name, so a key could not say which printing it meant. It is absent from
+  `tiers`, recorded in `unresolved`, and pinned absent by the canon test.
+- **`ratingsSource` added to `TierList`.** These ratings are a transcription judgment, not a clean
+  read of a printed table, and ADR 0003 requires that to live on the data rather than in a comment.
+  Both lists carry it; the canon test asserts they do.

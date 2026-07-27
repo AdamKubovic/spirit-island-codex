@@ -224,85 +224,227 @@ describe('tier list canon', () => {
     expect('fathomless-mud-of-the-swamp' in threeMbgStrengthSolo.tiers).toBe(false)
   })
 
-  describe('the card lists - deliberately partial, and pinned that way', () => {
-    // Both lists were transcribed from auto-generated captions, which carry no section
-    // boundaries. A card is rated only where it is named verbatim inside a part that announces
-    // it covers exactly ONE band, so the band is the video's own declaration rather than
-    // proximity to a spoken tier letter. The rest await owner adjudication
-    // (.scratch/card-tier-lists/extraction/near-miss-review.md).
+  describe('the card lists', () => {
+    // Transcribed from auto-generated captions, which carry no section boundaries. Each rating
+    // was read off the transcript section the card is discussed in - NOT from proximity to a
+    // spoken tier letter, which provably mis-bands (the reviewer says "s tier" mid-A-section
+    // constantly, and back-references other bands inside single-band parts too).
     //
     // These key sets are pinned longhand, the deliberate duplication this file already practises
-    // for the owner's board and 3MBG: a later agent "helpfully filling the gaps" must fail CI
-    // loudly. Adding an adjudicated key is a deliberate edit HERE as well as in the JSON.
+    // for the owner's board and 3MBG: drift must fail CI loudly rather than silently gaining or
+    // losing coverage. Changing a band is a deliberate edit HERE as well as in the JSON.
 
-    /** Minor Part 2 (B tier) is the only single-band minor part, so every key is B. */
+    /** All 101 minor powers - the series covers the whole deck and rates all of it. */
     const MINOR_EXPECTED_KEYS = [
+      'Absorb Corruption',
+      'Animated Wrackroot',
+      'Bats Scout For Raids By Darkness',
       'Birds Cry Warning',
+      'Blood Draws Predators',
+      'Call To Guard',
+      'Call of the Dahan Ways',
+      'Call to Bloodshed',
+      'Call to Ferocity',
+      'Call to Isolation',
+      'Call to Migrate',
+      'Call to Tend',
+      'Call to Trade',
+      'Carapaced Land',
       'Confounding Mists',
+      'Cycles of Time and Tide',
       'Dark and Tangled Woods',
+      'Delusions of Danger',
+      'Desiccating Winds',
+      'Devouring Ants',
       'Dire Metamorphosis',
       'Disorienting Landscape',
+      'Domesticated Animals Go Berserk',
+      'Drift down into Slumber',
+      'Drought',
+      'Dry Wood Explodes In Smoldering Splinters',
+      'Elemental Boon',
+      'Elusive Ambushes',
+      'Encompassing Ward',
+      'Enticing Splendor',
+      'Entrancing Apparitions',
+      'Entrap The Forces Of Corruption',
+      'Favor Of The Sun And Star-Lit Dark',
+      'Fire in the Sky',
+      'Fleshrot Fever',
+      'Flow Downriver, Blow Downwind',
+      'Gift of Constancy',
+      'Gift of Living Energy',
+      "Gift of Nature's Connection",
+      'Gift of Power',
+      'Gift of Twinned Days',
+      'Gnawing Rootbiters',
+      "Gold's Allure",
+      'Growth through Sacrifice',
       'Guardian Serpents',
+      'Haunted By Primal Memories',
+      'Hazards Spread Across The Island',
+      'Here there be Monsters',
+      'Infested Aquifers',
+      'Inflame the Fires of Life',
+      'Land of Haunts and Embers',
+      'Like Calls to Like',
+      'Lure of the Unknown',
+      'Mesmerized Tranquility',
       "Nature's Resilience",
+      'Pact of the Joined Hunt',
+      'Poisoned Dew',
+      'Portents of Disaster',
+      'Promises of Protection',
+      'Prowling Panthers',
+      'Pull Beneath the Hungry Earth',
+      'Purifying Flame',
+      "Quicken the Earth's Struggles",
+      'Rain of Blood',
+      'Razor-Sharp Undergrowth',
+      'Reaching Grasp',
+      'Renewing Boon',
+      'Renewing Rain',
+      "Rites of the Land's Rejection",
+      'Roiling Bog and Snagging Thorn',
+      'Rouse the Trees and Stones',
+      'Sap the Strength of Multitudes',
+      'Savage Mawbeasts',
       'Scour the Land',
+      'Scream Disease Into The Wind',
+      'Sear Anger Into The Wild Lands',
+      'Set Them On An Ever-Twisting Trail',
+      'Shadows of the Burning Forest',
+      'Skies Herald The Season Of Return',
+      'Sky Stretches to Shore',
+      'Song of Sanctity',
+      'Spur on with Words of Fire',
+      'Steam Vents',
       'Strong And Constant Currents',
       'Sucking Ooze',
+      "Sunset's Fire Flows Across The Land",
       'Swarming Wasps',
+      'Teeming Rivers',
       'Territorial Strife',
+      'Terror Turns To Madness',
+      'The Shore Seethes With Hatred',
+      'Thriving Chokefungus',
+      'Tormenting Rotflies',
+      'Treacherous Waterways',
+      'Twilight Fog brings Madness',
+      'Uncanny Melting',
+      'Unquenchable Flames',
+      "Veil the Night's Hunt",
+      'Visions of Fiery Doom',
       'Voracious Growth',
+      'Weep For What Is Lost',
     ]
 
-    /** Major Parts 2-5 are single-band (C, B, A, S). Part 1 covers F *and* D, so this list
-     * rates nothing at F or D. */
+    /** 77 of 78 majors. Vengeance of the Dead is absent by design - see below. */
     const MAJOR_EXPECTED_KEYS = [
+      'Accelerated Rot',
       'Angry Bears',
+      'Bargain of Coursing Paths',
       'Bargains of Power and Protection',
+      'Blazing Renewal',
+      'Bloodwrack Plague',
       'Bombard with Boulders and Stinging Seeds',
+      'Cast down into the Briny Deep',
+      'Cleansing Floods',
+      'Death Falls Gently from Open Blossoms',
+      'Dissolve the Bonds of Kinship',
       'Draw Towards a Consuming Void',
+      'Dream of the Untouched Land',
       'Entwined Power',
       'Exaltation of the Incandescent Sky',
+      'Fire and Flood',
       'Flocking Red-Talons',
       'Flow like Water, Reach like Air',
+      "Focus the Land's Anguish",
+      'Forests of Living Obsidian',
+      'Fragments of Yesteryear',
+      'Grant Hatred a Ravenous Form',
+      'Indomitable Claim',
       'Infestation of Venomous Spiders',
+      'Infinite Vitality',
       'Insatiable Hunger of the Swarm',
+      'Inspire the Release of Stolen Lands',
+      'Instruments of their own Ruin',
       'Irresistible Call',
+      'Manifest Incarnation',
+      'Melt Earth into Quicksand',
+      'Mists of Oblivion',
       'Paralyzing Fright',
       'Pent-Up Calamity',
+      'Pillar of Living Flame',
+      'Plague Ships Sail to Distant Ports',
       'Poisoned Land',
+      'Powerstorm',
+      'Pyroclastic Flow',
       'Ravaged Undergrowth Slithers Back to Life',
+      'Rumbling Earthquakes',
+      'Savage Transformation',
       'Sea Monsters',
+      'Settle Into Hunting-Grounds',
+      'Sleep and Never Waken',
       'Smothering Infestation',
+      'Solidify Echoes of Majesty Past',
       'Spill Bitterness into the Earth',
       'Storm-Swath',
+      'Strangling Firevine',
       'Sweep into the Sea',
       'Talons of Lightning',
       'Terrifying Nightmares',
+      'The Jungle Hungers',
+      'The Land Thrashes in Furious Pain',
+      'The Trees and Stones Speak of War',
+      'The Wounded Wild Turns on its Assailants',
+      'Thickets Erupt with Every Touch of Breeze',
+      'Tigers Hunting',
+      'Transform to a Murderous Darkness',
       'Transformative Sacrifice',
       'Trees Radiate Celestial Brilliance',
       'Tsunami',
+      'Twisted Flowers Murmur Ultimatums',
+      'Unearth a Beast of Wrathful Stone',
       "Unleash a Torrent of the Self's Own Essence",
+      'Unlock the Gates of Deepest Power',
+      'Unrelenting Growth',
+      'Utter a Curse of Dread and Bone',
+      'Vanish Softly Away, Forgotten by All',
+      'Vigor of the Breaking Dawn',
       'Voice of Command',
+      'Volcanic Eruption',
       'Walls of Rock and Thorn',
       'Weave Together the Fabric of Place',
       'Winds of Rust and Atrophy',
+      'Wrap in Wings of Sunlight',
     ]
 
-    it('sia-minor-powers-2023 rates exactly the 13 cards the captions place beyond doubt', () => {
+    it('sia-minor-powers-2023 rates exactly the 101 minor powers', () => {
       expect(Object.keys(siaMinorPowers.tiers).sort()).toEqual([...MINOR_EXPECTED_KEYS].sort())
     })
 
-    it('sia-red-major-powers-2023 rates exactly the 30 cards the captions place beyond doubt', () => {
+    it('sia-red-major-powers-2023 rates exactly the 77 majors the source resolves', () => {
       expect(Object.keys(siaRedMajorPowers.tiers).sort()).toEqual([...MAJOR_EXPECTED_KEYS].sort())
     })
 
-    it('pins how partial each list is, so partialness is itself a tested fact', () => {
-      expect(Object.keys(siaMinorPowers.tiers)).toHaveLength(13) // of 101 minor powers
-      expect(Object.keys(siaRedMajorPowers.tiers)).toHaveLength(30) // of 78 major powers
+    it('pins coverage, so a later gain or loss is a deliberate edit', () => {
+      expect(Object.keys(siaMinorPowers.tiers)).toHaveLength(101) // the whole minor deck
+      expect(Object.keys(siaRedMajorPowers.tiers)).toHaveLength(77) // of 78 majors
+    })
+
+    it('leaves Vengeance of the Dead unrated, because the source rates two printings of it', () => {
+      // Part 1 rates the base printing D; Part 4 rates "the exploratory version" A. The card
+      // dataset carries ONE card of that name, so a key here could not say which. Absent, with
+      // the conflict recorded in `unresolved` - ADR 0001 makes absence a real value.
+      expect('Vengeance of the Dead' in siaRedMajorPowers.tiers).toBe(false)
+      expect(siaRedMajorPowers.unresolved?.[0]?.heard).toContain('Vengeance of the Dead')
     })
 
     it('uses the vocabulary its own videos state, and the minors series has no D band', () => {
       // Minor Part 1: "an S and a a b tier and then a CNF" - S, A, B, C, F and no D.
       expect(siaMinorPowers.tierLabels).toEqual(['S', 'A', 'B', 'C', 'F'])
+      expect(Object.values(siaMinorPowers.tiers)).not.toContain('D')
       // Major Part 1 defines F and D and defers C to Part 2; Parts 2-5 cover C, B, A, S.
       expect(siaRedMajorPowers.tierLabels).toEqual(['S', 'A', 'B', 'C', 'D', 'F'])
     })
@@ -310,33 +452,26 @@ describe('tier list canon', () => {
     it('never admits X as a band', () => {
       // X means two contradictory things in this creator's lists. On the owner's board (spirits)
       // it is a band ABOVE S. In the minors video a blue X drawn over a card means the card was
-      // REMOVED BY ERRATA - Growth through Sacrifice sits in S tier *with* an X overlay. So X is
-      // an annotation here, never a band, and must never enter a card list's vocabulary or reach
-      // the rank prior as "stronger than S".
-      expect(siaMinorPowers.tierLabels).not.toContain('X')
-      expect(siaRedMajorPowers.tierLabels).not.toContain('X')
-      expect(Object.values(siaMinorPowers.tiers)).not.toContain('X')
-      expect(Object.values(siaRedMajorPowers.tiers)).not.toContain('X')
+      // REMOVED BY ERRATA. So X is an annotation here, never a band, and must never reach the
+      // rank prior as "stronger than S".
+      for (const list of [siaMinorPowers, siaRedMajorPowers]) {
+        expect(list.tierLabels).not.toContain('X')
+        expect(Object.values(list.tiers)).not.toContain('X')
+      }
     })
 
-    it('leaves the errata-marked card unrated rather than guessing its band', () => {
-      // Growth through Sacrifice is S tier in Minor Part 1 - but Part 1 covers S *and* A, so the
-      // captions alone do not fix which. It is in the near-miss batch, and absent until the owner
-      // rules. Absence here means "not yet transcribed", which ADR 0001 makes a real value.
-      expect('Growth through Sacrifice' in siaMinorPowers.tiers).toBe(false)
+    it('records the errata-marked card at the band the source placed it in', () => {
+      // Growth through Sacrifice sits in S tier *with* a blue X overlay. The band is S; the
+      // errata is prose in `methodology`, not a tier.
+      expect(siaMinorPowers.tiers['Growth through Sacrifice']).toBe('S')
+      expect(siaMinorPowers.methodology).toContain('errata')
     })
 
-    it('rates no card at a band that only a two-band part covers', () => {
-      // Major Part 1 is the only source of F and D, and it covers both, so neither can be
-      // attributed. If an F or D key appears here, band inference has crept back in.
-      expect(Object.values(siaRedMajorPowers.tiers)).not.toContain('F')
-      expect(Object.values(siaRedMajorPowers.tiers)).not.toContain('D')
-    })
-
-    it('ships as unverified cited lists - nobody has re-checked them against the videos', () => {
+    it('marks its own ratings as judgment, not a clean read (ADR 0003)', () => {
       for (const list of [siaMinorPowers, siaRedMajorPowers]) {
         expect(list.origin).toBe('cited')
         expect(list.verified).toBe(false)
+        expect(list.ratingsSource, `${list.id} must say how its ratings were obtained`).toBeTruthy()
       }
     })
 

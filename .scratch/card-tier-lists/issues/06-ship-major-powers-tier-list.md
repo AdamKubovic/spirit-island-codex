@@ -79,3 +79,9 @@ are single-band (C, B, A, S); Part 1 covers F *and* D, so this list rates nothin
 canon test asserts that, since an F or D key appearing later means band inference crept back in.
 
 `unresolved` is absent, not empty — the 36 major near-misses are unadjudicated, not rejected.
+
+**Update 2026-07-27** — completed to **77/78**, spanning all six bands. The one absence is
+`Vengeance of the Dead`, which the source rates at two different bands because it rates two
+different printings of it; that conflict is recorded in `unresolved` and its absence is pinned by
+the canon test. This is the ticket's "absence means the source never rated this" rule doing real
+work: the source rated it twice, so no single key is honest.
