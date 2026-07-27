@@ -1,7 +1,13 @@
 import { useState, type ReactNode } from 'react'
 import powerCardsData from '../data/power-cards.json'
 import spiritsData from '../data/spirits.json'
-import { collectionStore, filterOwnedConfigurations, isCardOwned, isConfigurationOwned } from '../domain/collectionStore'
+import {
+  collectionStore,
+  filterOwnedCards,
+  filterOwnedConfigurations,
+  isCardOwned,
+  isConfigurationOwned,
+} from '../domain/collectionStore'
 import { expand, type Configuration } from '../domain/configurations'
 import { powerCardGallery, type GalleryImage } from '../domain/gallerySequence'
 import { groupByTier, tierStore } from '../domain/tierStore'
@@ -184,8 +190,9 @@ function TierTile({
  * reverses v5 #16's "card lists are ungated": that call was made when the board showed only names,
  * where the full pool reads as a reference list. Now that tiles show art, an unowned card is
  * visually indistinguishable from an owned one, which is the specific thing the owner asked to
- * fix. The full pool still renders — nothing is hidden, and there is deliberately no card
- * equivalent of the configurations board's "only show what I own" hard filter.
+ * fix. Dimming is the default; the same opt-in hard filter the configurations board offers
+ * (`filterOwnedCards`) is also available here now, so the full pool renders unless the owner asks
+ * to shrink it.
  *
  * The tier tile prints the card at 116px, where its rules text is unreadable — so the art is a
  * button that enlarges it, the same affordance `SpiritDetail` gives a starting card. Only the
@@ -314,15 +321,19 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
     ))
   }
 
-  // Hard-filter (#06's opt-in): excluded exactly as if annotation had removed them first, rather
-  // than dimmed in place. Session-only - a view preference, not collection data, so it isn't
-  // persisted or exported like the collection itself. Configurations boards only (#16): card
-  // lists are ungated, matching the Archive's exemption.
+  // Hard-filter (#06's opt-in, extended to card subjects): excluded exactly as if annotation had
+  // removed them first, rather than dimmed in place. Session-only - a view preference, not
+  // collection data, so it isn't persisted or exported like the collection itself.
   const visibleConfigurations = hardFilter ? filterOwnedConfigurations(configurations, excluded) : configurations
   const groups =
     subject === 'configurations'
       ? groupByTier(visibleConfigurations, (c) => c.configId, tiers, viewed.tierLabels)
-      : groupByTier(CARD_POOLS[subject], (c) => c.name, tiers, viewed.tierLabels)
+      : groupByTier(
+          hardFilter ? filterOwnedCards(CARD_POOLS[subject], excluded, normalizeExpansion) : CARD_POOLS[subject],
+          (c) => c.name,
+          tiers,
+          viewed.tierLabels,
+        )
   const tilesFor = (items: (Configuration | PowerCard)[], current: string) =>
     subject === 'configurations'
       ? configTiles(items as Configuration[], current)
@@ -362,12 +373,10 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
           )}
         </p>
       </details>
-      {subject === 'configurations' && (
-        <label className="deck-field-inline">
-          <input type="checkbox" checked={hardFilter} onChange={(e) => setHardFilter(e.target.checked)} />
-          Only show spirits I own
-        </label>
-      )}
+      <label className="deck-field-inline">
+        <input type="checkbox" checked={hardFilter} onChange={(e) => setHardFilter(e.target.checked)} />
+        Only show {subject === 'configurations' ? 'spirits' : 'cards'} I own
+      </label>
       {canEdit && (
         <label className="deck-field-inline">
           <input type="checkbox" checked={editing} onChange={(e) => setEditing(e.target.checked)} />

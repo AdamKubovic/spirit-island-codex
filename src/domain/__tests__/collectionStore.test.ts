@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest'
-import { createCollectionStore, filterOwnedConfigurations, isCardOwned, isConfigurationOwned } from '../collectionStore'
+import {
+  createCollectionStore,
+  filterOwnedCards,
+  filterOwnedConfigurations,
+  isCardOwned,
+  isConfigurationOwned,
+} from '../collectionStore'
 import type { Configuration } from '../configurations'
 import { memoryStorage } from '../storage'
 import type { Spirit } from '../types'
@@ -163,5 +169,21 @@ describe('isCardOwned', () => {
   it('treats an unplaceable expansion as owned rather than guessing', () => {
     expect(isCardOwned(undefined, new Set(['Jagged Earth']))).toBe(true)
     expect(isCardOwned(undefined, new Set())).toBe(true)
+  })
+})
+
+describe('filterOwnedCards', () => {
+  const normalize = (raw: string) => (raw === 'Unplaceable' ? undefined : (raw as never))
+
+  it('excludes exactly the cards isCardOwned would reject, keeps the rest', () => {
+    const jaggedCard = { expansion: 'Jagged Earth' }
+    const baseCard = { expansion: 'Base' }
+    const result = filterOwnedCards([jaggedCard, baseCard], new Set(['Jagged Earth']), normalize)
+    expect(result).toEqual([baseCard])
+  })
+
+  it('keeps a card whose expansion normalize cannot place', () => {
+    const unplaceable = { expansion: 'Unplaceable' }
+    expect(filterOwnedCards([unplaceable], new Set(['Jagged Earth']), normalize)).toEqual([unplaceable])
   })
 })
