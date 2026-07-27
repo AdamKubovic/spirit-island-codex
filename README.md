@@ -74,22 +74,21 @@ npm run build
 
 ## Deployment
 
-`.github/workflows/deploy.yml` builds the app, runs the tests, and publishes `dist/` to GitHub
+`.github/workflows/pages.yml` builds the app, runs the tests, and publishes `dist/` to GitHub
 Pages. Served from the `Tabletop-Atlas` organisation's root Pages site (`tabletop-atlas.github.io`),
 so `vite.config.ts` sets `base: '/'`.
 
-> ⚠️ **Pushing to `main` does not currently deploy.** The workflow declares `on: push`, but that
-> trigger has never fired — every deploy this repo has had was a manual dispatch. Diagnosis and
-> what's left to check: [`.scratch/deploy-push-trigger/README.md`](.scratch/deploy-push-trigger/README.md).
->
-> Until it's fixed, publish explicitly:
->
-> ```sh
-> npm run deploy   # dispatches the workflow for the pushed HEAD and waits for the result
-> ```
->
-> It refuses to run on a dirty tree or when `HEAD` differs from `origin/main`, because the workflow
-> builds the remote's commit, not yours.
+**Pushing to `main` deploys.** This was broken from the day the workflow landed until 2026-07-27 —
+`on: push` never fired once, and every deploy was a manual dispatch. The cause was a stuck
+workflow registration on GitHub's side, not this repo's configuration; renaming the file from
+`deploy.yml` to `pages.yml` forced a fresh registration and the trigger has worked since. Full
+diagnosis: [`.scratch/deploy-push-trigger/README.md`](.scratch/deploy-push-trigger/README.md).
+
+To publish without a push — or to watch a deploy to completion:
+
+```sh
+npm run deploy   # dispatches the workflow for the pushed HEAD and waits for the result
+```
 
 **One-time human setup (the workflow cannot do this itself):** in the repo, Settings → Pages →
 Source = "GitHub Actions". Already done for this repo.

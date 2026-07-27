@@ -1,6 +1,6 @@
 # Pages deploy never fires on push — every deploy so far was a manual dispatch
 
-Status: needs-info (reproduced; root cause needs the `admin:org` token scope — see Resolution)
+Status: done (fixed 2026-07-27 by renaming the workflow file — see Resolution at the bottom)
 
 ## Origin
 
@@ -152,3 +152,51 @@ error: HEAD (9b87221) != origin/main (ec76d54)
 
 This is a **stopgap**. Delete `scripts/deploy.sh`, the `deploy` npm script and the README warning
 once `on: push` fires; the workflow itself was never the problem.
+
+## Resolution (2026-07-27) — a stuck workflow registration, fixed by renaming the file
+
+The owner granted the `admin:org` scope, which unblocked the last untested hypothesis. **It was
+wrong.** The organisation's Actions policy is entirely permissive:
+
+```
+$ gh api orgs/Tabletop-Atlas/actions/permissions
+{"enabled_repositories":"all","allowed_actions":"all","sha_pinning_required":false}
+```
+
+Org-level rulesets could not have been the cause either — they are a paid feature and this org is
+on Free (`gh api orgs/Tabletop-Atlas/rulesets` → 403 "Upgrade to GitHub Team"). With that, every
+hypothesis in this ticket was eliminated: org policy clean, repo public and not fork/archived/
+disabled, default branch `main`, Actions enabled, the full workflow file valid with no `paths`
+filter or duplicate `on:` key, and GitHub recording a `PushEvent` on `refs/heads/main` from a real
+user account for every push — against `total_count: 0` push-triggered runs.
+
+So the configuration was provably correct and GitHub still would not fire. That is a stuck trigger
+registration on GitHub's side. Two remedies, in order of escalation:
+
+1. **Disable and re-enable the workflow** (`gh workflow disable/enable deploy.yml`). Tried first
+   because it changes nothing in the repo. Pushed an empty commit (`a655b55`) and watched for 90
+   seconds: **still zero runs.** Did not work.
+2. **Rename the workflow file**, forcing GitHub to register a brand-new workflow record.
+   `deploy.yml` → `pages.yml` (`671a487`). The push-triggered run appeared **within 15 seconds**
+   and completed successfully:
+
+   ```
+   push  671a487  completed/success  Deploy to GitHub Pages
+   ```
+
+`scripts/deploy.sh` was updated to dispatch `pages.yml`. The workflow's *contents* were never
+touched — the file is byte-identical apart from its name, which is the clearest evidence that the
+fault was registration, not configuration.
+
+### What this means for the stopgap
+
+`scripts/deploy.sh` and the `npm run deploy` script are **kept**, with their justification changed.
+They are no longer a workaround for a broken trigger; they are the way to publish without a push
+and to watch a deploy to completion with a non-zero exit on failure. The README warning that
+pushing does not deploy is gone, because it no longer does.
+
+### Caveat worth remembering
+
+The trigger is confirmed working across three consecutive pushes. If it ever silently stops again,
+the diagnosis above is mostly reusable — but start at the rename, since that is what actually
+worked, and a stuck registration leaves every inspectable setting looking correct.
