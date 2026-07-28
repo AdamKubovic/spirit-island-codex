@@ -52,7 +52,7 @@ function downloadBackup(json: string) {
  * defaults here unless its ticket argues for surface-local. Session-only controls (each
  * surface's hide-unowned checkbox) stay beside the results they filter.
  */
-export function Settings() {
+export function Settings({ offlineReady = false }: { offlineReady?: boolean } = {}) {
   const [, setVersion] = useState(0)
   const [importMessage, setImportMessage] = useState<string | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
@@ -161,6 +161,9 @@ export function Settings() {
           </button>
         </p>
       )}
+
+      <h3>Offline</h3>
+      <p className="meta">{offlineReady ? 'Offline cache ready.' : 'Offline cache: not yet.'}</p>
 
       <h3>Backup</h3>
       <p className="meta">
