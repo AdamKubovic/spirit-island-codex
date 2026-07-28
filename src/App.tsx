@@ -25,7 +25,7 @@ const NAV: NavItem<Tab>[] = [
   { id: 'settings', label: 'Settings' },
 ]
 
-function App() {
+function App({ offlineReady = false }: { offlineReady?: boolean } = {}) {
   // spirit-link-new-tab: navigation lives in the URL, not in component state, so a spirit detail
   // has an address a new tab can cold-load. `route.tab` replaces the old `useState<Tab>`, and the
   // open spirit — previously `Browser`'s own `selected` — is now `route.spiritId`.
@@ -65,7 +65,7 @@ function App() {
         {tab === 'tiers' && <TierBoard />}
         {tab === 'log' && <GameLog />}
         {tab === 'glossary' && <GlossaryTab />}
-        {tab === 'settings' && <Settings />}
+        {tab === 'settings' && <Settings offlineReady={offlineReady} />}
       </AppShell>
     </RecommenderProvider>
   )

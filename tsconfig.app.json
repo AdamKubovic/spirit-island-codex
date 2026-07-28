@@ -6,7 +6,7 @@
     "module": "esnext",
     // "node" is here so the data-integrity test can read public/ off disk. Tests live under
     // src/**/__tests__ and are typechecked by this project; they are never bundled.
-    "types": ["vite/client", "node"],
+    "types": ["vite/client", "node", "vite-plugin-pwa/react"],
     "allowArbitraryExtensions": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
