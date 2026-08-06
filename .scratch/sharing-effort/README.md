@@ -113,7 +113,8 @@ an inference, not as a guarantee.
 
 - Repo transferred `Tabletop-Atlas/tabletop-atlas.github.io` → `AdamKubovic/spirit-island-codex` and
   renamed (2026-08-06).
-- `README.md`: corrected the game link; rewrote the Deployment section for the subpath.
+- `README.md`: corrected the game link; rewrote the Deployment section for the subpath; expanded
+  Attribution with the exact image/data/tier-list sources from `images/manifest.json`.
 - `vite.config.ts`: `base` and PWA `start_url` → `/spirit-island-codex/`.
 - `scripts/deploy.sh`: URL references updated.
 - `src/components/Homepage.tsx`: footer now links the fan-content terms + official game page, and

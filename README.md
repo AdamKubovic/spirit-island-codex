@@ -97,5 +97,22 @@ Source = "GitHub Actions". Needed once per repo — including after the 2026-08-
 ## Attribution
 
 This is an unofficial fan project and is not affiliated with Greater Than Games, LLC. Spirit Island,
-and all card text and artwork, are © Greater Than Games, LLC. Card data is derived from the
-community [Spirit Island Card Katalog](https://github.com/oberien/spirit-island-card-katalog).
+and all card text and artwork, are © Greater Than Games, LLC. Per the publisher's position in the
+official [Spirit Island FAQ](https://querki.net/u/darker/spirit-island-faq/#!Creating-your-own-game-elements),
+free, non-commercial fan content that is not portrayed as an official product is permitted.
+
+**Imagery and data** were sourced from the community, and each asset's provenance is recorded in
+`images/manifest.json` (ADR 0006):
+
+- **Card images and card data** — [SICK, the Spirit Island Card Katalog](https://sick.oberien.de/)
+  ([repository](https://github.com/oberien/spirit-island-card-katalog), Apache-2.0/MIT, images © GtG)
+- **Spirit panels, adversary panels and scenario art** — the [Spirit Island Tabletop Simulator mod by MJ & iakona](https://steamcommunity.com/sharedfiles/filedetails/?id=2104364163),
+  published with Greater Than Games' permission
+- **Aspect cards, element icons and the logo** — the [Spirit Island Wiki](https://spiritislandwiki.com/),
+  published by Greater Than Games (CC BY-NC-SA 4.0)
+
+**Tier lists** are transcribed community rankings, cited per list in the app's "ⓘ Source" disclosure:
+
+- [Spirit Island Archive](https://www.youtube.com/@SpiritIslandArchive) — Red's Final Tier List,
+  Favorite Spirit Island Tier List, Minor Power Tier List, Major Power Tier List
+- [3 Minute Board Games](https://www.youtube.com/watch?v=d130MTU08fg) — 2025 spirit tier ranking
