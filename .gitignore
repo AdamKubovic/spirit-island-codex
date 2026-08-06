@@ -23,7 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 
-# Asset archive (.scratch/asset-archive): originals stay local-only, only the manifest is
-# committed. See images/manifest.json / .scratch/asset-archive/issues/06-unify-manifest-verify-counts.md.
+# Local-only working notes: per-effort specs, wayfinder maps, screenshots, transcripts.
+# Never committed. See AGENTS.md.
+.scratch
+
+# Asset archive: originals stay local-only, only the manifest is committed.
+# See images/manifest.json.
 images/*
 !images/manifest.json

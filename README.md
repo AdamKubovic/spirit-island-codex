@@ -36,8 +36,8 @@ like this is to *fill in* whatever a source doesn't say. This repo refuses to, o
   count moves.
 - **Ambiguity escalates to a human, never gets guessed.**
 
-This discipline is the project's backbone — it is stated in [`CLAUDE.md`](CLAUDE.md) and recorded as
-[ADR 0003](docs/adr/0003-data-provenance-discipline.md). It exists because the repo has shipped
+This discipline is the project's backbone — it is stated in [`AGENTS.md`](AGENTS.md) and recorded
+as [ADR 0003](docs/adr/0003-data-provenance-discipline.md). It exists because the repo has shipped
 fabricated data before, and these rules are what stop it recurring.
 
 ## Architecture
@@ -58,8 +58,8 @@ fabricated data before, and these rules are what stop it recurring.
 | `src/data/` | The hand- and machine-maintained datasets (spirits, cards, tier lists, …) |
 | `src/components/` | React UI — glue over the domain layer |
 | `CONTEXT.md` | The domain glossary (the project's ubiquitous language) |
-| `docs/adr/` | Architecture Decision Records (0001–0012) |
-| `.scratch/<effort>/` | Per-effort specs, wayfinder maps and history (preserved, not live docs) |
+| `docs/adr/` | Architecture Decision Records (0001–0017) |
+| `AGENTS.md` | The agent-facing guide: house rules, commands, repo map |
 
 Start with `CONTEXT.md` for the vocabulary and `docs/adr/` for the decisions.
 
@@ -81,8 +81,9 @@ so `vite.config.ts` sets `base: '/spirit-island-codex/'`.
 **Pushing to `main` deploys.** This was broken from the day the workflow landed until 2026-07-27 —
 `on: push` never fired once, and every deploy was a manual dispatch. The cause was a stuck
 workflow registration on GitHub's side, not this repo's configuration; renaming the file from
-`deploy.yml` to `pages.yml` forced a fresh registration and the trigger has worked since. Full
-diagnosis: [`.scratch/deploy-push-trigger/README.md`](.scratch/deploy-push-trigger/README.md).
+`deploy.yml` to `pages.yml` forced a fresh registration and the trigger has worked since. If
+`on: push` silently stops firing again, start by renaming the workflow file — a stuck registration
+leaves every setting looking correct.
 
 To publish without a push — or to watch a deploy to completion:
 

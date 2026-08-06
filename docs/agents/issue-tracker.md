@@ -1,6 +1,8 @@
 # Issue tracker: Local Markdown
 
-Issues and PRDs for this repo live as markdown files in `.scratch/`.
+Issues and PRDs for this repo live as markdown files in `.scratch/`. The tracker is **maintainer
+internal**: `.scratch/` is gitignored and local-only, never committed — tickets and PRDs stay on the
+owner's machine. See `AGENTS.md` and ADR 0017.
 
 ## Conventions
 

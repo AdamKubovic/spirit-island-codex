@@ -2,7 +2,7 @@
 
 All fonts here are SIL Open Font License 1.1 — each family ships with its `OFL.txt` verbatim
 from source. Downloaded 2026-07-13 from the google/fonts repository (`ofl/` tree = OFL-licensed
-families), per the licensing research in `.scratch/phase-4/official-assets-research.md`:
+families):
 commercial and app-forbidding lookalikes (Fling-a-Ling, DK Snemand, Gobold) were declined; only
 OFL faces ship. Local-first app: no font CDN, no network font requests.
 

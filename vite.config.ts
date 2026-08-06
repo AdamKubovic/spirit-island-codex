@@ -8,7 +8,7 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      // ADR 0015: full precache, silent auto-update, disabled in dev (see PRD .scratch/installable-app).
+      // ADR 0015: full precache, silent auto-update, disabled in dev.
       registerType: 'autoUpdate',
       injectRegister: null,
       devOptions: { enabled: false },
