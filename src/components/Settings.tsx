@@ -42,7 +42,7 @@ function downloadBackup(json: string) {
  * defaults here unless its ticket argues for surface-local. Session-only controls (each
  * surface's hide-unowned checkbox) stay beside the results they filter.
  */
-export function Settings() {
+export function Settings({ offlineReady = false }: { offlineReady?: boolean } = {}) {
   const [, setVersion] = useState(0)
   const [importMessage, setImportMessage] = useState<string | null>(null)
   const fileInput = useRef<HTMLInputElement>(null)
@@ -121,6 +121,9 @@ export function Settings() {
         </p>
       )}
 
+      <h3>Offline</h3>
+      <p className="meta">{offlineReady ? 'Offline cache ready.' : 'Offline cache: not yet.'}</p>
+
       <h3>Backup</h3>
       <p className="meta">
         Nothing here survives a cleared browser cache unless you export it. Export carries your
@@ -181,26 +184,42 @@ export function Settings() {
 
       <h3>My collection</h3>
       <p className="meta">
-        Untick an expansion you don't own. Nothing disappears by default — spirits and aspects
+        Choose the expansions in your collection. Nothing disappears by default — spirits and aspects
         outside your collection are dimmed wherever a surface respects it (starting with the tier
         board), never hidden. The Cards tab never respects this: browsing the full card pool is
         how you decide whether to buy an expansion.{' '}
         {collectionCustomised ? <span>You've excluded some expansions.</span> : null}
       </p>
-      <ul className="collection-checklist">
-        {EXPANSIONS.map((expansion) => (
-          <li key={expansion}>
-            <label>
-              <input
-                type="checkbox"
-                checked={collectionStore.owns(expansion)}
-                onChange={(e) => handleSetOwned(expansion, e.target.checked)}
-              />
-              {expansion}
-            </label>
-          </li>
-        ))}
-      </ul>
+      <div className="collection-picker" role="group" aria-label="Expansions in your collection">
+        <div className="collection-picker-head">
+          <span className="collection-picker-label">Your expansions</span>
+          {collectionCustomised && (
+            <button type="button" className="collection-picker-reset" onClick={() => {
+              collectionStore.resetAll()
+              bump()
+            }}>
+              Own all
+            </button>
+          )}
+        </div>
+        <div className="collection-picker-options">
+          {EXPANSIONS.map((expansion) => {
+            const owned = collectionStore.owns(expansion)
+            return (
+              <button
+                key={expansion}
+                type="button"
+                className="collection-option"
+                aria-pressed={owned}
+                onClick={() => handleSetOwned(expansion, !owned)}
+              >
+                <span>{expansion}</span>
+                <small>{owned ? 'In collection' : 'Not owned'}</small>
+              </button>
+            )
+          })}
+        </div>
+      </div>
 
       <h3>Complexity overrides</h3>
       <p className="meta">

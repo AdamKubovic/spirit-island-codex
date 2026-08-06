@@ -1,8 +1,36 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
   base: '/',
-  plugins: [react()],
+  plugins: [
+    react(),
+    VitePWA({
+      // ADR 0015: full precache, silent auto-update, disabled in dev (see PRD .scratch/installable-app).
+      registerType: 'autoUpdate',
+      injectRegister: null,
+      devOptions: { enabled: false },
+      workbox: {
+        // Largest panel is ~968 KB; Workbox's 2 MB default would already cover it, but the asset
+        // library grows, so this is set explicitly rather than left to the default.
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        globPatterns: ['**/*.{js,css,html,json,svg,webp,png,jpg,jpeg,woff,woff2,ttf}'],
+      },
+      manifest: {
+        name: 'Spirit Island Knowledge Base',
+        short_name: 'SI Archive',
+        start_url: '/',
+        display: 'standalone',
+        orientation: 'any',
+        background_color: '#1c160e',
+        theme_color: '#1c160e',
+        icons: [
+          { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'maskable' },
+          { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+        ],
+      },
+    }),
+  ],
 })

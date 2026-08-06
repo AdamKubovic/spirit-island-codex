@@ -117,14 +117,20 @@ describe('app smoke', () => {
     expect(html.indexOf('deck-answers-disclosure')).toBeLessThan(html.indexOf('Your top'))
   })
 
-  it('Settings holds exactly the three migrated sections (#14) plus the default-list pick (#18)', () => {
+  it('Settings holds exactly the three migrated sections (#14), the default-list pick (#18), and offline readiness (installable-app #04)', () => {
     const settings = renderToStaticMarkup(<Settings />)
+    expect(settings).toContain('Offline')
     expect(settings).toContain('Backup')
     expect(settings).toContain('Default tier list')
     expect(settings).toContain('My collection')
     expect(settings).toContain('Complexity overrides')
-    // "Exactly" these sections — a fifth heading would be scope creep.
-    expect(settings.match(/<h3>/g)).toHaveLength(4)
+    // "Exactly" these sections — a sixth heading would be scope creep.
+    expect(settings.match(/<h3>/g)).toHaveLength(5)
+  })
+
+  it('Settings offline indicator is honest about in-progress state (installable-app #04)', () => {
+    expect(renderToStaticMarkup(<Settings />)).toContain('not yet')
+    expect(renderToStaticMarkup(<Settings offlineReady />)).toContain('ready')
   })
 
   it('renders a card subject on the same board, with the card list in the picker', () => {

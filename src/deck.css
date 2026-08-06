@@ -726,16 +726,63 @@ button:disabled {
   gap: 0.85rem;
 }
 
-/* --- v5 #07a: the collection checklist --- */
-.collection-checklist {
-  list-style: none;
+/* --- collection controls --- */
+.collection-picker {
   margin: 0 0 1rem;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem 1.2rem;
+  max-width: 760px;
 }
-.collection-checklist label,
+.collection-picker-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.45rem;
+}
+.collection-picker-label,
+.tier-collection-view > span {
+  font: 600 10px/1 var(--deck-mono);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--deck-dim);
+}
+.collection-picker-reset {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--deck-accent);
+  font: 600 11px/1 var(--deck-mono);
+}
+.collection-picker-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: 0.45rem;
+}
+.collection-option {
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0.2rem;
+  text-align: left;
+  background: var(--deck-panel);
+  border: 1px solid var(--deck-line);
+  color: var(--deck-dim);
+}
+.collection-option small,
+.tier-collection-view small {
+  color: var(--deck-body);
+  font: 10px/1.2 var(--deck-mono);
+}
+.collection-option[aria-pressed='true'] {
+  background: var(--deck-accent-bg);
+  border-color: var(--deck-accent);
+  box-shadow: inset 3px 0 0 var(--deck-accent);
+  color: var(--deck-text);
+}
+.collection-option[aria-pressed='true'] small {
+  color: var(--deck-text);
+}
 .deck-field-inline {
   display: flex;
   align-items: center;
@@ -888,6 +935,34 @@ button:disabled {
 }
 
 /* --- tier board --- */
+.tier-collection-view {
+  display: grid;
+  gap: 0.4rem;
+  margin: 1rem 0;
+}
+.tier-collection-options {
+  display: inline-flex;
+  align-self: flex-start;
+  overflow: hidden;
+  border: 1px solid var(--deck-line);
+  border-radius: 999px;
+  background: var(--deck-panel);
+}
+.tier-collection-options button {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--deck-dim);
+  padding: 0.45rem 0.85rem;
+  font: 600 11px/1 var(--deck-mono);
+}
+.tier-collection-options button + button {
+  border-left: 1px solid var(--deck-line);
+}
+.tier-collection-options button[aria-pressed='true'] {
+  background: var(--deck-text);
+  color: var(--deck-panel);
+}
 .tier-board {
   display: flex;
   flex-direction: column;
@@ -1922,6 +1997,10 @@ button:disabled {
   border-radius: 6px;
   overflow: hidden;
   border: 1px solid var(--deck-line);
+  /* ponytail: offscreen tiles skip paint so the browser isn't rasterizing 300+ card
+   * images at once (the cause of the black-flash-then-fill-in on the Archive grid). */
+  content-visibility: auto;
+  contain-intrinsic-size: 140px 195px;
 }
 .card-grid-tile img {
   display: block;
