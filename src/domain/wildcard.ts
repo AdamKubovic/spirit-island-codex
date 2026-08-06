@@ -1,24 +1,22 @@
 import type { Configuration } from './configurations'
 import type { RankedConfiguration, Weights } from './recommend'
-import type { Complexity, OCFDU } from './types'
-
-const AXES: (keyof OCFDU)[] = ['offense', 'control', 'fear', 'defense', 'utility']
-
-const COMPLEXITY_LEVEL: Record<Complexity, number> = { Low: 1, Moderate: 2, High: 3, 'Very High': 4 }
+import { AXES, COMPLEXITY_LEVEL } from './scoringPrimitives'
+import type { Complexity } from './types'
 
 /**
- * Picks a deliberately off-profile configuration outside the top-3: preferably one above the
+ * Picks a deliberately off-profile configuration outside the shortlist: preferably one above the
  * complexity ceiling (the wildcard "reaches past" the soft penalty), otherwise the
  * best-rated configuration on whichever axis the user weighted least. `offset` cycles through
- * the eligible candidates deterministically (used by the reroll action).
- */
+ * the eligible candidates deterministically (used by the reroll action). The shortlist size is a
+ * required parameter — the rank-session pipeline owns the constant and passes it here. */
 export function selectWildcard(
   ranked: RankedConfiguration[],
   weights: Weights,
   complexityCeiling: Complexity | undefined,
   offset = 0,
+  shortlistSize: number,
 ): Configuration | undefined {
-  const topIds = new Set(ranked.slice(0, 3).map((r) => r.config.configId))
+  const topIds = new Set(ranked.slice(0, shortlistSize).map((r) => r.config.configId))
   const remaining = ranked.filter((r) => !topIds.has(r.config.configId))
   if (remaining.length === 0) return undefined
 

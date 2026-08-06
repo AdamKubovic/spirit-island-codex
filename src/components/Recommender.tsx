@@ -1,21 +1,22 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import spiritsData from '../data/spirits.json'
 import { answersStore } from '../domain/answersStore'
-import { answersToWeights, type Answers } from '../domain/answersToWeights'
+import type { Answers } from '../domain/answersToWeights'
 import { aspectShiftsToward, topWeightedLowAxis } from '../domain/aspectNudge'
 import { AXIS_LABEL } from '../domain/axisLabels'
-import { candidatesForRecommender, collectionStore, isConfigurationOwned } from '../domain/collectionStore'
+import { collectionStore, isConfigurationOwned } from '../domain/collectionStore'
 import { complexityStore } from '../domain/complexityStore'
 import { expand, type Configuration } from '../domain/configurations'
 import { gameLog } from '../domain/gameLog'
 import { QUESTIONS } from '../domain/questionnaire'
 import { drawRandom } from '../domain/randomChoose'
-import { dedupeBySpirit, recommend, type Weights } from '../domain/recommend'
-import { analyzeTeam, tuneTowardGaps } from '../domain/teamCoverage'
+import { rankForSession, SHORTLIST_SIZE } from '../domain/rankForSession'
+import type { Weights } from '../domain/recommend'
+import { AXES } from '../domain/scoringPrimitives'
+import { analyzeTeam } from '../domain/teamCoverage'
 import { tierStore } from '../domain/tierStore'
 import { COMPLEXITIES } from '../domain/types'
 import type { Complexity, OCFDU, Spirit } from '../domain/types'
-import { selectWildcard } from '../domain/wildcard'
 import { whyYou } from '../domain/whyYou'
 import { SpiritArt } from './SpiritArt'
 
@@ -25,9 +26,6 @@ const CONFIGS_BY_SPIRIT = configurations.reduce<Record<string, Configuration[]>>
   ;(acc[config.spirit.id] ??= []).push(config)
   return acc
 }, {})
-const AXES: (keyof OCFDU)[] = ['offense', 'control', 'fear', 'defense', 'utility']
-/** Deliberately narrow: three picks plus a wildcard, not a menu to agonise over. */
-const SHORTLIST_SIZE = 3
 
 type Phase = 'wizard' | 'board' | 'random' | 'resume'
 
@@ -76,6 +74,13 @@ export function RecommenderProvider({ children, initialPhase }: { children: Reac
     answersStore.save(answers)
   }, [answers])
 
+  // An external write to the persisted answers (e.g. a backup import) re-syncs the provider's
+  // in-memory answers instead of letting the two diverge until a page reload. The save-effect
+  // above feeds back into this subscriber, which bails on reference equality — no loop.
+  useEffect(() => {
+    return answersStore.subscribe((next) => setAnswers(next))
+  }, [])
+
   const value: RecommenderState = {
     phase,
     setPhase,
@@ -104,55 +109,29 @@ export function RecommenderProvider({ children, initialPhase }: { children: Reac
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>
 }
 
-/** Everything the ranking depends on, derived once and shared by both panes. */
+/** Everything the ranking depends on, derived once and shared by both panes. The pipeline
+ * itself lives in `rankForSession` — a pure, directly-tested module — and this hook just
+ * snapshots the session's store-derived inputs and calls it. The answers store additionally
+ * pushes changes to the provider, so a backup import mid-session can never leave persisted and
+ * in-memory answers diverged. */
 function useRanking() {
   const { answers, teamIds, tuned, wildcardOffset, hardFilter } = useRecommender()
 
-  const prefs = useMemo(() => answersToWeights(answers), [answers])
-  const roleGaps = useMemo(
-    () => analyzeTeam(spirits.filter((s) => teamIds.includes(s.id))).roleGaps,
-    [teamIds],
-  )
-  const weights = useMemo(
-    () => (tuned ? tuneTowardGaps(prefs.weights, roleGaps) : prefs.weights),
-    [prefs.weights, roleGaps, tuned],
-  )
-  // Reads complexityStore, collectionStore, tierStore and gameLog - all mutable - but depends
-  // only on [prefs, weights, hardFilter]. Correct today only because App.tsx unmounts
-  // RecommenderMain (and this hook with it) on every tab switch, so a stale read here never
-  // survives to be seen; it is not safe to call this hook from a component that stays mounted
-  // while those stores change.
-  const excluded = collectionStore.getExcluded()
-  const ranked = useMemo(() => {
-    const allConfigs = expand(spirits, complexityStore.getAll())
-    // v5 #07b: hard-filter (#06's opt-in) removes unowned configurations from the candidate
-    // pool *before* recommend() ever sees them - the same pre-ranking filter #07a's tier board
-    // already applies, so an untouched collection (excluded.length === 0) is a no-op and
-    // reproduces today's ranking exactly, and a full collection excludes always fills the
-    // shortlist rather than handing back a short one.
-    const configsForRanking = candidatesForRecommender(allConfigs, hardFilter, new Set(excluded))
-    const timesPlayed = Object.fromEntries(
-      configsForRanking.map((c) => [c.configId, gameLog.timesPlayed(c.configId)]),
-    )
-    return dedupeBySpirit(
-      recommend(configsForRanking, weights, {
-        tempo: prefs.tempo,
-        boardControl: prefs.boardControl,
-        complexityImportance: prefs.complexityImportance,
-        complexityCeiling: prefs.complexityCeiling,
+  return useMemo(
+    () =>
+      rankForSession({
+        answers,
+        complexityOverrides: complexityStore.getAll(),
+        excluded: new Set(collectionStore.getExcluded()),
+        timesPlayed: Object.fromEntries(configurations.map((c) => [c.configId, gameLog.timesPlayed(c.configId)])),
         tierPrior: tierStore.getRankPrior(),
-        tierKnob: prefs.tierKnob,
-        timesPlayed,
+        teamIds,
+        tuned,
+        wildcardOffset,
+        hardFilter,
       }),
-    )
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- excluded is a snapshot array, compared by identity is wrong; hardFilter/prefs/weights already cover every case that changes it in-session.
-  }, [prefs, weights, hardFilter])
-  const wildcard = useMemo(
-    () => selectWildcard(ranked, weights, prefs.complexityCeiling, wildcardOffset),
-    [ranked, weights, prefs.complexityCeiling, wildcardOffset],
+    [answers, teamIds, tuned, wildcardOffset, hardFilter],
   )
-
-  return { prefs, weights, roleGaps, ranked, wildcard, excluded: new Set(excluded) }
 }
 
 /* ------------------------------ sidebar ------------------------------ */
@@ -345,8 +324,7 @@ function ResultRow({
 
 function ResultsBoard({ onSelectConfiguration }: { onSelectConfiguration?: (configId: string) => void }) {
   const { setPhase, rerollWildcard, hardFilter, setHardFilter } = useRecommender()
-  const { weights, ranked, wildcard, excluded } = useRanking()
-  const shortlist = ranked.slice(0, SHORTLIST_SIZE)
+  const { weights, shortlist, wildcard, excluded } = useRanking()
   const tiers = tierStore.getAll()
 
   return (

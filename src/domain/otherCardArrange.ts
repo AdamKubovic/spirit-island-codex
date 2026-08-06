@@ -1,11 +1,15 @@
-import { subtypeLabel } from '../components/tagColors'
-import { BLIGHT_TAGS, EVENT_CLASSES, EXPANSIONS, FEAR_TAGS, type BlightTag, type EventClass, type FearTag, type OtherCard } from './types'
+import { groupByExpansion } from './cardBrowse'
+import { BLIGHT_TAGS, EVENT_CLASSES, FEAR_TAGS, type BlightTag, type EventClass, type FearTag, type OtherCard } from './types'
 
 export type OtherGroup = 'none' | 'expansion' | 'subtype'
 
 export interface OtherCardGroup {
+  /** For expansion groups the canonical/raw expansion string. For subtype groups the RAW tag
+   * key (e.g. `removal`) or the literal `unclassified` — the human label and the blight
+   * "(judgment)" suffix are applied at render time, never decided here. */
   label: string
-  /** Set when grouped by subtype — the raw fear/blight/event tag; absent for expansion groups and Unclassified. */
+  /** Set when grouped by subtype — the raw fear/blight/event tag; absent for expansion groups
+   * and Unclassified. */
   subtype?: FearTag | BlightTag | EventClass
   cards: OtherCard[]
 }
@@ -19,18 +23,7 @@ function subtypesOf(card: OtherCard): (FearTag | BlightTag | EventClass)[] {
  * stays power-only (archive-grouping #03). */
 export function groupOtherCards(cards: OtherCard[], group: Exclude<OtherGroup, 'none'>): OtherCardGroup[] {
   if (group === 'expansion') {
-    const byExpansion = new Map<string, OtherCard[]>()
-    for (const card of cards) {
-      const bucket = byExpansion.get(card.expansion)
-      if (bucket) bucket.push(card)
-      else byExpansion.set(card.expansion, [card])
-    }
-    const canonicalSet: ReadonlySet<string> = new Set(EXPANSIONS)
-    const canonical = EXPANSIONS.filter((exp) => byExpansion.has(exp)).map((exp) => ({ label: exp, cards: byExpansion.get(exp)! }))
-    const raw = [...byExpansion.keys()]
-      .filter((label) => !canonicalSet.has(label))
-      .map((label) => ({ label, cards: byExpansion.get(label)! }))
-    return [...canonical, ...raw]
+    return groupByExpansion(cards)
   }
 
   // 'subtype': fear/blight are multi-valued (the `element` pattern — a card appears under EVERY
@@ -41,21 +34,19 @@ export function groupOtherCards(cards: OtherCard[], group: Exclude<OtherGroup, '
   // `groupPowerCards` makes about its own input.
   const kind = cards[0]?.kind
   if (kind === undefined) return []
-  const isJudgment = kind === 'blight'
   const canonicalOrder: readonly (FearTag | BlightTag | EventClass)[] =
     kind === 'fear' ? FEAR_TAGS : kind === 'blight' ? BLIGHT_TAGS : EVENT_CLASSES
-  const label = (text: string) => (isJudgment ? `${text} (judgment)` : text)
 
   const groups: OtherCardGroup[] = canonicalOrder
     .map((tag) => ({
-      label: label(subtypeLabel(tag)),
+      label: tag,
       subtype: tag,
       cards: cards.filter((c) => subtypesOf(c).includes(tag)),
     }))
     .filter((g) => g.cards.length > 0)
 
   const unclassified = cards.filter((c) => subtypesOf(c).length === 0)
-  if (unclassified.length > 0) groups.push({ label: label('Unclassified'), cards: unclassified })
+  if (unclassified.length > 0) groups.push({ label: 'unclassified', cards: unclassified })
 
   return groups
 }

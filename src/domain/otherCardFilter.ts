@@ -1,3 +1,4 @@
+import { matchName } from './cardBrowse'
 import type { BlightTag, EventClass, FearTag, OtherCard } from './types'
 
 /**
@@ -32,7 +33,6 @@ function matchesTags<T extends string>(cardTags: T[], selected: (T | 'unclassifi
 }
 
 export function filterOtherCards(cards: OtherCard[], filter: OtherCardFilterState): OtherCard[] {
-  const name = filter.name?.trim().toLowerCase()
   return cards.filter((card) => {
     if (filter.expansion && card.expansion !== filter.expansion) return false
     if (filter.fearTags && filter.fearTags.length > 0) {
@@ -44,7 +44,7 @@ export function filterOtherCards(cards: OtherCard[], filter: OtherCardFilterStat
     if (filter.eventClass) {
       if (card.kind !== 'event' || card.eventClass !== filter.eventClass) return false
     }
-    if (name && !card.name.toLowerCase().includes(name)) return false
+    if (!matchName(filter.name, card.name)) return false
     return true
   })
 }

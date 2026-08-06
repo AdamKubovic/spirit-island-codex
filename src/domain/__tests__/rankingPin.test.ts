@@ -1,36 +1,31 @@
 import { describe, expect, it } from 'vitest'
-import spiritsData from '../../data/spirits.json'
-import { answersToWeights } from '../answersToWeights'
-import { expand } from '../configurations'
-import { dedupeBySpirit, recommend } from '../recommend'
+import { rankForSession } from '../rankForSession'
 import { memoryStorage } from '../storage'
 import { createTierStore } from '../tierStore'
-import type { Spirit } from '../types'
-
-const spirits = spiritsData as Spirit[]
 
 /**
  * Phase 4 #10: the player-count input was removed from the recommender. It was never an input
- * to answersToWeights, recommend, or dedupeBySpirit, so its removal must not move the ranking.
- * This pins the full ranking pipeline over the real dataset — the exact wiring `useRanking()`
- * performs on a fresh visit (default tier prior, no plays, no overrides) — with values captured
- * BEFORE the removal. If a later change makes any ranking input implicit (a player count, a
- * viewport, a clock), this fails. Model: the collection-ranking regression test
+ * to the ranking pipeline, so its removal must not move the ranking. This pins the full ranking
+ * over the real dataset — the exact wiring `useRanking()` performs on a fresh visit (default tier
+ * prior, no plays, no overrides) — with values captured BEFORE the removal. It calls
+ * `rankForSession` directly, the same module the app's hook calls, so the test stops
+ * re-implementing the wiring by hand. If a later change makes any ranking input implicit (a
+ * player count, a viewport, a clock), this fails. Model: the collection-ranking regression test
  * (recommendCollection.test.ts).
  */
 function rankFor(answers: Record<string, string>) {
-  const prefs = answersToWeights(answers)
   const tierStore = createTierStore(memoryStorage())
-  return dedupeBySpirit(
-    recommend(expand(spirits), prefs.weights, {
-      tempo: prefs.tempo,
-      boardControl: prefs.boardControl,
-      complexityImportance: prefs.complexityImportance,
-      complexityCeiling: prefs.complexityCeiling,
-      tierPrior: tierStore.getRankPrior(),
-      tierKnob: prefs.tierKnob,
-    }),
-  )
+  return rankForSession({
+    answers,
+    complexityOverrides: {},
+    excluded: new Set(),
+    timesPlayed: {},
+    tierPrior: tierStore.getRankPrior(),
+    teamIds: [],
+    tuned: false,
+    wildcardOffset: 0,
+    hardFilter: false,
+  }).ranked
 }
 
 describe('ranking pin: player-count removal changed nothing', () => {

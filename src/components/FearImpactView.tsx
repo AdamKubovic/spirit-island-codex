@@ -3,6 +3,7 @@ import { impactBreakdown, tagImpactBreakdown, type FearCard } from '../domain/im
 import type { Impact } from '../domain/types'
 import { CardChipList } from './CardChipList'
 import { pct, RatingStackedBar } from './RatingStackedBar'
+import { subtypeGroupLabel } from './tagColors'
 import { Term } from './Term'
 
 /** Sequential green ramp (light→dark, magnitude not polarity) — owner-ratified at #04, one hue
@@ -41,8 +42,9 @@ export function FearImpactView({ cards, initialPicked }: { cards: FearCard[]; in
 
   const pickedCards = picked ? cardsFor(picked.impact, picked.tag) : []
   const pickedLabel = picked ? overall.find((b) => b.impact === picked.impact)!.label : undefined
+  const pickedTagLabel = picked && picked.tag ? subtypeGroupLabel(byTag.find((g) => g.label === picked.tag)?.subtype) : undefined
   const pickedTitle = picked
-    ? `${pickedLabel}${picked.tag ? ` × ${picked.tag}` : ''} · ${pickedCards.length} cards (${pct(pickedCards.length, cards.length)})`
+    ? `${pickedLabel}${pickedTagLabel ? ` × ${pickedTagLabel}` : ''} · ${pickedCards.length} cards (${pct(pickedCards.length, cards.length)})`
     : ''
 
   return (
@@ -87,7 +89,7 @@ export function FearImpactView({ cards, initialPicked }: { cards: FearCard[]; in
           <div key={group.label} className="rating-tag-row">
             <div className="deck-pool-row">
               <span className="deck-pool-label">
-                <Term id={group.subtype ? `fear-tag-${group.subtype}` : 'fear-tag-unclassified'}>{group.label}</Term>
+                <Term id={group.subtype ? `fear-tag-${group.subtype}` : 'fear-tag-unclassified'}>{subtypeGroupLabel(group.subtype)}</Term>
               </span>
               <RatingStackedBar
                 segments={group.byImpact.map((b) => ({ key: String(b.impact), label: b.label, count: b.cards.length, color: IMPACT_COLOR[b.impact] }))}

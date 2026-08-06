@@ -1,13 +1,10 @@
 import { useRef, useState } from 'react'
 import spiritsData from '../data/spirits.json'
+import { createBackupService } from '../domain/backupService'
 import { answersStore } from '../domain/answersStore'
-import { parse, serialise } from '../domain/backup'
-import type { KnownIds } from '../domain/backup'
 import { collectionStore } from '../domain/collectionStore'
 import { complexityStore } from '../domain/complexityStore'
-import { expand } from '../domain/configurations'
 import { gameLog } from '../domain/gameLog'
-import { QUESTIONS } from '../domain/questionnaire'
 import { tierStore } from '../domain/tierStore'
 import { COMPLEXITIES, EXPANSIONS, TIER_LIST_SUBJECTS } from '../domain/types'
 import type { Complexity, Spirit } from '../domain/types'
@@ -15,23 +12,16 @@ import { SpiritArt } from './SpiritArt'
 import { SUBJECT_LABEL } from './TierListControls'
 
 const spirits = spiritsData as Spirit[]
-const configurations = expand(spirits)
 
-// A function, not a module-level constant: list ids grow at runtime (#09's created lists), so
-// this must re-read tierStore on every import rather than freezing the set at module load.
-function knownIds(): KnownIds {
-  return {
-    tierIds: new Set(configurations.map((c) => c.configId)),
-    listIds: new Set(tierStore.getLists().map((l) => l.id)),
-    complexityIds: new Set(spirits.map((s) => s.id)),
-    questionIds: new Set(QUESTIONS.map((q) => q.id)),
-    expansions: new Set(EXPANSIONS),
-  }
-}
-
-function ownersListId(): string {
-  return tierStore.getLists().find((l) => l.origin === 'personal')?.id ?? ''
-}
+/** The whole export/import round-trip lives in the domain module; Settings keeps the file
+ * download, the file input, and the confirm-before-replace prompt. */
+const backupService = createBackupService({
+  tiers: tierStore,
+  complexity: complexityStore,
+  collection: collectionStore,
+  answers: answersStore,
+  log: gameLog,
+})
 
 function downloadBackup(json: string) {
   const blob = new Blob([json], { type: 'application/json' })
@@ -80,38 +70,20 @@ export function Settings() {
   }
 
   const handleExport = () => {
-    const tiers: Record<string, Record<string, string>> = {}
-    for (const list of tierStore.getPersonalLists()) {
-      const overrides = tierStore.getOverridesForList(list.id)
-      if (Object.keys(overrides).length > 0) tiers[list.id] = overrides
-    }
-    const json = serialise({
-      tiers,
-      complexityOverrides: complexityStore.getOverrides(),
-      answers: answersStore.load() ?? {},
-      log: gameLog.list(),
-      collection: collectionStore.getExcluded(),
-    })
-    downloadBackup(json)
+    downloadBackup(backupService.export())
   }
 
   const handleImportFile = async (file: File) => {
     setImportMessage(null)
     let result
     try {
-      result = parse(await file.text(), knownIds(), gameLog.list(), ownersListId())
+      result = backupService.parse(await file.text())
     } catch (err) {
       setImportMessage(err instanceof Error ? err.message : 'Could not read that backup file.')
       return
     }
 
-    const hasExistingData =
-      tierStore.hasAnyPersonalEdits() ||
-      complexityStore.isCustomised() ||
-      collectionStore.isCustomised() ||
-      Object.keys(answersStore.load() ?? {}).length > 0 ||
-      gameLog.list().length > 0
-    if (hasExistingData) {
+    if (backupService.hasExistingData()) {
       const ok = window.confirm(
         'Importing will replace your tiers, complexity overrides, collection and answers with ' +
           'the ones in this file. Your game log is merged instead - entries are appended and ' +
@@ -121,20 +93,7 @@ export function Settings() {
       if (!ok) return
     }
 
-    for (const list of tierStore.getPersonalLists()) {
-      tierStore.resetList(list.id)
-    }
-    tierStore.importOverrides(result.state.tiers)
-    complexityStore.resetAll()
-    for (const [spiritId, complexity] of Object.entries(result.state.complexityOverrides)) {
-      complexityStore.setComplexity(spiritId, complexity as Complexity)
-    }
-    answersStore.save(result.state.answers)
-    gameLog.replaceAll(result.state.log)
-    collectionStore.resetAll()
-    for (const expansion of result.state.collection) {
-      collectionStore.setOwned(expansion, false)
-    }
+    backupService.apply(result.state)
     bump()
     setImportMessage(
       result.unresolved.length > 0

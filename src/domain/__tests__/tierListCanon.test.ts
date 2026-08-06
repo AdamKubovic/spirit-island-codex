@@ -7,19 +7,24 @@ import siaRedMajorPowers from '../../data/tier-lists/sia-red-major-powers-2023.j
 import powerCardsData from '../../data/power-cards.json'
 import spiritsData from '../../data/spirits.json'
 import { expand } from '../configurations'
+import { subjectUniverse } from '../tierSubjects'
 import { TIER_LIST_SUBJECTS } from '../types'
 import type { PowerCard, Spirit, TierList, TierListSubject } from '../types'
 
 const spirits = spiritsData as Spirit[]
 const powerCards = powerCardsData as PowerCard[]
 const configIds = new Set(expand(spirits).map((c) => c.configId))
+const MINOR_UNIVERSE = subjectUniverse('minor-powers', expand(spirits), powerCards)
+const MAJOR_UNIVERSE = subjectUniverse('major-powers', expand(spirits), powerCards)
 
 /** The id namespace each subject's tier keys must resolve against (#12/ADR 0002).
- * Card subjects key by card name — the power-card dataset carries no other id. */
+ * Card subjects key by card name — the power-card dataset carries no other id. The namespace
+ * itself is derived from the domain's subject dispatch (one home, so it can't drift from the
+ * board); the count pins below are what make this a tripwire. */
 const KEY_NAMESPACE: Record<TierListSubject, Set<string>> = {
   configurations: configIds,
-  'minor-powers': new Set(powerCards.filter((c) => c.kind === 'minor').map((c) => c.name)),
-  'major-powers': new Set(powerCards.filter((c) => c.kind === 'major').map((c) => c.name)),
+  'minor-powers': new Set(MINOR_UNIVERSE.items.map((c) => MINOR_UNIVERSE.idOf(c))),
+  'major-powers': new Set(MAJOR_UNIVERSE.items.map((c) => MAJOR_UNIVERSE.idOf(c))),
 }
 
 /** Every shipped tier list. Extend this array as new lists land - this test is the tripwire

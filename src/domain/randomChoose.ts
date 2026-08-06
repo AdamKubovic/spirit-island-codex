@@ -1,7 +1,6 @@
 import type { Configuration } from './configurations'
+import { COMPLEXITY_LEVEL } from './scoringPrimitives'
 import type { Complexity } from './types'
-
-const COMPLEXITY_LEVEL: Record<Complexity, number> = { Low: 1, Moderate: 2, High: 3, 'Very High': 4 }
 
 export interface RandomChooseOptions {
   complexityCeiling?: Complexity

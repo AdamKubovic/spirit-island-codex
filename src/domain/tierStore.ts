@@ -4,6 +4,7 @@ import threeMbgStrengthSolo from '../data/tier-lists/3mbg-strength-solo-2025.jso
 import siaMinorPowers from '../data/tier-lists/sia-minor-powers-2023.json'
 import siaRedMajorPowers from '../data/tier-lists/sia-red-major-powers-2023.json'
 import type { Configuration } from './configurations'
+import { createGuardedStore, editsVsSeed } from './guardedStore'
 import { defaultStorage, type KeyValueStorage } from './storage'
 import type { TierList, TierListSubject, TierListType } from './types'
 
@@ -27,74 +28,57 @@ const CUSTOM_LISTS_KEY = 'spirit-island:custom-tier-lists'
 const overridesKey = (listId: string) => `spirit-island:tier-overrides:${listId}`
 const defaultListKey = (subject: TierListSubject) => `spirit-island:default-list-id:${subject}`
 
-/** FNV-1a. Cheap, stable, and we only need change-detection, not cryptography. */
-function fingerprint(input: string): string {
-  let h = 2166136261
-  for (let i = 0; i < input.length; i++) {
-    h ^= input.charCodeAt(i)
-    h = Math.imul(h, 16777619)
-  }
-  return (h >>> 0).toString(36)
-}
-
-/** A list's fingerprint is derived from its own `tiers` content, so unrelated edits to its
- * prose (methodology, name) never spuriously discard a user's overrides. */
-function fingerprintOf(list: TierList): string {
-  return fingerprint(JSON.stringify(list.tiers))
-}
-
-interface StoredOverrides {
-  seed: string
-  overrides: Record<string, string>
-}
-
 export interface CreateListInput {
   name: string
   type: TierListType
   subject: TierListSubject
 }
 
+/** A label's position in a list's own vocabulary — the single "where does this label sit"
+ * computation. The tier prior, the display chips, and the board all derive from it; undefined
+ * when the label isn't in the vocabulary (a stale override). */
+export function tierLabelPosition(label: string, tierLabels: string[]): number | undefined {
+  const index = tierLabels.indexOf(label)
+  return index === -1 ? undefined : index
+}
+
 /** Rank is the label's position in the list's own vocabulary, normalised so 0 is the
  * strongest band and 1 the weakest. A single-band list ranks everything 0 rather than
  * dividing by zero. */
-function rankOf(label: string, tierLabels: string[]): number | undefined {
-  const index = tierLabels.indexOf(label)
-  if (index === -1) return undefined
-  return tierLabels.length <= 1 ? 0 : index / (tierLabels.length - 1)
+export function rankOf(label: string, tierLabels: string[]): number | undefined {
+  const position = tierLabelPosition(label, tierLabels)
+  if (position === undefined) return undefined
+  return tierLabels.length <= 1 ? 0 : position / (tierLabels.length - 1)
 }
 
 /** Seam 4: tier list persistence. A tier list is a cited document (`TierList`), not a flat
  * map — see `.scratch/v3/tier-list-schema.md`. Multiple lists can be shipped; the store holds
  * one *active* list and keys overrides by list id. `origin: 'cited'` lists never take edits. */
 export function createTierStore(storage: KeyValueStorage = defaultStorage(), shippedLists: TierList[] = SHIPPED_LISTS) {
+  const guarded = createGuardedStore(storage)
   // The shipped configurations default (Red's list, id 'owners-board') — the board the app boots
   // into and the tier-vocabulary template new personal lists copy. It was the sole 'personal'
   // shipped list until it was correctly re-credited to Red as a `cited` list (grill 2026-07-23),
   // so it's now pinned by id rather than by a `personal` origin no shipped list carries.
   const ownersBoardList = shippedLists.find((l) => l.id === 'owners-board') ?? shippedLists[0]
 
-  // Sticky for the life of this store instance (one page load) — see tierStore v2's original
-  // rationale, now tracked per list id since a discard on one list must not read as a discard
-  // on another.
-  const discardedListIds = new Set<string>()
+  /** A list's fingerprint is derived from its own `tiers` content, so unrelated edits to its
+   * prose (methodology, name) never spuriously discard a user's overrides. */
+  function fingerprintOf(list: TierList): string {
+    return guarded.fingerprint(JSON.stringify(list.tiers))
+  }
 
   function customLists(): TierList[] {
-    const raw = storage.getItem(CUSTOM_LISTS_KEY)
-    if (!raw) return []
-    try {
-      const parsed = JSON.parse(raw)
-      if (!Array.isArray(parsed)) return []
-      // #12 backfill: lists created before the subject axis existed could only ever rank
-      // configurations — stamping that is recorded fact, not a guess. Without it a pre-#12
-      // personal list has subject undefined and could never be activated again.
-      return (parsed as TierList[]).map((l) => (l.subject ? l : { ...l, subject: 'configurations' }))
-    } catch {
-      return []
-    }
+    const parsed = guarded.readPlain<unknown>(CUSTOM_LISTS_KEY, null)
+    if (!Array.isArray(parsed)) return []
+    // #12 backfill: lists created before the subject axis existed could only ever rank
+    // configurations — stamping that is recorded fact, not a guess. Without it a pre-#12
+    // personal list has subject undefined and could never be activated again.
+    return (parsed as TierList[]).map((l) => (l.subject ? l : { ...l, subject: 'configurations' }))
   }
 
   function writeCustomLists(lists: TierList[]): void {
-    storage.setItem(CUSTOM_LISTS_KEY, JSON.stringify(lists))
+    guarded.writePlain(CUSTOM_LISTS_KEY, lists)
   }
 
   function allLists(): TierList[] {
@@ -106,8 +90,7 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
   }
 
   function writeOverridesFor(list: TierList, overrides: Record<string, string>): void {
-    const payload: StoredOverrides = { seed: fingerprintOf(list), overrides }
-    storage.setItem(overridesKey(list.id), JSON.stringify(payload))
+    guarded.write(overridesKey(list.id), fingerprintOf(list), overrides)
   }
 
   /**
@@ -120,27 +103,19 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
     // on the read path too, so stale overrides (e.g. from before a list was re-credited from
     // personal to cited) can never shadow the citation via getAll/getTier.
     if (list.origin === 'cited') return {}
-    const raw = storage.getItem(overridesKey(list.id))
-    if (!raw) return {}
-    let parsed: unknown
-    try {
-      parsed = JSON.parse(raw)
-    } catch {
-      return {}
-    }
-    const stored = parsed as Partial<StoredOverrides>
-    if (stored?.seed !== fingerprintOf(list) || !stored.overrides) {
-      storage.removeItem(overridesKey(list.id))
-      discardedListIds.add(list.id)
-      return {}
-    }
-    return stored.overrides
+    return guarded.read(overridesKey(list.id), fingerprintOf(list), {})
   }
 
   function userEditsFor(list: TierList): Record<string, string> {
-    return Object.fromEntries(
-      Object.entries(readOverridesFor(list)).filter(([id, label]) => label !== list.tiers[id]),
-    )
+    return editsVsSeed(readOverridesFor(list), list.tiers)
+  }
+
+  /** Shared by `clearTier` and `setTier`'s unrated routing — one copy of the clear logic. */
+  function clearTierInternal(key: string, list: TierList): void {
+    const overrides = readOverridesFor(list)
+    if (list.tiers[key] === undefined) delete overrides[key]
+    else overrides[key] = UNRATED_OVERRIDE
+    writeOverridesFor(list, overrides)
   }
 
   /**
@@ -153,17 +128,17 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
   function migrateV2Overrides(): void {
     const raw = storage.getItem(OLD_V2_KEY)
     if (raw === null) return
-    storage.removeItem(OLD_V2_KEY)
+    guarded.remove(OLD_V2_KEY)
     let parsed: unknown
     try {
       parsed = JSON.parse(raw)
     } catch {
-      discardedListIds.add(ownersBoardList.id)
+      guarded.reportDiscard(overridesKey(ownersBoardList.id))
       return
     }
     const stored = parsed as { overrides?: unknown }
     if (!stored || typeof stored.overrides !== 'object' || stored.overrides === null) {
-      discardedListIds.add(ownersBoardList.id)
+      guarded.reportDiscard(overridesKey(ownersBoardList.id))
       return
     }
     const overrides: Record<string, string> = {}
@@ -224,9 +199,6 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
     getLists(): TierList[] {
       return allLists()
     },
-    getActiveListId(): string {
-      return activeList().id
-    },
     getActiveList(): TierList {
       return activeList()
     },
@@ -261,6 +233,13 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
     setTier(key: string, label: string, subject: TierListSubject = 'configurations'): void {
       const list = activeListFor(subject)
       if (!list || list.origin === 'cited') return
+      if (label === UNRATED_OVERRIDE) {
+        // The empty sentinel means "un-rated" — route to clear so a no-op edit (storing ''
+        // where the seed never rated the key) never persists as a real edit. Owned here so no
+        // caller re-encodes the empty-string→unrated rule.
+        clearTierInternal(key, list)
+        return
+      }
       const overrides = readOverridesFor(list)
       overrides[key] = label
       writeOverridesFor(list, overrides)
@@ -270,20 +249,17 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
     clearTier(key: string, subject: TierListSubject = 'configurations'): void {
       const list = activeListFor(subject)
       if (!list || list.origin === 'cited') return
-      const overrides = readOverridesFor(list)
-      if (list.tiers[key] === undefined) delete overrides[key]
-      else overrides[key] = UNRATED_OVERRIDE
-      writeOverridesFor(list, overrides)
+      clearTierInternal(key, list)
     },
     /** Resets only the subject's active list; other lists' overrides are untouched. */
     reset(subject: TierListSubject = 'configurations'): void {
       const list = activeListFor(subject)
-      if (list) storage.removeItem(overridesKey(list.id))
+      if (list) guarded.remove(overridesKey(list.id))
     },
     /** Resets an arbitrary list by id, without switching which list is active. Used by backup
      * import, which replaces every personal list's overrides in one pass. */
     resetList(listId: string): void {
-      storage.removeItem(overridesKey(listId))
+      guarded.remove(overridesKey(listId))
     },
     getAll(subject: TierListSubject = 'configurations'): Record<string, string> {
       const list = activeListFor(subject)
@@ -310,11 +286,11 @@ export function createTierStore(storage: KeyValueStorage = defaultStorage(), shi
       const list = activeListFor(subject)
       if (!list) return false
       readOverridesFor(list)
-      return discardedListIds.has(list.id)
+      return guarded.wasDiscarded(overridesKey(list.id))
     },
     dismissDiscardNotice(subject: TierListSubject = 'configurations'): void {
       const list = activeListFor(subject)
-      if (list) discardedListIds.delete(list.id)
+      if (list) guarded.dismissDiscard(overridesKey(list.id))
     },
     /** Normalised rank (0 strongest .. 1 weakest) for every configuration the active list has
      * rated, computed against that list's own `tierLabels`. Unrated configurations have no

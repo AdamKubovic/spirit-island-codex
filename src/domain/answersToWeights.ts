@@ -1,4 +1,5 @@
 import { QUESTIONS } from './questionnaire'
+import { AXES } from './scoringPrimitives'
 import type { Complexity, OCFDU } from './types'
 
 export type Answers = Record<string, string>
@@ -10,10 +11,7 @@ export interface DerivedPreferences {
   complexityImportance: number
   complexityCeiling: Complexity
   tierKnob: number
-  elementAffinity: string[]
 }
-
-const WEIGHT_AXES: (keyof OCFDU)[] = ['offense', 'control', 'fear', 'defense', 'utility']
 
 export function answersToWeights(answers: Answers): DerivedPreferences {
   const prefs: DerivedPreferences = {
@@ -23,7 +21,6 @@ export function answersToWeights(answers: Answers): DerivedPreferences {
     complexityImportance: 0.5,
     complexityCeiling: 'Very High',
     tierKnob: 0.5,
-    elementAffinity: [],
   }
 
   for (const question of QUESTIONS) {
@@ -32,9 +29,7 @@ export function answersToWeights(answers: Answers): DerivedPreferences {
     if (!option) continue
 
     for (const [key, value] of Object.entries(option.delta)) {
-      if (key === 'elementAffinity') {
-        prefs.elementAffinity = [...prefs.elementAffinity, ...(value as string[])]
-      } else if (WEIGHT_AXES.includes(key as keyof OCFDU)) {
+      if (AXES.includes(key as keyof OCFDU)) {
         prefs.weights[key as keyof OCFDU] += value as number
       } else {
         // tempo, boardControl accumulate; complexityImportance/complexityCeiling/tierKnob are single-source, so assignment is equivalent to accumulation
@@ -47,7 +42,7 @@ export function answersToWeights(answers: Answers): DerivedPreferences {
     }
   }
 
-  for (const axis of WEIGHT_AXES) {
+  for (const axis of AXES) {
     prefs.weights[axis] = Math.max(0, prefs.weights[axis])
   }
 

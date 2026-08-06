@@ -3,6 +3,7 @@ import type { Valence } from '../domain/types'
 import { classValenceBreakdown, valenceBreakdown, type EventCard } from '../domain/valenceBreakdown'
 import { CardChipList } from './CardChipList'
 import { pct, RatingStackedBar } from './RatingStackedBar'
+import { subtypeGroupLabel } from './tagColors'
 import { Term } from './Term'
 
 /** Diverging poles, owner-ratified at PRD-2/#04 — harmful warm-orange / beneficial cool-blue
@@ -42,8 +43,9 @@ export function EventValenceView({ cards, initialPicked }: { cards: EventCard[];
   }
 
   const pickedCards = picked ? cardsFor(picked.valence, picked.eventClass) : []
+  const pickedClassLabel = picked && picked.eventClass ? subtypeGroupLabel(byClass.find((g) => g.label === picked.eventClass)?.subtype) : undefined
   const pickedTitle = picked
-    ? `${VALENCE_LABEL[picked.valence]}${picked.eventClass ? ` × ${picked.eventClass}` : ''} · ${pickedCards.length} cards (${pct(pickedCards.length, cards.length)})`
+    ? `${VALENCE_LABEL[picked.valence]}${pickedClassLabel ? ` × ${pickedClassLabel}` : ''} · ${pickedCards.length} cards (${pct(pickedCards.length, cards.length)})`
     : ''
 
   return (
@@ -88,7 +90,7 @@ export function EventValenceView({ cards, initialPicked }: { cards: EventCard[];
           <div key={group.label} className="rating-tag-row">
             <div className="deck-pool-row">
               <span className="deck-pool-label">
-                <Term id={group.subtype ? `event-class-${group.subtype}` : 'event-class-unclassified'}>{group.label}</Term>
+                <Term id={group.subtype ? `event-class-${group.subtype}` : 'event-class-unclassified'}>{subtypeGroupLabel(group.subtype)}</Term>
               </span>
               <RatingStackedBar
                 segments={group.byValence.map((b) => ({ key: b.valence, label: VALENCE_LABEL[b.valence], count: b.cards.length, color: VALENCE_COLOR[b.valence] }))}

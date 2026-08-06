@@ -1,4 +1,5 @@
-import { ELEMENTS, EXPANSIONS, type PowerCard } from './types'
+import { groupByExpansion } from './cardBrowse'
+import { ELEMENTS, type PowerCard } from './types'
 
 export type PowerSort = 'none' | 'cost-asc' | 'cost-desc' | 'name-asc' | 'name-desc'
 export type PowerGroup = 'none' | 'cost' | 'speed' | 'element' | 'expansion' | 'type'
@@ -34,18 +35,7 @@ export function groupPowerCards(cards: PowerCard[], group: Exclude<PowerGroup, '
       .filter((g) => g.cards.length > 0)
   }
   if (group === 'expansion') {
-    const byExpansion = new Map<string, PowerCard[]>()
-    for (const card of cards) {
-      const bucket = byExpansion.get(card.expansion)
-      if (bucket) bucket.push(card)
-      else byExpansion.set(card.expansion, [card])
-    }
-    const canonicalSet: ReadonlySet<string> = new Set(EXPANSIONS)
-    const canonical = EXPANSIONS.filter((exp) => byExpansion.has(exp)).map((exp) => ({ label: exp, cards: byExpansion.get(exp)! }))
-    const raw = [...byExpansion.keys()]
-      .filter((label) => !canonicalSet.has(label))
-      .map((label) => ({ label, cards: byExpansion.get(label)! }))
-    return [...canonical, ...raw]
+    return groupByExpansion(cards)
   }
   if (group === 'type') {
     return CARD_KIND_ORDER.map((kind) => ({ label: kind, cards: cards.filter((c) => c.kind === kind) })).filter(

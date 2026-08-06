@@ -1,18 +1,8 @@
 import { useState } from 'react'
-import type { Element, PowerCard } from '../domain/types'
+import type { PowerCard } from '../domain/types'
 import { CardViewer } from './CardViewer'
+import { ElementIcon } from './ElementIcon'
 import { cardKindColor, cardSpeedColor, expansionColorFor } from './tagColors'
-
-const ELEMENT_ICON: Record<Element, string> = {
-  Sun: 'sun',
-  Moon: 'moon',
-  Fire: 'fire',
-  Air: 'air',
-  Water: 'water',
-  Earth: 'earth',
-  Plant: 'plant',
-  Animal: 'animal',
-}
 
 /** Compact-rows view of the Cards tab (v4 #04 variant B) — scans fast at 375px. Tap opens the
  * same CardViewer the grid uses. Real in-game element icons, not emoji (owner's request after
@@ -49,7 +39,7 @@ export function CardRows({ cards }: { cards: PowerCard[] }) {
               </span>
               <span className="card-row-elements">
                 {card.elements.map((e, i) => (
-                  <img key={`${e}-${i}`} src={`${base}elements/${ELEMENT_ICON[e]}.webp`} alt={e} className="card-row-element-icon" />
+                  <ElementIcon key={`${e}-${i}`} element={e} className="card-row-element-icon" />
                 ))}
               </span>
               <span className="card-row-cost">{card.cost}</span>

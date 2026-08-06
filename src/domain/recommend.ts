@@ -1,4 +1,5 @@
 import type { Configuration } from './configurations'
+import { AXES, COMPLEXITY_LEVEL } from './scoringPrimitives'
 import type { Complexity, OCFDU } from './types'
 
 export type Weights = Partial<OCFDU>
@@ -30,9 +31,6 @@ export interface RankedConfiguration {
   score: number
 }
 
-const AXES: (keyof OCFDU)[] = ['offense', 'control', 'fear', 'defense', 'utility']
-
-const COMPLEXITY_LEVEL: Record<Complexity, number> = { Low: 1, Moderate: 2, High: 3, 'Very High': 4 }
 // Mid-scale on the 0 (strongest) .. 1 (weakest) rank domain, so an untiered configuration is
 // neither promoted nor buried by the prior.
 const NEUTRAL_TIER_VALUE = 0.5

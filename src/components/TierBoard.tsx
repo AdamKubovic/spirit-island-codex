@@ -5,6 +5,7 @@ import { collectionStore, filterOwnedConfigurations, isCardOwned, isConfiguratio
 import { expand, type Configuration } from '../domain/configurations'
 import { powerCardGallery, type GalleryImage } from '../domain/gallerySequence'
 import { groupByTier, tierStore } from '../domain/tierStore'
+import { subjectUniverse } from '../domain/tierSubjects'
 import type { PowerCard, Spirit, TierList, TierListSubject } from '../domain/types'
 import { CardViewer } from './CardViewer'
 import { SpiritArt } from './SpiritArt'
@@ -17,17 +18,6 @@ import { useGalleryArrows } from './useGalleryArrows'
 const spirits = spiritsData as Spirit[]
 const configurations = expand(spirits)
 const powerCards = powerCardsData as PowerCard[]
-
-/** The rateable universe per card subject, keyed by card name (#12/ADR 0002: the power-card
- * dataset carries no other id). */
-const CARD_POOLS: Record<'minor-powers' | 'major-powers', PowerCard[]> = {
-  'minor-powers': powerCards.filter((c) => c.kind === 'minor'),
-  'major-powers': powerCards.filter((c) => c.kind === 'major'),
-}
-
-function subjectTotal(subject: TierListSubject): number {
-  return subject === 'configurations' ? configurations.length : CARD_POOLS[subject].length
-}
 
 /** Edit-mode controls for one tile (#15): reassign its tier, or send it to Unrated. Rendered
  * only when the viewed list is personal — the store refuses cited edits, the UI never offers
@@ -264,7 +254,15 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
     setEnlarged((current) => (current ? { ...current, index: next } : current)),
   )
 
-  const viewed: TierList = tierStore.getActiveListFor(viewedSubject) ?? tierStore.getActiveList()
+  const viewed: TierList | undefined = tierStore.getActiveListFor(viewedSubject)
+  if (viewed === undefined) {
+    return (
+      <section>
+        <h2>Tier list</h2>
+        <p className="meta">No tier list exists for this subject.</p>
+      </section>
+    )
+  }
   const subject = viewed.subject
   const customised = tierStore.isCustomised(subject)
   const excluded = new Set(collectionStore.getExcluded())
@@ -273,10 +271,11 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
   const canEdit = viewed.origin === 'personal'
   const editingHere = editing && canEdit
   const tiers = tierStore.getAll(subject)
+  // Subject dispatch lives in the domain: which items, their id namespace, their universe size.
+  const { idOf, items, total } = subjectUniverse(subject, configurations, powerCards)
 
   const assign = (key: string) => (label: string) => {
-    if (label === '') tierStore.clearTier(key, subject)
-    else tierStore.setTier(key, label, subject)
+    tierStore.setTier(key, label, subject)
     bump()
   }
 
@@ -322,7 +321,7 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
   const groups =
     subject === 'configurations'
       ? groupByTier(visibleConfigurations, (c) => c.configId, tiers, viewed.tierLabels)
-      : groupByTier(CARD_POOLS[subject], (c) => c.name, tiers, viewed.tierLabels)
+      : groupByTier(items as PowerCard[], idOf as (item: PowerCard) => string, tiers, viewed.tierLabels)
   const tilesFor = (items: (Configuration | PowerCard)[], current: string) =>
     subject === 'configurations'
       ? configTiles(items as Configuration[], current)
@@ -333,7 +332,7 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
       <h2>Tier list</h2>
       <TierListControls
         viewed={viewed}
-        total={subjectTotal(subject)}
+        total={total}
         allowCreate
         onSelect={(list) => {
           tierStore.setActiveListId(list.id)
@@ -434,7 +433,7 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
           <div className="tier-tiles">
             <p className="tier-empty meta">
               Not rated by this source — different from rated badly. {groups.unrated.length} of{' '}
-              {subjectTotal(subject)} {subject === 'configurations' ? 'configurations' : 'cards'} here.
+              {total} {subject === 'configurations' ? 'configurations' : 'cards'} here.
             </p>
             {tilesFor(groups.unrated, '')}
           </div>

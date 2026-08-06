@@ -1,4 +1,4 @@
-import { tierStore } from '../domain/tierStore'
+import { tierLabelPosition, tierStore } from '../domain/tierStore'
 
 /** Sampled from the owner's TierMaker board so the in-app board reads the same. Indexed by a
  * label's *position* in a list's own `tierLabels`, not by the letter itself - no component
@@ -17,6 +17,6 @@ export function tierColor(position: number): string {
 export function activeConfigTier(configId: string): { label: string; position: number } | undefined {
   const label = tierStore.getTier(configId)
   if (label === undefined) return undefined
-  const position = tierStore.getActiveList().tierLabels.indexOf(label)
-  return position === -1 ? undefined : { label, position }
+  const position = tierLabelPosition(label, tierStore.getActiveList().tierLabels)
+  return position === undefined ? undefined : { label, position }
 }

@@ -1,6 +1,7 @@
 import type { OCFDU } from './types'
+import { AXES } from './scoringPrimitives'
 
-export const AXES: (keyof OCFDU)[] = ['offense', 'control', 'fear', 'defense', 'utility']
+export { AXES }
 
 export const AXIS_LABEL: Record<keyof OCFDU, string> = {
   offense: 'aggression',

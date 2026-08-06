@@ -1,3 +1,4 @@
+import { matchName } from './cardBrowse'
 import type { Element, PowerCard } from './types'
 
 /**
@@ -24,14 +25,13 @@ export interface PowerCardFilterState {
 export const EMPTY_POWER_CARD_FILTER: PowerCardFilterState = { elements: [], kinds: [] }
 
 export function filterPowerCards(cards: PowerCard[], filter: PowerCardFilterState): PowerCard[] {
-  const name = filter.name?.trim().toLowerCase()
   return cards.filter((card) => {
     if (filter.elements.length > 0 && !filter.elements.every((e) => card.elements.includes(e))) return false
     if (filter.maxCost !== undefined && card.cost > filter.maxCost) return false
     if (filter.speed && card.speed !== filter.speed) return false
     if (filter.kinds.length > 0 && !filter.kinds.includes(card.kind)) return false
     if (filter.expansion && card.expansion !== filter.expansion) return false
-    if (name && !card.name.toLowerCase().includes(name)) return false
+    if (!matchName(filter.name, card.name)) return false
     return true
   })
 }

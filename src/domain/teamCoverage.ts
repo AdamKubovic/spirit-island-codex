@@ -1,5 +1,5 @@
-import { AXES } from './axisLabels'
 import type { Weights } from './recommend'
+import { AXES } from './scoringPrimitives'
 import type { OCFDU, Spirit } from './types'
 
 export interface TeamCoverage {

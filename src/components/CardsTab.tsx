@@ -2,12 +2,15 @@ import { useMemo, useState } from 'react'
 import { ADVERSARIES } from '../domain/adversaries'
 import otherCardsData from '../data/other-cards.json'
 import powerCardsData from '../data/power-cards.json'
-import { groupOtherCards, type OtherGroup } from '../domain/otherCardArrange'
-import { EMPTY_OTHER_CARD_FILTER, filterOtherCards, type OtherCardFilterState } from '../domain/otherCardFilter'
-import { groupPowerCards, sortPowerCards, type PowerGroup, type PowerSort } from '../domain/powerCardArrange'
-import { EMPTY_POWER_CARD_FILTER, filterPowerCards, type PowerCardFilterState } from '../domain/powerCardFilter'
+import { browseOtherCards } from '../domain/browseOtherCards'
+import { browsePowerCards } from '../domain/browsePowerCards'
+import { EMPTY_OTHER_CARD_FILTER, type OtherCardFilterState } from '../domain/otherCardFilter'
+import type { OtherCardGroup, OtherGroup } from '../domain/otherCardArrange'
+import { EMPTY_POWER_CARD_FILTER, type PowerCardFilterState } from '../domain/powerCardFilter'
+import type { PowerGroup, PowerSort } from '../domain/powerCardArrange'
 import { SCENARIOS } from '../domain/scenarios'
 import type { OtherCard, PowerCard } from '../domain/types'
+import { subtypeGroupLabel } from './tagColors'
 import { AdversaryGrid } from './AdversaryGrid'
 import { AdversaryRows } from './AdversaryRows'
 import { CardFilters } from './CardFilters'
@@ -45,6 +48,15 @@ function isOtherSegment(segment: Segment): segment is 'Fear' | 'Events' | 'Bligh
   return segment === 'Fear' || segment === 'Events' || segment === 'Blight'
 }
 
+/** The group header for a fear/event/blight group: the domain hands back raw subtype keys, so
+ * the human label and blight's "(judgment)" provenance note are applied here at render time. */
+function otherGroupTitle(group: OtherCardGroup, kind: OtherCard['kind']): string {
+  const suffix = kind === 'blight' ? ' (judgment)' : ''
+  if (group.subtype !== undefined) return `${subtypeGroupLabel(group.subtype)}${suffix}`
+  if (group.label === 'unclassified') return `Unclassified${suffix}`
+  return group.label
+}
+
 type View = 'grid' | 'rows'
 
 /** v4 #11/#12/#13, v5 #05a/#05b: the Archive — all 471 cards plus the 8 adversaries and 16
@@ -62,23 +74,28 @@ export function CardsTab() {
   const [otherGroup, setOtherGroup] = useState<OtherGroup>('none')
   const [adversaryExpansion, setAdversaryExpansion] = useState<string>('')
 
-  // phase-4 #19: the Powers pipeline is filter → sort → group; the locked call keeps every other
-  // segment's ordering untouched (their data can't support more).
-  const shownPowerCards = useMemo(() => sortPowerCards(filterPowerCards(powerCards, powerFilter), powerSort), [powerFilter, powerSort])
-  const powerGroups = useMemo(
-    () => (powerGroup === 'none' ? null : groupPowerCards(shownPowerCards, powerGroup)),
-    [shownPowerCards, powerGroup],
+  // phase-4 #19: the Powers pipeline is filter → sort → group, composed in the domain module
+  // (`browsePowerCards`); the locked call keeps every other segment's ordering untouched (their
+  // data can't support more).
+  const powerResult = useMemo(
+    () => browsePowerCards(powerCards, powerFilter, powerSort, powerGroup),
+    [powerFilter, powerSort, powerGroup],
   )
+  const shownPowerCards = powerResult.cards
+  const powerGroups = powerResult.groups
 
-  const segmentOtherCards = useMemo(
-    () => (isOtherSegment(segment) ? otherCards.filter((c) => c.kind === OTHER_KIND_BY_SEGMENT[segment]) : []),
-    [segment],
+  // The fear/event/blight pipeline slices to the segment's kind, then filter → group
+  // (`browseOtherCards`); the filter control's expansion options read the pre-filter slice.
+  const otherResult = useMemo(
+    () => (isOtherSegment(segment) ? browseOtherCards(otherCards, OTHER_KIND_BY_SEGMENT[segment], otherFilter, otherGroup) : null),
+    [segment, otherFilter, otherGroup],
   )
-  const otherExpansions = useMemo(() => [...new Set(segmentOtherCards.map((c) => c.expansion))].sort(), [segmentOtherCards])
-  const shownOtherCards = useMemo(() => filterOtherCards(segmentOtherCards, otherFilter), [segmentOtherCards, otherFilter])
-  const otherGroups = useMemo(
-    () => (otherGroup === 'none' ? null : groupOtherCards(shownOtherCards, otherGroup)),
-    [shownOtherCards, otherGroup],
+  const segmentOtherCards = otherResult?.segmented ?? []
+  const shownOtherCards = otherResult?.cards ?? []
+  const otherGroups = otherResult?.groups ?? null
+  const otherExpansions = useMemo(
+    () => (otherResult ? [...new Set(otherResult.segmented.map((c) => c.expansion))].sort() : []),
+    [otherResult],
   )
 
   const shownAdversaries = useMemo(
@@ -210,7 +227,7 @@ export function CardsTab() {
       ) : isOtherSegment(segment) && otherGroups ? (
         otherGroups.map((group) => (
           <section key={group.label} className="card-group">
-            <h3>{group.label}</h3>
+            <h3>{otherGroupTitle(group, OTHER_KIND_BY_SEGMENT[segment])}</h3>
             {view === 'grid' ? <CardGrid cards={group.cards} /> : <OtherCardRows cards={group.cards} />}
           </section>
         ))

@@ -216,13 +216,13 @@ describe('tierStore', () => {
 
     it('a fresh install selects the owner\'s board', () => {
       const store = createTierStore(memoryStorage(), shipped)
-      expect(store.getActiveListId()).toBe(OWNERS_BOARD.id)
+      expect(store.getActiveList().id).toBe(OWNERS_BOARD.id)
     })
 
     it('the active pick is session state; a simulated reload boots the default list (#12)', () => {
       const storage = memoryStorage()
       createTierStore(storage, shipped).setActiveListId(CITED_LIST.id)
-      expect(createTierStore(storage, shipped).getActiveListId()).toBe(OWNERS_BOARD.id)
+      expect(createTierStore(storage, shipped).getActiveList().id).toBe(OWNERS_BOARD.id)
     })
 
     it('an override written to one list is not visible from another', () => {

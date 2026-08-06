@@ -39,18 +39,18 @@ describe('impactBreakdown', () => {
 describe('tagImpactBreakdown', () => {
   it('crosses each tag group with impact, a multi-tag card counted in every tag it carries', () => {
     const groups = tagImpactBreakdown(CARDS)
-    const removal = groups.find((g) => g.label === 'Removal')!
+    const removal = groups.find((g) => g.label === 'removal')!
     expect(removal.cards.map((c) => c.name).sort()).toEqual(['A', 'B'])
     expect(removal.byImpact.find((b) => b.impact === 1)!.cards.map((c) => c.name)).toEqual(['A'])
     expect(removal.byImpact.find((b) => b.impact === 2)!.cards.map((c) => c.name)).toEqual(['B'])
 
-    const defensive = groups.find((g) => g.label === 'Defensive')!
+    const defensive = groups.find((g) => g.label === 'defensive')!
     expect(defensive.cards.map((c) => c.name).sort()).toEqual(['B', 'D'])
   })
 
-  it('places untagged cards in a trailing Unclassified group', () => {
+  it('places untagged cards in a trailing unclassified group', () => {
     const groups = tagImpactBreakdown(CARDS)
-    const unclassified = groups.find((g) => g.label === 'Unclassified')
+    const unclassified = groups.find((g) => g.label === 'unclassified')
     expect(unclassified?.cards.map((c) => c.name)).toEqual(['C'])
   })
 })

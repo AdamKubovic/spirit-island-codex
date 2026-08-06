@@ -1,16 +1,6 @@
 import { ELEMENTS, type Element, type PowerCard } from '../domain/types'
 import type { PowerCardFilterState } from '../domain/powerCardFilter'
-
-const ELEMENT_ICON: Record<Element, string> = {
-  Sun: 'sun',
-  Moon: 'moon',
-  Fire: 'fire',
-  Air: 'air',
-  Water: 'water',
-  Earth: 'earth',
-  Plant: 'plant',
-  Animal: 'animal',
-}
+import { ElementIcon } from './ElementIcon'
 
 const KINDS: PowerCard['kind'][] = ['minor', 'major', 'unique']
 const COST_OPTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -84,7 +74,7 @@ export function CardFilters({
               aria-pressed={filter.elements.includes(el)}
               onClick={() => toggleElement(el)}
             >
-              <img src={`${base}elements/${ELEMENT_ICON[el]}.webp`} alt={el} />
+              <ElementIcon element={el} />
             </button>
           ))}
         </div>

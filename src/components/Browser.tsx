@@ -4,6 +4,7 @@ import { filterSpirits } from '../domain/browserFilter'
 import { collectionStore } from '../domain/collectionStore'
 import { toConfigId } from '../domain/configurations'
 import { resolveAspectName } from '../domain/route'
+import { AXES } from '../domain/scoringPrimitives'
 import { tierStore } from '../domain/tierStore'
 import { EXPANSIONS as EXPANSION_ORDER, type Complexity, type OCFDU, type Spirit } from '../domain/types'
 import { SpiritDetail } from './SpiritDetail'
@@ -12,7 +13,6 @@ import { SpiritTile } from './SpiritTile'
 const spirits = spiritsData as Spirit[]
 
 const COMPLEXITIES: Complexity[] = ['Low', 'Moderate', 'High', 'Very High']
-const RATING_AXES: (keyof OCFDU)[] = ['offense', 'control', 'fear', 'defense', 'utility']
 
 const EXPANSIONS = [...new Set(spirits.map((s) => s.expansion))].sort()
 const TAGS = [...new Set(spirits.flatMap((s) => s.tags))].sort()
@@ -136,7 +136,7 @@ export function Browser({
             Strong in
             <select value={strongIn} onChange={(e) => setStrongIn(e.target.value as '' | keyof OCFDU)}>
               <option value="">Any</option>
-              {RATING_AXES.map((axis) => (
+              {AXES.map((axis) => (
                 <option key={axis} value={axis}>
                   {axis[0].toUpperCase() + axis.slice(1)}
                 </option>

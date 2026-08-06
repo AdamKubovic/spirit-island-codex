@@ -2,10 +2,10 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import spiritsData from '../data/spirits.json'
 import { ADVERSARIES, findAdversary } from '../domain/adversaries'
 import type { LogEntry } from '../domain/backup'
-import { expand } from '../domain/configurations'
+import { expand, fromConfigId } from '../domain/configurations'
 import { type BoardType, computeDifficulty } from '../domain/difficulty'
 import { gameLog } from '../domain/gameLog'
-import { clampOptionalInt, formatDuration } from '../domain/logEntry'
+import { clampAdversaryLevel, entryToForm, formatDuration, formToEntry } from '../domain/logEntry'
 import { computeLogStats, type RateStat } from '../domain/logStats'
 import { configHref } from '../domain/route'
 import { SCENARIOS } from '../domain/scenarios'
@@ -30,7 +30,7 @@ function configLabel(configId: string): string {
 }
 
 function spiritForConfig(configId: string): Spirit | undefined {
-  const baseId = configId.split('::')[0]
+  const baseId = fromConfigId(configId).spiritId
   return spiritById.get(baseId)
 }
 
@@ -125,7 +125,7 @@ export function GameLog() {
     const level = Number(raw)
     if (!Number.isFinite(level)) return
     const found = findAdversary(adversary)
-    setAdversaryLevel(found ? Math.min(Math.max(level, found.minLevel), found.maxLevel) : level)
+    setAdversaryLevel(found ? clampAdversaryLevel(level, found.minLevel, found.maxLevel) : level)
   }
 
   const handleSetSecondaryAdversary = (name: string) => {
@@ -138,7 +138,7 @@ export function GameLog() {
     const level = Number(raw)
     if (!Number.isFinite(level)) return
     const found = findAdversary(secondaryAdversary)
-    setSecondaryAdversaryLevel(found ? Math.min(Math.max(level, found.minLevel), found.maxLevel) : level)
+    setSecondaryAdversaryLevel(found ? clampAdversaryLevel(level, found.minLevel, found.maxLevel) : level)
   }
 
   const difficultyBreakdown = useMemo(
@@ -185,31 +185,29 @@ export function GameLog() {
 
   const handleSubmit = () => {
     if (!canSubmit) return
-    const fields = {
+    const entry = formToEntry({
       players,
-      adversary: adversary.trim() || undefined,
+      adversary,
       adversaryLevel,
-      secondaryAdversary: secondaryAdversary || undefined,
-      secondaryAdversaryLevel: secondaryAdversary ? secondaryAdversaryLevel : undefined,
+      secondaryAdversary,
+      secondaryAdversaryLevel,
       boardType,
-      scenario: scenario.trim() || undefined,
+      scenario,
       outcome,
-      // #17: Terror Level only ever reaches 3 (confirmed against the rulebook - there is no
-      // Terror Level 4); clamped here, not only in the input's advisory `max`, so a typed or
-      // pasted out-of-range value can't be recorded.
-      terrorLevel: clampOptionalInt(terrorLevel, 1, 3),
-      notes: notes.trim() || undefined,
-      difficulty: clampOptionalInt(difficulty, 0),
-      startTime: startTime || undefined,
-      endTime: endTime || undefined,
-    }
+      terrorLevel,
+      date,
+      notes,
+      difficulty,
+      startTime,
+      endTime,
+    })
     if (editingId) {
-      const updated = gameLog.update(editingId, { ...fields, date })
+      const updated = gameLog.update(editingId, entry)
       // The entry was deleted while being edited: keep the form populated and in edit mode so
       // the owner's corrections aren't silently discarded (update() itself is a tested no-op).
       if (!updated) return
     } else {
-      gameLog.append({ ...fields, date })
+      gameLog.append(entry)
     }
     resetForm()
     setVersion((v) => v + 1)
@@ -217,20 +215,21 @@ export function GameLog() {
 
   const handleEdit = (entry: LogEntry) => {
     setEditingId(entry.id)
-    setPlayers(entry.players.map((p) => ({ ...p })))
-    setAdversary(entry.adversary ?? '')
-    setAdversaryLevel(entry.adversaryLevel)
-    setSecondaryAdversary(entry.secondaryAdversary ?? '')
-    setSecondaryAdversaryLevel(entry.secondaryAdversaryLevel ?? 0)
-    setBoardType(entry.boardType ?? 'classic')
-    setScenario(entry.scenario ?? '')
-    setOutcome(entry.outcome)
-    setTerrorLevel(entry.terrorLevel !== undefined ? String(entry.terrorLevel) : '')
-    setDate(entry.date.slice(0, 10))
-    setNotes(entry.notes ?? '')
-    setDifficulty(entry.difficulty !== undefined ? String(entry.difficulty) : '')
-    setStartTime(entry.startTime ?? '')
-    setEndTime(entry.endTime ?? '')
+    const form = entryToForm(entry)
+    setPlayers(form.players)
+    setAdversary(form.adversary)
+    setAdversaryLevel(form.adversaryLevel)
+    setSecondaryAdversary(form.secondaryAdversary)
+    setSecondaryAdversaryLevel(form.secondaryAdversaryLevel)
+    setBoardType(form.boardType)
+    setScenario(form.scenario)
+    setOutcome(form.outcome)
+    setTerrorLevel(form.terrorLevel)
+    setDate(form.date)
+    setNotes(form.notes)
+    setDifficulty(form.difficulty)
+    setStartTime(form.startTime)
+    setEndTime(form.endTime)
     // The entry being corrected is not also pending deletion - drop any stale undo toast.
     setUndoEntry(null)
     if (undoTimer.current !== undefined) clearTimeout(undoTimer.current)

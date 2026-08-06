@@ -34,17 +34,17 @@ describe('valenceBreakdown', () => {
 describe('classValenceBreakdown', () => {
   it('crosses each event class with valence, every card counted exactly once (single-valued)', () => {
     const groups = classValenceBreakdown(CARDS)
-    const choice = groups.find((g) => g.label === 'Choice')!
+    const choice = groups.find((g) => g.label === 'choice')!
     expect(choice.cards.map((c) => c.name).sort()).toEqual(['A', 'B'])
     expect(choice.byValence.find((b) => b.valence === 'harmful')!.cards.map((c) => c.name)).toEqual(['A'])
     expect(choice.byValence.find((b) => b.valence === 'mixed')!.cards.map((c) => c.name)).toEqual(['B'])
 
-    const stage = groups.find((g) => g.label === 'Stage')!
+    const stage = groups.find((g) => g.label === 'stage')!
     expect(stage.cards.map((c) => c.name).sort()).toEqual(['C', 'D'])
   })
 
-  it('never produces an Unclassified group — every event carries exactly one class', () => {
+  it('never produces an unclassified group — every event carries exactly one class', () => {
     const groups = classValenceBreakdown(CARDS)
-    expect(groups.find((g) => g.label === 'Unclassified')).toBeUndefined()
+    expect(groups.find((g) => g.label === 'unclassified')).toBeUndefined()
   })
 })

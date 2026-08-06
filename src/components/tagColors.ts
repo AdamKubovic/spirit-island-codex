@@ -1,4 +1,9 @@
-import { EXPANSIONS, type BlightTag, type Complexity, type EventClass, type ExpansionName, type FearTag } from '../domain/types'
+import { EXPANSIONS, type BlightTag, type EventClass, type ExpansionName, type FearTag } from '../domain/types'
+import { COMPLEXITY_LEVEL } from '../domain/scoringPrimitives'
+
+/** Dot-meter position (●●○○) - ordinal, not a colour. The single home of the map is the
+ * scoring-primitives domain module; this re-export keeps the render layer on the same source. */
+export { COMPLEXITY_LEVEL }
 
 /**
  * v5 #08/#09: the spirit tile's colour scheme, decided via `/prototype` (variants A-H,
@@ -88,9 +93,6 @@ export function expansionColorFor(raw: string): string | undefined {
   const canonical = normalizeExpansion(raw)
   return canonical ? expansionChipColor(canonical) : undefined
 }
-
-/** Dot-meter position (●●○○) - ordinal, not a colour. */
-export const COMPLEXITY_LEVEL: Record<Complexity, number> = { Low: 1, Moderate: 2, High: 3, 'Very High': 4 }
 
 /**
  * phase-4 #21 (owner picked variant B, filled pills): kind and speed chips in the Archive's
@@ -217,6 +219,13 @@ const SUBTYPE_LABEL: Record<FearTag | BlightTag | EventClass, string> = {
 
 export function subtypeLabel(tag: FearTag | BlightTag | EventClass): string {
   return SUBTYPE_LABEL[tag]
+}
+
+/** The group-header label for a subtype-bucketed group: the raw key maps to its human label,
+ * and the literal `unclassified` group reads "Unclassified". Shared by every renderer that
+ * surfaces subtype groups (CardsTab headers, the Dashboard's Fear/Event tag facets). */
+export function subtypeGroupLabel(subtype: FearTag | BlightTag | EventClass | undefined): string {
+  return subtype ? subtypeLabel(subtype) : 'Unclassified'
 }
 
 export function subtypeColor(tag: FearTag | BlightTag | EventClass): string {

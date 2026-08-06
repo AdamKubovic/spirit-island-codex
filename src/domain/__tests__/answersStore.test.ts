@@ -20,4 +20,32 @@ describe('answersStore', () => {
     const reloaded = createAnswersStore(storage)
     expect(reloaded.load()).toEqual({ tempo: 'fast' })
   })
+
+  it('degrades to a fresh state on corrupt stored JSON instead of throwing on load', () => {
+    const storage = memoryStorage()
+    storage.setItem('spirit-island:last-answers', '{not json')
+    expect(createAnswersStore(storage).load()).toBeNull()
+  })
+
+  describe('change notification (backup-import re-sync)', () => {
+    it('notifies subscribers on save, with the exact saved object', () => {
+      const store = createAnswersStore(memoryStorage())
+      const seen: unknown[] = []
+      store.subscribe((answers) => seen.push(answers))
+      const saved = { beatOpponents: 'force' }
+      store.save(saved)
+      expect(seen).toEqual([saved])
+    })
+
+    it('does not notify a subscriber after it unsubscribes', () => {
+      const store = createAnswersStore(memoryStorage())
+      let count = 0
+      const unsubscribe = store.subscribe(() => {
+        count += 1
+      })
+      unsubscribe()
+      store.save({ beatOpponents: 'force' })
+      expect(count).toBe(0)
+    })
+  })
 })

@@ -1,4 +1,5 @@
 import type { Configuration } from './configurations'
+import { createGuardedStore } from './guardedStore'
 import { defaultStorage, type KeyValueStorage } from './storage'
 import { EXPANSIONS, type ExpansionName } from './types'
 
@@ -18,27 +19,22 @@ interface StoredCollection {
  * storage, create-function-plus-default-instance) rather than inventing a new pattern.
  */
 export function createCollectionStore(storage: KeyValueStorage = defaultStorage()) {
+  const guarded = createGuardedStore(storage)
+
   function readExcluded(): Set<ExpansionName> {
-    const raw = storage.getItem(STORAGE_KEY)
-    if (!raw) return new Set()
-    let parsed: unknown
-    try {
-      parsed = JSON.parse(raw)
-    } catch {
-      return new Set()
-    }
-    const stored = parsed as Partial<StoredCollection>
+    const stored = guarded.readPlain<Partial<StoredCollection> | null>(STORAGE_KEY, null)
+    if (!stored) return new Set()
     const known = new Set<string>(EXPANSIONS)
     return new Set((stored.excluded ?? []).filter((e): e is ExpansionName => known.has(e)))
   }
 
   function writeExcluded(excluded: Set<ExpansionName>): void {
     if (excluded.size === 0) {
-      storage.removeItem(STORAGE_KEY)
+      guarded.remove(STORAGE_KEY)
       return
     }
     const payload: StoredCollection = { excluded: [...excluded] }
-    storage.setItem(STORAGE_KEY, JSON.stringify(payload))
+    guarded.writePlain(STORAGE_KEY, payload)
   }
 
   return {
@@ -60,7 +56,7 @@ export function createCollectionStore(storage: KeyValueStorage = defaultStorage(
       return readExcluded().size > 0
     },
     resetAll(): void {
-      storage.removeItem(STORAGE_KEY)
+      guarded.remove(STORAGE_KEY)
     },
   }
 }

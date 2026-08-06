@@ -52,27 +52,27 @@ describe('selectWildcard', () => {
 
   it('never picks a configuration already in the top-3', () => {
     const ranked = recommend(pool, weights)
-    const wildcard = selectWildcard(ranked, weights, undefined)
+    const wildcard = selectWildcard(ranked, weights, undefined, 0, 3)
     const top3Ids = ranked.slice(0, 3).map((r) => r.config.configId)
     expect(top3Ids).not.toContain(wildcard!.configId)
   })
 
   it('prefers an above-complexity-cap configuration when one exists among the remainder', () => {
     const ranked = recommend(pool, weights)
-    const wildcard = selectWildcard(ranked, weights, 'Moderate')
+    const wildcard = selectWildcard(ranked, weights, 'Moderate', 0, 3)
     expect(wildcard!.configId).toBe('over-cap')
   })
 
   it('falls back to the best off-profile pick on the least-weighted axis', () => {
     const ranked = recommend(pool, weights)
-    const wildcard = selectWildcard(ranked, weights, undefined)
+    const wildcard = selectWildcard(ranked, weights, undefined, 0, 3)
     expect(wildcard!.configId).toBe('off-profile-utility')
   })
 
   it('cycles through candidates via offset (for reroll)', () => {
     const ranked = recommend(pool, weights)
-    const first = selectWildcard(ranked, weights, undefined, 0)
-    const second = selectWildcard(ranked, weights, undefined, 1)
+    const first = selectWildcard(ranked, weights, undefined, 0, 3)
+    const second = selectWildcard(ranked, weights, undefined, 1, 3)
     expect(first!.configId).not.toBe(second!.configId)
   })
 })

@@ -1,4 +1,4 @@
-import { AXES } from './axisLabels'
+import { AXES } from './scoringPrimitives'
 import type { Weights } from './recommend'
 import type { Aspect, OCFDU, Spirit } from './types'
 
