@@ -1,4 +1,4 @@
-# Spirit Island Knowledge Base
+# Spirit Island Codex
 
 A local-first web app for browsing, understanding, and choosing among the spirits and cards of
 [Spirit Island](https://shop.greaterthangames.com/pages/spirit-island). It runs entirely in the browser — no backend,

@@ -19,8 +19,8 @@ export default defineConfig({
         globPatterns: ['**/*.{js,css,html,json,svg,webp,png,jpg,jpeg,woff,woff2,ttf}'],
       },
       manifest: {
-        name: 'Spirit Island Knowledge Base',
-        short_name: 'SI Archive',
+        name: 'Spirit Island Codex',
+        short_name: 'SI Codex',
         start_url: '/spirit-island-codex/',
         display: 'standalone',
         orientation: 'any',
