@@ -1,6 +1,6 @@
 # Deepen seven shallow seams (architecture-deepening)
 
-Status: ready-for-agent
+Status: done
 
 ## Problem Statement
 
