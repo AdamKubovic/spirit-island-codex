@@ -4,7 +4,7 @@ import { VitePWA } from 'vite-plugin-pwa'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/',
+  base: '/spirit-island-codex/',
   plugins: [
     react(),
     VitePWA({
@@ -21,7 +21,7 @@ export default defineConfig({
       manifest: {
         name: 'Spirit Island Knowledge Base',
         short_name: 'SI Archive',
-        start_url: '/',
+        start_url: '/spirit-island-codex/',
         display: 'standalone',
         orientation: 'any',
         background_color: '#1c160e',

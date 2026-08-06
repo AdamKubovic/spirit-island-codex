@@ -50,10 +50,10 @@ done
 echo
 
 if [ -z "$RUN_ID" ]; then
-  echo "error: no run appeared for $LOCAL after 60s — check https://github.com/Tabletop-Atlas/tabletop-atlas.github.io/actions" >&2
+  echo "error: no run appeared for $LOCAL after 60s — check https://github.com/AdamKubovic/spirit-island-codex/actions" >&2
   exit 1
 fi
 
 gh run watch "$RUN_ID" --exit-status
 echo
-echo "deployed: https://tabletop-atlas.github.io/"
+echo "deployed: https://adamkubovic.github.io/spirit-island-codex/"

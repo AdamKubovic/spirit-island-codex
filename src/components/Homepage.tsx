@@ -31,6 +31,7 @@ const DOORS: { title: string; sub: string; target: DoorTarget; artId: string }[]
 ]
 
 const OFFICIAL_SITE = 'https://shop.greaterthangames.com/pages/spirit-island'
+const FAN_CONTENT_TERMS = 'https://querki.net/u/darker/spirit-island-faq/#!Creating-your-own-game-elements'
 
 function spiritFor(artId: string): Spirit {
   return spirits.find((s) => s.id === artId) ?? spirits[0]
@@ -66,7 +67,21 @@ export function Homepage({ onNavigate }: { onNavigate: (target: DoorTarget) => v
       </div>
 
       <p className="home-footer">
-        Unofficial, fan-made, non-commercial companion — not affiliated with the Spirit Island rights holders.
+        Unofficial, fan-made, non-commercial companion — not affiliated with the Spirit Island rights holders.{' '}
+        <a href={FAN_CONTENT_TERMS} target="_blank" rel="noreferrer">
+          Terms for creating Spirit Island game elements.
+        </a>
+      </p>
+      <p className="home-footer">
+        Tier lists by{' '}
+        <a href="https://www.youtube.com/watch?v=jkBInOMEFvA" target="_blank" rel="noreferrer">
+          Spirit Island Archive
+        </a>{' '}
+        and{' '}
+        <a href="https://www.youtube.com/watch?v=d130MTU08fg" target="_blank" rel="noreferrer">
+          3 Minute Board Games
+        </a>
+        , credited per list on the Tier list tab.
       </p>
     </section>
   )

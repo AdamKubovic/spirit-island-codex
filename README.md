@@ -1,8 +1,8 @@
 # Spirit Island Knowledge Base
 
 A local-first web app for browsing, understanding, and choosing among the spirits and cards of
-[Spirit Island](https://spiritisland.com). It runs entirely in the browser — no backend, no
-accounts, no API keys — and deploys as a static site.
+[Spirit Island](https://shop.greaterthangames.com/pages/spirit-island). It runs entirely in the browser — no backend,
+no accounts, no API keys — and deploys as a static site.
 
 The unit it reasons about is the **configuration**: a base spirit, or that spirit with exactly one
 aspect applied (37 spirits + 31 aspects = 68 configurations).
@@ -75,8 +75,8 @@ npm run build
 ## Deployment
 
 `.github/workflows/pages.yml` builds the app, runs the tests, and publishes `dist/` to GitHub
-Pages. Served from the `Tabletop-Atlas` organisation's root Pages site (`tabletop-atlas.github.io`),
-so `vite.config.ts` sets `base: '/'`.
+Pages. Served from the `spirit-island-codex` project site (`adamkubovic.github.io/spirit-island-codex/`),
+so `vite.config.ts` sets `base: '/spirit-island-codex/'`.
 
 **Pushing to `main` deploys.** This was broken from the day the workflow landed until 2026-07-27 —
 `on: push` never fired once, and every deploy was a manual dispatch. The cause was a stuck
@@ -91,7 +91,8 @@ npm run deploy   # dispatches the workflow for the pushed HEAD and waits for the
 ```
 
 **One-time human setup (the workflow cannot do this itself):** in the repo, Settings → Pages →
-Source = "GitHub Actions". Already done for this repo.
+Source = "GitHub Actions". Needed once per repo — including after the 2026-08-06 transfer from the
+`Tabletop-Atlas` org to `AdamKubovic/spirit-island-codex`, which reset it.
 
 ## Attribution
 
