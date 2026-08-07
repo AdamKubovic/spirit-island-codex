@@ -2935,6 +2935,15 @@ a.unowned-note:hover {
     padding: 0.5rem 1.1rem;
     font-size: 14px;
   }
+  /* parity #05: the spirit picker's native select is ~370px intrinsic (its longest option is an
+   * aspect config) and a flex item can't shrink below that — at 390 it escapes the 358px content
+   * column and scrolls the page sideways (59px measured). Cap it to the column; the full option
+   * text stays one tap away in the open dropdown, so nothing is dropped, only compressed. */
+  .dashboard-spirit-picker select {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+  }
   .dashboard-facets {
     gap: 0.8rem;
   }
@@ -2968,6 +2977,21 @@ a.unowned-note:hover {
   }
   .rating-chip-preview {
     width: 160px;
+  }
+
+  /* -- Log: parity #10 — the entry form's <fieldset> keeps the UA default
+     min-inline-size: min-content, so its intrinsic-width selects stretch the whole panel past the
+     viewport at 390 (20px measured). Let the panel fit its column; the selects then cap to it. */
+  .log-panel {
+    min-width: 0;
+  }
+  .log-panel select {
+    max-width: 100%;
+  }
+  /* parity #10: the outcome + terror-level chips form one nowrap row that is wider than the
+     phone column — let the chips wrap to a second line instead of scrolling the page */
+  .log-chip-group {
+    flex-wrap: wrap;
   }
 }
 

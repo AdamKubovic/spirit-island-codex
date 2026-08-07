@@ -395,7 +395,7 @@ function ResultsBoard({ onSelectConfiguration }: { onSelectConfiguration?: (conf
           />
         ))}
       </ol>
-      <p className="deck-hint">Change an answer in the sidebar — the ranking recomputes immediately.</p>
+      <p className="deck-hint">Change an answer and the ranking recomputes immediately.</p>
 
       {wildcard && (
         <div className="deck-wild">

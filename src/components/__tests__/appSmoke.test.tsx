@@ -206,6 +206,36 @@ describe('app smoke', () => {
     expect(html.indexOf('deck-answers-disclosure')).toBeLessThan(html.indexOf('Your top'))
   })
 
+  it('the results-board hint is layout-honest: it names no sidebar, since the phone layout has none (parity #07)', () => {
+    const html = renderToStaticMarkup(
+      <RecommenderProvider initialPhase="board">
+        <RecommenderMain />
+      </RecommenderProvider>,
+    )
+    // The app is CSS-only responsive — one DOM serves both layouts, so a hint naming the sidebar
+    // would lie on the phone layout, where answers are changed in the "Your answers" disclosure.
+    // The negative is scoped to the hint paragraph: a "sidebar" elsewhere (say, a tooltip) is not
+    // this contract.
+    const hint = html.slice(html.indexOf('deck-hint'), html.indexOf('</p>', html.indexOf('deck-hint')))
+    expect(hint).not.toContain('sidebar')
+    // The neutral replacement stands in for the layout-specific control name.
+    expect(hint).toContain('Change an answer and the ranking recomputes immediately.')
+  })
+
+  it('parity: the board markup carries the "Your answers" disclosure with the knobs inside it (parity #08)', () => {
+    // Recommend renders RecommenderSide once, inside the phone disclosure (Recommender.tsx); on
+    // desktop the same knobs surface in the sidebar slot wired by App.tsx, outside this render.
+    // What the board markup alone can promise is that the disclosure and its knobs both exist —
+    // CSS shows the disclosure at phone width and hides it at desktop; dropping either fails here.
+    const html = renderToStaticMarkup(
+      <RecommenderProvider initialPhase="board">
+        <RecommenderMain />
+      </RecommenderProvider>,
+    )
+    expect(html).toMatch(/<details class="deck-answers-disclosure">/)
+    expect(html).toContain('deck-knobs')
+  })
+
   it('Settings holds exactly the three migrated sections (#14), the default-list pick (#18), and offline readiness (installable-app #04)', () => {
     const settings = renderToStaticMarkup(<Settings />)
     expect(settings).toContain('Offline')
@@ -435,6 +465,15 @@ describe('app smoke', () => {
     expect((html.match(/class="collection-option" aria-pressed="true"/g) ?? []).length).toBe(EXPANSIONS.length)
     expect(html).not.toContain('type="checkbox"')
     expect(html).not.toContain('unowned-note')
+  })
+
+  it('parity: every expansion card states its own play-state text (parity #08)', () => {
+    // The picker's per-card state is content, readable at any width: each card says "In play" or
+    // "Not in play" in words, never colour alone. Default (owns-everything) renders all seven
+    // pressed, so all seven say "In play" and none claims otherwise.
+    const html = renderToStaticMarkup(<DashboardTab />)
+    expect((html.match(/>In play</g) ?? []).length).toBe(EXPANSIONS.length)
+    expect(html).not.toContain('>Not in play<')
   })
 
   it('the Dashboard Minor segment shows the speed/cost facets (deck-dashboard #09/#03)', () => {
@@ -708,7 +747,7 @@ describe('app smoke', () => {
     }
   })
 
-  it('the Glossary tab renders its categories (difficulty-and-glossary #06, ux-discoverability #03)', () => {
+  it('the Glossary tab renders its categories and the search control (difficulty-and-glossary #06, ux-discoverability #03, parity #08)', () => {
     const html = renderToStaticMarkup(<GlossaryTab />)
     expect(html).toContain('Glossary')
     // ux-discoverability #03: four friendly groups; raw internal ids never show.
@@ -724,6 +763,10 @@ describe('app smoke', () => {
     // Friendly labels render.
     expect(html).toContain('Weak impact')
     expect(html).toContain('Removal')
+    // parity #08: the search control is content at every width — one DOM serves both layouts, so
+    // a search box present here is present on the phone layout too. The placeholder is the
+    // field's own copy, unique to this surface.
+    expect(html).toContain('placeholder="Term or definition…"')
   })
 
   it('the Dashboard Event segment states plainly that a base-game-only set has no events, rather than an error or blank screen (deck-dashboard #12)', () => {

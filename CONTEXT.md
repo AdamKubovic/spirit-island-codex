@@ -169,3 +169,19 @@ An aspect's display name reduced to a URL-safe segment by the shared slug rule (
 spirit's own* aspects, so a hand-typed or stale URL highlights nothing rather than naming an aspect
 the spirit doesn't have.
 _Avoid_: aspect id (aspects have no id; the display name is the datum), aspect key.
+
+**Layout**:
+One of the app's two responsive renderings — the **phone layout** (single column under the
+top-bar/drawer shell) or the **desktop layout** (the sidebar shell). Not two products: the app is
+one responsive PWA (ADR 0015), so a layout names the form-factor variant the breakpoints pick, never
+a separate "web" vs "mobile" thing.
+_Avoid_: mobile website, app version, mobile version (each implies a second product)
+
+**Parity**:
+The promise between the phone and desktop layouts: the same content and the same quality — every
+piece of content and every action available in one layout is available in the other, adapted to the
+width. Adaptation is not equality of pixels: a surface that cannot fit at phone width says *less*
+(e.g. a printed-value column hidden at compact widths), but it never drops a datum and never invents
+one.
+_Avoid_: same experience (that implies identical), responsive (that names the technique, not the
+promise)
