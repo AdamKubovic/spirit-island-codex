@@ -9,6 +9,7 @@ import { computeElementDemand, seedElementPick } from '../domain/elementDemand'
 import type { FearCard } from '../domain/impactBreakdown'
 import { ELEMENTS, EXPANSIONS, type Element, type ExpansionName, type InnatePower, type OtherCard, type PowerCard, type Spirit } from '../domain/types'
 import { normalizeExpansion } from './tagColors'
+import { UnownedNote } from './collectionAffordances'
 import { DeckDemand } from './DeckDemand'
 import { DeckFacets } from './DeckFacets'
 import { ElementIcon } from './ElementIcon'
@@ -187,8 +188,8 @@ export function DashboardTab({ initialSegment, initialSpiritId }: { initialSegme
                   onChange={(e) => toggleExpansion(expansion, e.target.checked)}
                 />
                 {expansion}
-                {!collectionStore.owns(expansion) && <span className="unowned-note"> · not in your collection</span>}
               </label>
+              {!collectionStore.owns(expansion) && <UnownedNote />}
             </li>
           ))}
         </ul>

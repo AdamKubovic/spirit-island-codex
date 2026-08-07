@@ -7,8 +7,10 @@ import { resolveAspectName } from '../domain/route'
 import { AXES } from '../domain/scoringPrimitives'
 import { tierStore } from '../domain/tierStore'
 import { EXPANSIONS as EXPANSION_ORDER, type Complexity, type OCFDU, type Spirit } from '../domain/types'
+import { ManageCollectionLink } from './collectionAffordances'
 import { SpiritDetail } from './SpiritDetail'
 import { SpiritTile } from './SpiritTile'
+import { Term } from './Term'
 
 const spirits = spiritsData as Spirit[]
 
@@ -110,17 +112,17 @@ export function Browser({
               ))}
             </select>
           </label>
-          <label>
-            Complexity
-            <select value={complexity} onChange={(e) => setComplexity(e.target.value)}>
-              <option value="">All</option>
-              {COMPLEXITIES.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </label>
+          <span className="filters-caption">
+            <Term id="complexity">Complexity</Term>
+          </span>
+          <select aria-label="Complexity" value={complexity} onChange={(e) => setComplexity(e.target.value)}>
+            <option value="">All</option>
+            {COMPLEXITIES.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
           <label>
             Tag
             <select value={tag} onChange={(e) => setTag(e.target.value)}>
@@ -156,7 +158,8 @@ export function Browser({
       <label className="deck-field-inline">
         <input type="checkbox" checked={hardFilter} onChange={(e) => setHardFilter(e.target.checked)} />
         Only show spirits I own
-      </label>
+      </label>{' '}
+      <ManageCollectionLink />
 
       <p>
         {shown.length} of {spirits.length} spirits

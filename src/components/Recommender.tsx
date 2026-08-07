@@ -18,7 +18,9 @@ import { tierStore } from '../domain/tierStore'
 import { COMPLEXITIES } from '../domain/types'
 import type { Complexity, OCFDU, Spirit } from '../domain/types'
 import { whyYou } from '../domain/whyYou'
+import { ManageCollectionLink, UnownedNote } from './collectionAffordances'
 import { SpiritArt } from './SpiritArt'
+import { Term } from './Term'
 
 const spirits = spiritsData as Spirit[]
 const configurations = expand(spirits)
@@ -150,21 +152,44 @@ export function RecommenderSide() {
     <div className="deck-knobs">
       <div className="deck-knobs-title">Your answers</div>
 
-      {QUESTIONS.map((question) => (
-        <label className="deck-field" key={question.id} title={question.prompt}>
-          <span>{shortLabel(question.id)}</span>
-          <select value={answers[question.id] ?? ''} onChange={(e) => answer(question.id, e.target.value)}>
-            <option value="" disabled>
-              —
-            </option>
-            {question.options.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
+      {QUESTIONS.map((question) =>
+        // ux-discoverability #07: the complexity question's caption is a Term popover. A button
+        // can't live inside a <label> (it would steal the label's association), so this field is
+        // a <div> with an aria-label on the select instead.
+        question.id === 'complexityTolerance' ? (
+          <div className="deck-field" key={question.id} title={question.prompt}>
+            <Term id="complexity">{shortLabel(question.id)}</Term>
+            <select
+              aria-label={shortLabel(question.id)}
+              value={answers[question.id] ?? ''}
+              onChange={(e) => answer(question.id, e.target.value)}
+            >
+              <option value="" disabled>
+                —
               </option>
-            ))}
-          </select>
-        </label>
-      ))}
+              {question.options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        ) : (
+          <label className="deck-field" key={question.id} title={question.prompt}>
+            <span>{shortLabel(question.id)}</span>
+            <select value={answers[question.id] ?? ''} onChange={(e) => answer(question.id, e.target.value)}>
+              <option value="" disabled>
+                —
+              </option>
+              {question.options.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        ),
+      )}
 
       <button type="button" className="deck-ghost deck-ghost-accent" onClick={restart}>
         Start over
@@ -253,16 +278,22 @@ function ResultRow({
           <span className="deck-name">
             {spirit.name}
             {aspect ? <> — play the <strong>{aspect.name}</strong> aspect</> : null}
-            {/* v5 #07b: annotate mode (hard-filter off) still shows unowned results - the
-             * "best spirit for you is in an expansion you don't have" case #06 called out as
-             * information, not something to hide silently. */}
-            {!owned && <span className="unowned-note"> · not in your collection</span>}
           </span>
           <span className="deck-why">{whyYou(spirit, weights)}</span>
         </span>
         <HeatStrip ratings={spirit.ratings} weights={weights} />
         <span className="deck-score">{score.toFixed(2)}</span>
       </button>
+
+      {!owned && (
+        // v5 #07b: annotate mode (hard-filter off) still shows unowned results - the
+        // "best spirit for you is in an expansion you don't have" case #06 called out as
+        // information, not something to hide silently. ux-discoverability #04 makes the note a
+        // link so "you don't own this" is actionable, not a dead end.
+        <p className="deck-row-note">
+          <UnownedNote />
+        </p>
+      )}
 
       {onSelectConfiguration && (
         <button
@@ -347,7 +378,8 @@ function ResultsBoard({ onSelectConfiguration }: { onSelectConfiguration?: (conf
       <label className="deck-field-inline">
         <input type="checkbox" checked={hardFilter} onChange={(e) => setHardFilter(e.target.checked)} />
         Only recommend spirits I own
-      </label>
+      </label>{' '}
+      <ManageCollectionLink />
 
       <ol className="deck-rows">
         {shortlist.map(({ config, score }, i) => (
@@ -502,9 +534,15 @@ function RandomChooser() {
   return (
     <section className="deck-wizard">
       <h2>Random chooser</h2>
-      <label className="deck-field">
-        <span>max complexity</span>
-        <select value={complexityCeiling} onChange={(e) => setComplexityCeiling(e.target.value as Complexity | '')}>
+      <div className="deck-field">
+        <span className="deck-field-caption">
+          <Term id="complexity">Cap complexity at (session)</Term>
+        </span>
+        <select
+          aria-label="Cap complexity at (session)"
+          value={complexityCeiling}
+          onChange={(e) => setComplexityCeiling(e.target.value as Complexity | '')}
+        >
           <option value="">No limit</option>
           {COMPLEXITIES.map((c) => (
             <option key={c} value={c}>
@@ -512,7 +550,11 @@ function RandomChooser() {
             </option>
           ))}
         </select>
-      </label>
+      </div>
+      <p className="meta">
+        This ceiling lasts for this session only. Per-spirit overrides — your own read of how heavy
+        a spirit feels — live in Settings.
+      </p>
 
       {drawn ? (
         <div className="deck-drawn">

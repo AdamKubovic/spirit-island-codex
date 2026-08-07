@@ -14,6 +14,7 @@ import { groupByTier, tierStore } from '../domain/tierStore'
 import { subjectUniverse } from '../domain/tierSubjects'
 import type { PowerCard, Spirit, TierList, TierListSubject } from '../domain/types'
 import { CardViewer } from './CardViewer'
+import { ManageCollectionLink } from './collectionAffordances'
 import { SpiritArt } from './SpiritArt'
 import { SpiritDetail } from './SpiritDetail'
 import { expansionChipColor, expansionColorFor, normalizeExpansion } from './tagColors'
@@ -380,7 +381,8 @@ export function TierBoard({ initialSubject }: { initialSubject?: TierListSubject
             Owned only
           </button>
         </div>
-        <small>{hardFilter ? `Showing only ${subject === 'configurations' ? 'spirits' : 'cards'} in your collection.` : 'Unowned content remains visible and marked.'}</small>
+        <small>{hardFilter ? `Showing only ${subject === 'configurations' ? 'spirits' : 'cards'} in your collection.` : 'Unowned content remains visible and marked.'}</small>{' '}
+        <ManageCollectionLink />
       </div>
       {canEdit && (
         <label className="deck-field-inline">

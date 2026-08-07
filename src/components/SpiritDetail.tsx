@@ -3,10 +3,12 @@ import { toConfigId } from '../domain/configurations'
 import { tierStore } from '../domain/tierStore'
 import type { Spirit } from '../domain/types'
 import { CardViewer } from './CardViewer'
+import { ComplexityDots } from './collectionAffordances'
 import { OcfduBars } from './OcfduBars'
 import { PlaceholderArt } from './PlaceholderArt'
 import { SpiritArt } from './SpiritArt'
-import { COMPLEXITY_LEVEL, expansionChipColor, PANEL_COLOR, tagColor, tagLabel } from './tagColors'
+import { Term } from './Term'
+import { expansionChipColor, PANEL_COLOR, tagColor, tagLabel } from './tagColors'
 import { activeConfigTier, tierColor } from './tierColors'
 import { useGalleryArrows } from './useGalleryArrows'
 
@@ -104,7 +106,6 @@ export function SpiritDetail({
   const scrolledToAspect = useRef(false)
   const activeList = tierStore.getActiveList()
   const base = import.meta.env.BASE_URL
-  const level = COMPLEXITY_LEVEL[spirit.complexity]
   const expansionColor = expansionChipColor(spirit.expansion)
 
   const galleryImages = useMemo(() => {
@@ -139,11 +140,10 @@ export function SpiritDetail({
           <SpiritArt spirit={spirit} />
           <div>
             <h2>{spirit.name}</h2>
-            <div className="spirit-tile-complexity" title={spirit.complexity}>
-              {[1, 2, 3, 4].map((n) => (
-                <span key={n} className={n <= level ? 'spirit-tile-dot spirit-tile-dot-filled' : 'spirit-tile-dot'} />
-              ))}
-              <span className="spirit-tile-complexity-label">{spirit.complexity}</span>
+            <div className="spirit-tile-complexity">
+              <Term id="complexity">
+                <ComplexityDots complexity={spirit.complexity} />
+              </Term>
             </div>
             <div className="spirit-tile-chip-row">
               <span className="spirit-tile-chip" style={{ background: expansionColor }}>

@@ -114,8 +114,15 @@ body {
   margin-bottom: 1.5rem;
 }
 
-/* --- homepage (#13) --- */
+/* --- homepage (ux-discoverability #01: command deck in the parchment treatment) --- */
+/* Scoped parchment identity: the sidebar's inverted-parchment tokens (qa-revision #01) re-pointed
+   here, so the homepage's cards read as the same parchment panels sitting on the dark main pane. */
 .home {
+  --parchment-bg: #f2e7c8;
+  --parchment-line: #cdb88c;
+  --parchment-ink: #3a2f1c;
+  --parchment-body: #5a4c33;
+  --parchment-accent: #2e7a4e;
   max-width: 880px;
 }
 .home-framing p {
@@ -126,65 +133,142 @@ body {
 .home-framing a {
   color: var(--deck-accent);
 }
-.home-footer {
-  margin-top: 2rem;
-  font: 11px/1.5 var(--deck-mono);
-  letter-spacing: 0.06em;
-  color: var(--deck-dim);
+
+.home-hero {
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--parchment-line);
+  border-radius: 10px;
+  background: var(--parchment-bg);
+  margin-bottom: 1rem;
 }
-.home-door-text {
-  display: grid;
-  gap: 0.2rem;
-  min-width: 0;
+.home-hero h1 {
+  font-family: 'Mouse Memoirs', ui-sans-serif, system-ui, sans-serif;
+  font-size: 34px;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  color: var(--parchment-ink);
+  margin: 0 0 0.5rem;
 }
-.home-door-title {
-  color: var(--deck-text);
-  font-size: 16px;
+.home-lead {
+  margin: 0 0 0.9rem;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--parchment-body);
+}
+.home-cta {
+  all: unset;
+  cursor: pointer;
+  display: inline-block;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  background: var(--parchment-accent);
+  color: #f2e7c8;
   font-weight: 600;
 }
-.home-door-sub {
-  color: var(--deck-body);
-  font-size: 13px;
+.home-cta:hover {
+  filter: brightness(1.12);
 }
 
-.home-doors {
-  display: grid;
-  gap: 0.6rem;
-  margin-top: 1.5rem;
+.home-setup {
+  margin: 1rem 0;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--parchment-line);
+  border-radius: 8px;
+  background: var(--parchment-bg);
+  color: var(--parchment-body);
+  font-size: 13px;
 }
-.home-door-banner {
+.home-setup a {
+  color: var(--parchment-accent);
+}
+
+.home-section-title {
+  font-family: 'Mouse Memoirs', ui-sans-serif, system-ui, sans-serif;
+  font-size: 17px;
+  letter-spacing: 0.02em;
+  color: var(--deck-text);
+  margin: 2.25rem 0 0.8rem;
+  border-bottom: 1px solid var(--parchment-line);
+  padding-bottom: 0.35rem;
+}
+
+.home-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.6rem;
+}
+.home-card {
   all: unset;
   cursor: pointer;
   display: grid;
-  grid-template-columns: 168px 1fr;
-  gap: 1.1rem;
-  align-items: center;
-  border: 1px solid var(--deck-line);
+  gap: 0.25rem;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--parchment-line);
   border-radius: 8px;
-  background: var(--deck-panel);
-  padding: 0.6rem;
-  overflow: hidden;
+  background: var(--parchment-bg);
+  text-align: left;
 }
-.home-door-banner:hover {
-  border-color: var(--deck-line);
-  background: var(--deck-line-soft);
+.home-card:hover {
+  background: #ead9ac;
 }
-.home-door-banner .home-door-art {
-  width: 168px;
-  height: 76px;
-  object-fit: cover;
-  border-radius: 5px;
+.home-card-title {
+  color: var(--parchment-ink);
+  font-weight: 600;
+}
+.home-card-line {
+  color: var(--parchment-body);
+  font-size: 12.5px;
 }
 
-@media (max-width: 460px) {
-  .home-door-banner {
-    grid-template-columns: 112px 1fr;
-    gap: 0.7rem;
-  }
-  .home-door-banner .home-door-art {
-    width: 112px;
-    height: 64px;
-  }
+.home-trio {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.6rem;
+}
+.home-trio-card {
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.8rem;
+  border: 1px solid var(--parchment-line);
+  border-left: 3px solid var(--parchment-accent);
+  border-radius: 8px;
+  background: var(--parchment-bg);
+  text-decoration: none;
+}
+.home-trio-card:hover {
+  background: #ead9ac;
+}
+.home-trio-title {
+  color: var(--parchment-accent);
+  font-weight: 600;
+}
+.home-trio-line {
+  color: var(--parchment-body);
+  font-size: 12.5px;
+}
+
+/* footer/disclaimer: deliberately distinct from content sections — a quiet hairline-separated
+   zone in muted parchment ink with accent-green links, on the page background, never a panel. */
+.home-footer {
+  margin: 3rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--parchment-line);
+  background: transparent;
+  color: #8a7c5c;
+  font: 12px/1.7 'Reem Kufi', ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0.02em;
+}
+.home-footer + .home-footer {
+  margin-top: 0.4rem;
+  border-top: 0;
+  padding-top: 0;
+}
+.home-footer a {
+  color: var(--parchment-accent);
+  text-decoration: none;
+}
+.home-footer a:hover {
+  text-decoration: underline;
 }
 
 .deck-nav {
@@ -235,6 +319,18 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--deck-dim);
+}
+/* ux-discoverability #07: a complexity caption that hosts a Term (a button) can't sit inside a
+ * <label>, so those fields use a <div> with this caption class, styled identically to the label's
+ * own span. The .term inside inherits the mono caption look. */
+.deck-field-caption {
+  font: 10px/1 var(--deck-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--deck-dim);
+}
+.deck-field-caption .term {
+  border-bottom-color: var(--deck-dim);
 }
 .deck-field select,
 .deck-field input {
@@ -643,7 +739,8 @@ button:disabled {
   margin-bottom: 1.25rem;
 }
 .filters select,
-.filters label {
+.filters label,
+.filters .filters-caption {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
@@ -789,6 +886,110 @@ button:disabled {
   gap: 0.4rem;
 }
 
+/* --- Settings "Complexity overrides" panel, overrides-first (ux-discoverability #02) --- */
+.cx-panel {
+  display: grid;
+  gap: 0.5rem;
+}
+.cx-panel-head {
+  margin: 0;
+  color: var(--deck-text);
+  font-size: 13px;
+}
+.cx-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--deck-line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.cx-row {
+  display: grid;
+  grid-template-columns: 36px 1fr auto 120px auto;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  border-bottom: 1px solid var(--deck-line-soft);
+}
+.cx-row:last-child {
+  border-bottom: 0;
+}
+.cx-row:nth-child(odd) {
+  background: var(--deck-panel);
+}
+.cx-thumb {
+  width: 36px;
+  height: 18px;
+  object-fit: cover;
+  border-radius: 3px;
+}
+.cx-name {
+  color: var(--deck-text);
+  font-size: 13px;
+}
+.cx-printed {
+  color: var(--deck-dim);
+  font-size: 12px;
+}
+.cx-row-select select {
+  width: 100%;
+  background: var(--deck-panel);
+  border: 1px solid var(--deck-line);
+  border-radius: 4px;
+  color: var(--deck-text);
+  padding: 0.25rem 0.3rem;
+}
+.cx-reset {
+  all: unset;
+  cursor: pointer;
+  color: var(--deck-warn);
+  font-size: 12px;
+}
+.cx-reset:hover {
+  text-decoration: underline;
+}
+.cx-add {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+.cx-add-field select {
+  background: var(--deck-panel);
+  border: 1px solid var(--deck-line);
+  border-radius: 4px;
+  color: var(--deck-text);
+  padding: 0.3rem;
+}
+.cx-details {
+  border: 1px solid var(--deck-line);
+  border-radius: 8px;
+  padding: 0.55rem 0.8rem;
+}
+.cx-details summary {
+  cursor: pointer;
+  color: var(--deck-text);
+  font-weight: 600;
+}
+.cx-group {
+  margin-top: 0.8rem;
+}
+.cx-exp {
+  font-family: 'Mouse Memoirs', ui-sans-serif, system-ui, sans-serif;
+  font-size: 18px;
+  letter-spacing: 0.02em;
+  color: var(--deck-text);
+  margin: 0 0 0.35rem;
+}
+@media (max-width: 480px) {
+  .cx-row {
+    grid-template-columns: 30px 1fr 100px auto;
+  }
+  .cx-printed {
+    display: none;
+  }
+}
+
 /* Configurations outside the collection - dimmed in place, never removed from their tier row. */
 .tier-tile-unowned {
   opacity: 0.4;
@@ -821,6 +1022,31 @@ button:disabled {
 .unowned-note {
   color: var(--deck-dim);
   font-weight: 400;
+}
+/* ux-discoverability #04: the note is now a link to Settings → My collection. */
+a.unowned-note {
+  text-decoration: none;
+  border-bottom: 1px dotted var(--deck-dim);
+}
+a.unowned-note:hover {
+  color: var(--deck-text);
+  border-bottom-color: var(--deck-accent);
+}
+/* A Recommender row's unowned note lives below the row head, not inside it (a link can't nest
+ * in the head button), so it needs its own slot. */
+.deck-row-note {
+  margin: 0;
+  padding: 0 0.6rem 0.5rem;
+  font-size: 12px;
+}
+/* The shared "take me to My collection" affordance beside every hide-unowned control. */
+.deck-manage-collection {
+  color: var(--deck-accent);
+  text-decoration: none;
+  font-size: 12px;
+}
+.deck-manage-collection:hover {
+  text-decoration: underline;
 }
 
 .spirit-tile {
@@ -862,11 +1088,13 @@ button:disabled {
   justify-content: space-between;
   gap: 0.5rem;
 }
-.spirit-tile-complexity {
+/* ux-discoverability #07: the complexity dots moved from the name row to the chip row so they can
+ * host the `complexity` Term popover without nesting a button in the tile's open button. The dots
+ * stay the same size/colours; only their container changed. */
+.spirit-tile-complexity .term {
   display: inline-flex;
   align-items: center;
   gap: 2px;
-  flex: 0 0 auto;
   white-space: nowrap;
 }
 .spirit-tile-dot {
@@ -2787,7 +3015,8 @@ button:disabled {
 .log-chip-button,
 .log-submit,
 .log-delete,
-.log-toast-undo {
+.log-toast-undo,
+.log-empty-cta {
   border: 1px solid var(--deck-line);
   border-radius: 999px;
   background: var(--deck-panel-2);
@@ -2836,6 +3065,44 @@ button:disabled {
   width: 100%;
   overflow-x: auto;
 }
+
+/* --- Glossary (ux-discoverability #03): friendly groups, concept cards, search --- */
+.glossary-group {
+  margin-bottom: 1.1rem;
+}
+.glossary-group-label {
+  font-family: 'Mouse Memoirs', ui-sans-serif, system-ui, sans-serif;
+  font-size: 20px;
+  letter-spacing: 0.02em;
+  color: var(--deck-text);
+  margin: 1.4rem 0 0.4rem;
+  border-bottom: 1px solid var(--deck-line-soft);
+  padding-bottom: 0.25rem;
+}
+.glossary-cards {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.6rem;
+}
+.glossary-card {
+  border: 1px solid var(--deck-line);
+  border-radius: 8px;
+  background: var(--deck-panel);
+  padding: 0.7rem 0.8rem;
+}
+.glossary-card-title {
+  margin: 0 0 0.3rem;
+  color: var(--deck-accent);
+  font-weight: 600;
+}
+.glossary-card-text {
+  margin: 0 0 0.4rem;
+  font-size: 12.5px;
+}
+
 .log-table {
   width: 100%;
   border-collapse: collapse;

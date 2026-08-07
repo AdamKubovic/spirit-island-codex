@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { toConfigId } from '../domain/configurations'
 import type { ExpansionName, Spirit } from '../domain/types'
+import { ComplexityDots, UnownedNote } from './collectionAffordances'
 import { SpiritArt } from './SpiritArt'
-import { COMPLEXITY_LEVEL, expansionChipColor, tagColor, tagLabel } from './tagColors'
+import { Term } from './Term'
+import { expansionChipColor, tagColor, tagLabel } from './tagColors'
 import { activeConfigTier, tierColor } from './tierColors'
 
 /** v5 #07c: Browse annotates (never hides, unless the caller already dropped it via
@@ -42,7 +44,6 @@ export function SpiritTile({
   excluded: ReadonlySet<ExpansionName>
 }) {
   const [expanded, setExpanded] = useState(false)
-  const level = COMPLEXITY_LEVEL[spirit.complexity]
   const expansionColor = expansionChipColor(spirit.expansion)
   const tier = activeConfigTier(toConfigId(spirit.id))
 
@@ -64,19 +65,18 @@ export function SpiritTile({
         </div>
         <div className="spirit-tile-name-row">
           <h3>{spirit.name}</h3>
-          <span className="spirit-tile-complexity" title={spirit.complexity}>
-            {[1, 2, 3, 4].map((n) => (
-              <span key={n} className={n <= level ? 'spirit-tile-dot spirit-tile-dot-filled' : 'spirit-tile-dot'} />
-            ))}
-            <span className="spirit-tile-complexity-label">{spirit.complexity}</span>
-          </span>
         </div>
       </button>
       <div className="spirit-tile-chip-row">
         <span className="spirit-tile-chip" style={{ background: expansionColor }}>
           {spirit.expansion}
         </span>
-        {!owned && <span className="unowned-note"> · not in your collection</span>}
+        {/* ux-discoverability #07: the complexity word is a live `Term` popover, but a `<button>`
+         * can't nest inside the tile's open button — so the dots live on the chip row instead. */}
+        <Term id="complexity" className="spirit-tile-complexity">
+          <ComplexityDots complexity={spirit.complexity} />
+        </Term>
+        {!owned && <UnownedNote />}
       </div>
       {spirit.tags.length > 0 && (
         <div className="spirit-tile-chip-row spirit-tile-tags">

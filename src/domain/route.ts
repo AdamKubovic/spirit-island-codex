@@ -174,3 +174,12 @@ export function configHref(configId: string): string {
   const [spiritId, aspectName] = configId.split('::')
   return formatRoute(spiritRoute(spiritId, aspectName))
 }
+
+/**
+ * The `href` every "you don't own this" marking and "Manage collection" control points at
+ * (ux-discoverability #04): the Settings tab with a `?focus=collection` query that Settings reads
+ * on mount to scroll to the My collection section. The query is stripped by `parseHash` for
+ * routing (it splits on `?`), so the tab resolves normally; the marker survives in the raw hash
+ * for Settings' own effect to see.
+ */
+export const MY_COLLECTION_HREF = '#/settings?focus=collection'

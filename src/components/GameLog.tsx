@@ -517,7 +517,16 @@ export function GameLog() {
           Descriptive only — read these yourself; nothing here adjusts a tier, a weight, or a complexity override.
         </p>
         {stats.gamesPlayed === 0 ? (
-          <p className="meta">No games logged yet.</p>
+          <p className="meta">
+            No games logged yet.{' '}
+            <button
+              type="button"
+              className="log-empty-cta"
+              onClick={() => formPanel.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            >
+              Record your first game
+            </button>
+          </p>
         ) : (
           <>
             <p>
@@ -574,7 +583,16 @@ export function GameLog() {
           </p>
         )}
         {entries.length === 0 ? (
-          <p className="meta">No games logged yet.</p>
+          <p className="meta">
+            No games logged yet.{' '}
+            <button
+              type="button"
+              className="log-empty-cta"
+              onClick={() => formPanel.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+            >
+              Record a game
+            </button>
+          </p>
         ) : (
           <div className="log-table-wrap">
             <table className="log-table">

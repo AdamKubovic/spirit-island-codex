@@ -5,6 +5,7 @@ import { EXPANSIONS, EVENT_CLASSES, FEAR_TAGS, type Spirit } from '../../domain/
 import { EXPANSION_COLOR, subtypeLabel } from '../tagColors'
 import App from '../../App'
 import { collectionStore } from '../../domain/collectionStore'
+import { complexityStore } from '../../domain/complexityStore'
 import { gameLog } from '../../domain/gameLog'
 import { tierStore } from '../../domain/tierStore'
 import type { FearCard } from '../../domain/impactBreakdown'
@@ -15,9 +16,11 @@ import { EventValenceView } from '../EventValenceView'
 import { FearImpactView } from '../FearImpactView'
 import { GameLog } from '../GameLog'
 import { GlossaryTab } from '../GlossaryTab'
+import { Homepage } from '../Homepage'
 import { RecommenderMain, RecommenderProvider, RecommenderSide } from '../Recommender'
 import { Settings } from '../Settings'
 import { SpiritDetail } from '../SpiritDetail'
+import { SpiritTile } from '../SpiritTile'
 import { TierBoard } from '../TierBoard'
 import { Browser } from '../Browser'
 import { CardFilters } from '../CardFilters'
@@ -53,21 +56,55 @@ describe('app smoke', () => {
     expect(() => renderToStaticMarkup(<App />)).not.toThrow()
   })
 
-  it('boots to the homepage: framing lines, three doors, disclaimer, outbound game link (#13)', () => {
+  it('boots to the homepage: hero, eight-tile grid, "Make it yours", framing, disclaimer (#01)', () => {
     const html = renderToStaticMarkup(<App />)
-    expect(html).toContain('Explore every spirit')
-    expect(html).toContain('Not sure what to play?')
-    expect(html).toContain('How do they rank?')
+    // Hero: app name, one-line pitch, primary CTA → Recommend.
+    expect(html).toContain('Spirit Island Codex')
+    expect(html).toContain('Find a spirit to play')
+    expect(html).toMatch(/<button type="button" class="home-cta">Find a spirit to play<\/button>/)
+    // The eight-tile feature grid: one tile per nav tab.
+    for (const title of ['Browse every spirit', 'Not sure what to play?', 'Archive', 'Dashboard', 'Tier lists', 'Game log', 'Glossary', 'Settings']) {
+      expect(html).toContain(title)
+    }
+    // "Make it yours" trio.
+    expect(html).toContain('Make it yours')
+    expect(html).toContain('Your collection')
+    expect(html).toContain('Complexity overrides')
+    expect(html).toContain('Default tier lists')
+    // Framing and disclaimer kept.
     expect(html).toContain('unofficial, fan-made companion')
     expect(html).toContain('not affiliated with the Spirit Island rights holders')
     expect(html).toContain('https://shop.greaterthangames.com/pages/spirit-island')
-    // The door art ids are hand-typed in Homepage.tsx; pin them so a typo can't silently
-    // fall back to another spirit's art.
-    expect(html).toContain('spirits/lightnings-swift-strike.webp')
-    expect(html).toContain('spirits/river-surges-in-sunlight.webp')
-    expect(html).toContain('spirits/a-spread-of-rampant-green.webp')
+    // The live strip stays hidden until the visitor customises (ADR 0018) — a clean front door
+    // by default, asserted as absent so a regression can't surface it unconditionally.
+    expect(html).not.toContain('Your setup:')
     // Boot is the homepage, not the recommender wizard.
     expect(html).not.toContain('How do you like to beat your opponents?')
+  })
+
+  it('the "Your setup" strip appears only once the visitor customises (#01, ADR 0018)', () => {
+    const plain = renderToStaticMarkup(<Homepage onNavigate={() => {}} />)
+    expect(plain).not.toContain('Your setup:')
+    expect(plain).not.toContain('excluded')
+
+    complexityStore.setComplexity('lightnings-swift-strike', 'High')
+    try {
+      const withOverride = renderToStaticMarkup(<Homepage onNavigate={() => {}} />)
+      expect(withOverride).toContain('Your setup:')
+      expect(withOverride).toContain('1 complexity override')
+      expect(withOverride).toContain('Edit in Settings')
+    } finally {
+      complexityStore.reset('lightnings-swift-strike')
+    }
+
+    collectionStore.setOwned('Branch & Claw', false)
+    try {
+      const withExclusion = renderToStaticMarkup(<Homepage onNavigate={() => {}} />)
+      expect(withExclusion).toContain('Your setup:')
+      expect(withExclusion).toContain('1 expansion excluded')
+    } finally {
+      collectionStore.resetAll()
+    }
   })
 
   it('the logo is the only route home: a Home button wraps it, and no nav item is active on boot (#13)', () => {
@@ -85,6 +122,58 @@ describe('app smoke', () => {
     const nav = html.slice(html.indexOf('deck-nav'), html.indexOf('</nav>'))
     const labels = [...nav.matchAll(/<button[^>]*>([^<]+)<\/button>/g)].map((m) => m[1])
     expect(labels).toEqual(['Browse', 'Recommend', 'Archive', 'Dashboard', 'Tier list', 'Log', 'Glossary', 'Settings'])
+  })
+
+  it('every hide-unowned control gains a "Manage collection →" link to Settings (#04)', () => {
+    const browse = renderToStaticMarkup(<Browser />)
+    expect(browse).toContain('Manage collection →')
+    expect(browse).toContain('href="#/settings?focus=collection"')
+
+    const recommend = renderToStaticMarkup(
+      <RecommenderProvider initialPhase="board">
+        <RecommenderMain />
+      </RecommenderProvider>,
+    )
+    expect(recommend).toContain('Manage collection →')
+
+    const tiers = renderToStaticMarkup(<TierBoard />)
+    expect(tiers).toContain('Manage collection →')
+  })
+
+  it('unowned markings route to Settings → My collection, outside any button or label (#04)', () => {
+    collectionStore.setOwned('Branch & Claw', false)
+    try {
+      const browse = renderToStaticMarkup(<Browser />)
+      expect(browse).toContain('not in your collection')
+      // The link is a sibling of the tile's open button, never nested inside it.
+      expect(browse).toMatch(/<a class="unowned-note" href="#\/settings\?focus=collection">/)
+
+      const dashboard = renderToStaticMarkup(<DashboardTab />)
+      expect(dashboard).toContain('not in your collection')
+      expect(dashboard).toMatch(/<a class="unowned-note" href="#\/settings\?focus=collection">/)
+    } finally {
+      collectionStore.resetAll()
+    }
+  })
+
+  it('an unowned Recommender result notes "manage" below the row head, not inside it (#04)', () => {
+    // The default shortlist is Horizons spirits, so excluding Horizons puts an unowned result
+    // in the rows — the case the note exists to explain.
+    collectionStore.setOwned('Horizons', false)
+    try {
+      const recommend = renderToStaticMarkup(
+        <RecommenderProvider initialPhase="board">
+          <RecommenderMain />
+        </RecommenderProvider>,
+      )
+      expect(recommend).toContain('deck-row-unowned')
+      // A <p> below the row head — a real link, not nested in the head button.
+      expect(recommend).toContain('deck-row-note')
+      expect(recommend).toMatch(/<a class="unowned-note" href="#\/settings\?focus=collection">/)
+      expect(recommend).toContain('not in your collection')
+    } finally {
+      collectionStore.resetAll()
+    }
   })
 
   it('phone shell: the hamburger toggle carries aria-expanded/aria-controls/label, and the closed drawer still holds the nav (mobile-panel)', () => {
@@ -457,6 +546,41 @@ describe('app smoke', () => {
     expect(event).toContain('Choice')
   })
 
+  it('the complexity term is wired where complexity is surfaced (ux-discoverability #07)', () => {
+    // Browse's Complexity filter caption.
+    const browse = renderToStaticMarkup(<Browser />)
+    expect(browse).toMatch(/<span class="filters-caption"><span class="term-wrap"><button[^>]*class="term"[^>]*>Complexity<\/button>/)
+    // The select keeps its own accessible name (a button can't sit inside a <label>).
+    expect(browse).toContain('aria-label="Complexity"')
+
+    // Spirit tile: the complexity dots moved to the chip row, wrapped in the term.
+    const lightning = spirits.find((s) => s.id === 'lightnings-swift-strike')!
+    expect(
+      renderToStaticMarkup(<SpiritTile spirit={lightning} onSelect={() => {}} owned excluded={new Set()} />),
+    ).toMatch(/<span class="term-wrap spirit-tile-complexity"><button[^>]*class="term"/)
+
+    // Spirit detail head.
+    const detail = renderToStaticMarkup(<SpiritDetail spirit={lightning} onClose={() => {}} />)
+    expect(detail).toMatch(/<div class="spirit-tile-complexity"><span class="term-wrap">/)
+
+    // Settings panel meta copy.
+    expect(renderToStaticMarkup(<Settings />)).toMatch(
+      /printed <span class="term-wrap"><button[^>]*class="term"[^>]*>Complexity<\/button>/,
+    )
+
+    // Recommender's complexity question caption and the session ceiling control.
+    const side = renderToStaticMarkup(
+      <RecommenderProvider initialPhase="board">
+        <RecommenderSide />
+      </RecommenderProvider>,
+    )
+    expect(side).toContain('class="term"')
+    expect(side).toContain('>complexity tolerance<')
+    const random = renderToStaticMarkup(<RecommenderProvider initialPhase="random"><RecommenderMain /></RecommenderProvider>)
+    expect(random).toContain('Cap complexity at (session)')
+    expect(random).toContain('aria-label="Cap complexity at (session)"')
+  })
+
   it('the Fear impact view drills a stat tile into its exact cards, with a clear control (deck-dashboard #19)', () => {
     const cards: FearCard[] = [
       { name: 'Weak One', expansion: 'Base', kind: 'fear', image: 'cards/fear/weak_one.webp', tags: [], impact: 1, impactSource: 'judgment' },
@@ -563,13 +687,37 @@ describe('app smoke', () => {
     }
   })
 
-  it('the Glossary tab renders its categories (difficulty-and-glossary #06)', () => {
+  it('both Log empty states offer a CTA to the game-log entry form (ux-discoverability #06)', () => {
+    const previous = gameLog.list()
+    gameLog.replaceAll([])
+    try {
+      const html = renderToStaticMarkup(<GameLog />)
+      // Both "No games logged yet." dead-ends now carry an onward path to the form.
+      expect(html.match(/No games logged yet\./g)).toHaveLength(2)
+      expect(html).toContain('Record your first game')
+      expect(html).toContain('Record a game')
+      expect(html.match(/log-empty-cta/g)!.length).toBe(2)
+    } finally {
+      gameLog.replaceAll(previous)
+    }
+  })
+
+  it('the Glossary tab renders its categories (difficulty-and-glossary #06, ux-discoverability #03)', () => {
     const html = renderToStaticMarkup(<GlossaryTab />)
     expect(html).toContain('Glossary')
-    for (const category of ['Fear impact', 'Event valence', 'Fear tags', 'Event classes', 'Difficulty']) {
+    // ux-discoverability #03: four friendly groups; raw internal ids never show.
+    for (const category of ['Fear cards', 'Event cards', 'Difficulty', 'Complexity']) {
       expect(html).toContain(category)
     }
-    expect(html).toContain('England')
+    expect(html).toContain('England') // the difficulty table's adversary data
+    expect(html).not.toContain('impact-weak')
+    expect(html).not.toContain('fear-tag-removal')
+    expect(html).not.toContain('valence-harmful')
+    expect(html).not.toContain('event-class-choice')
+    expect(html).not.toContain('>difficulty<')
+    // Friendly labels render.
+    expect(html).toContain('Weak impact')
+    expect(html).toContain('Removal')
   })
 
   it('the Dashboard Event segment states plainly that a base-game-only set has no events, rather than an error or blank screen (deck-dashboard #12)', () => {
