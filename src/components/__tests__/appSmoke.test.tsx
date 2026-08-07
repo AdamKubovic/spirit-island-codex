@@ -692,11 +692,12 @@ describe('app smoke', () => {
     gameLog.replaceAll([])
     try {
       const html = renderToStaticMarkup(<GameLog />)
-      // Both "No games logged yet." dead-ends now carry an onward path to the form.
+      // Both "No games logged yet." dead-ends now carry an onward path to the form, as real
+      // links to the entry form (the same ?focus= contract Settings uses for the collection).
       expect(html.match(/No games logged yet\./g)).toHaveLength(2)
       expect(html).toContain('Record your first game')
       expect(html).toContain('Record a game')
-      expect(html.match(/log-empty-cta/g)!.length).toBe(2)
+      expect(html.match(/class="log-empty-cta" href="#\/log\?focus=form"/g)!.length).toBe(2)
     } finally {
       gameLog.replaceAll(previous)
     }

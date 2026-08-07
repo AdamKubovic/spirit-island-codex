@@ -183,3 +183,11 @@ export function configHref(configId: string): string {
  * for Settings' own effect to see.
  */
 export const MY_COLLECTION_HREF = '#/settings?focus=collection'
+
+/**
+ * The `href` the Log's "No games logged yet." empty states point at (ux-discoverability #06):
+ * the Log tab with a `?focus=form` query that GameLog reads on mount to scroll the entry form
+ * into view. Same contract as `MY_COLLECTION_HREF`: the query is stripped by `parseHash`, the
+ * tab resolves normally, and the marker survives in the raw hash for GameLog's own effect.
+ */
+export const LOG_FORM_HREF = '#/log?focus=form'

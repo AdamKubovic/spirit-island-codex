@@ -7,7 +7,7 @@ import { type BoardType, computeDifficulty } from '../domain/difficulty'
 import { gameLog } from '../domain/gameLog'
 import { clampAdversaryLevel, entryToForm, formatDuration, formToEntry } from '../domain/logEntry'
 import { computeLogStats, type RateStat } from '../domain/logStats'
-import { configHref } from '../domain/route'
+import { configHref, LOG_FORM_HREF } from '../domain/route'
 import { SCENARIOS } from '../domain/scenarios'
 import type { Spirit } from '../domain/types'
 import { AvatarChip } from './AvatarChip'
@@ -99,6 +99,17 @@ export function GameLog() {
     return () => {
       if (undoTimer.current !== undefined) clearTimeout(undoTimer.current)
     }
+  }, [])
+
+  // ux-discoverability #06: the empty-state CTAs are real links to `#/log?focus=form` (the query
+  // is stripped by the router for routing), so on landing the entry form scrolls into view — the
+  // same contract Settings uses for ?focus=collection. The form is above the empty states, so a
+  // fresh visitor who reached the bottom of the Log is taken back up to where they record a game.
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const query = window.location.hash.split('?')[1] ?? ''
+    if (new URLSearchParams(query).get('focus') !== 'form') return
+    formPanel.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }, [])
 
   // version is a deliberate re-run trigger for gameLog's mutable read, not a real dependency.
@@ -519,13 +530,9 @@ export function GameLog() {
         {stats.gamesPlayed === 0 ? (
           <p className="meta">
             No games logged yet.{' '}
-            <button
-              type="button"
-              className="log-empty-cta"
-              onClick={() => formPanel.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-            >
+            <a className="log-empty-cta" href={LOG_FORM_HREF}>
               Record your first game
-            </button>
+            </a>
           </p>
         ) : (
           <>
@@ -585,13 +592,9 @@ export function GameLog() {
         {entries.length === 0 ? (
           <p className="meta">
             No games logged yet.{' '}
-            <button
-              type="button"
-              className="log-empty-cta"
-              onClick={() => formPanel.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-            >
+            <a className="log-empty-cta" href={LOG_FORM_HREF}>
               Record a game
-            </button>
+            </a>
           </p>
         ) : (
           <div className="log-table-wrap">
