@@ -178,20 +178,29 @@ export function DashboardTab({ initialSegment, initialSpiritId }: { initialSegme
 
       <fieldset className="dashboard-picker">
         <legend>Expansions in play</legend>
-        <ul className="collection-checklist">
-          {EXPANSIONS.map((expansion) => (
-            <li key={expansion}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={checkedExpansions.has(expansion)}
-                  onChange={(e) => toggleExpansion(expansion, e.target.checked)}
-                />
-                {expansion}
-              </label>
-              {!collectionStore.owns(expansion) && <UnownedNote />}
-            </li>
-          ))}
+        {/* Same card treatment as Settings' "My collection" (ux-discoverability alignment): a
+         * pressed card per expansion. Session-only state, defaulting to the Collection — the
+         * `aria-pressed` here is "in play for this session", never a write back to the
+         * collection. Unowned expansions stay listed and annotated, never hidden. */}
+        <ul className="collection-picker-options dashboard-expansion-options">
+          {EXPANSIONS.map((expansion) => {
+            const checked = checkedExpansions.has(expansion)
+            const owned = collectionStore.owns(expansion)
+            return (
+              <li key={expansion} className={owned ? undefined : 'dashboard-expansion-unowned'}>
+                <button
+                  type="button"
+                  className="collection-option"
+                  aria-pressed={checked}
+                  onClick={() => toggleExpansion(expansion, !checked)}
+                >
+                  <span>{expansion}</span>
+                  <small>{checked ? 'In play' : 'Not in play'}</small>
+                </button>
+                {!owned && <UnownedNote />}
+              </li>
+            )
+          })}
         </ul>
       </fieldset>
 

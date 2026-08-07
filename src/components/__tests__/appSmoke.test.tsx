@@ -421,14 +421,19 @@ describe('app smoke', () => {
     expect(html).toContain('Odds assume a full deck, nothing drawn.')
   })
 
-  it('the Dashboard expansion picker lists all 7 expansions, checked by default (owns-everything Collection), no unowned annotation (deck-dashboard #08)', () => {
+  it('the Dashboard expansion picker lists all 7 expansions, pressed by default (owns-everything Collection), no unowned annotation (deck-dashboard #08)', () => {
     const html = renderToStaticMarkup(<DashboardTab />)
     expect(html).toContain('Expansions in play')
     for (const expansion of EXPANSIONS) {
       expect(html).toContain(expansion.replace('&', '&amp;'))
     }
-    expect((html.match(/type="checkbox"/g) ?? []).length).toBe(EXPANSIONS.length)
-    expect((html.match(/checked=""/g) ?? []).length).toBe(EXPANSIONS.length)
+    // ux-discoverability alignment: card-grid treatment, one pressed card per expansion — the
+    // same .collection-option pattern Settings' "My collection" uses. No checkboxes remain.
+    expect((html.match(/class="collection-option"/g) ?? []).length).toBe(EXPANSIONS.length)
+    // Each card is pressed by default (owns-everything Collection) — scoped to the cards so the
+    // segment/count controls' own aria-pressed don't pollute the count.
+    expect((html.match(/class="collection-option" aria-pressed="true"/g) ?? []).length).toBe(EXPANSIONS.length)
+    expect(html).not.toContain('type="checkbox"')
     expect(html).not.toContain('unowned-note')
   })
 

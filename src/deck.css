@@ -1643,6 +1643,26 @@ a.unowned-note:hover {
   color: var(--deck-dim);
   padding: 0 0.3rem;
 }
+/* ux-discoverability alignment: the Dashboard's "Expansions in play" uses the same card grid as
+ * Settings' "My collection" (.collection-picker-options/.collection-option). Each cell is an
+ * <li> so the unowned note can sit outside its card button (a link can't nest in a button). */
+.dashboard-expansion-options {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.dashboard-expansion-options li {
+  display: grid;
+  gap: 0.35rem;
+}
+.dashboard-expansion-options .collection-option {
+  width: 100%;
+  min-height: 0;
+  padding: 0.55rem 0.6rem;
+}
+.dashboard-expansion-options .unowned-note {
+  font-size: 11px;
+}
 .dashboard-spirit-picker {
   display: flex;
   align-items: center;
