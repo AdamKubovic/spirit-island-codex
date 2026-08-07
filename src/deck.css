@@ -182,12 +182,17 @@ body {
   color: var(--parchment-accent);
 }
 
-.home-section-title {
+/* `.deck-main h2` (0,1,1) would otherwise win over a bare `.home-section-title` (0,1,0) and
+ * stamp the titles with the muted mono-dim tab-heading look — dark ink on the dark pane that
+ * reads as invisible, with `margin: 0` cramming them against the grid above. Scoped under
+ * `.home` to beat it: these are content headings in the display face, not tab chrome. */
+.home .home-section-title {
   font-family: 'Mouse Memoirs', ui-sans-serif, system-ui, sans-serif;
-  font-size: 17px;
+  font-size: 20px;
   letter-spacing: 0.02em;
+  text-transform: none;
   color: var(--deck-text);
-  margin: 2.25rem 0 0.8rem;
+  margin: 2.5rem 0 0.9rem;
   border-bottom: 1px solid var(--parchment-line);
   padding-bottom: 0.35rem;
 }
