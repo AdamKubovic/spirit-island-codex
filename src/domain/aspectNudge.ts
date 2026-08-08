@@ -1,3 +1,4 @@
+import { AXIS_LABEL } from './axisLabels'
 import { AXES } from './scoringPrimitives'
 import type { Weights } from './recommend'
 import type { Aspect, OCFDU, Spirit } from './types'
@@ -22,4 +23,13 @@ export function topWeightedLowAxis(spirit: Spirit, weights: Weights): keyof OCFD
  * convention so no caller re-derives it. */
 export function aspectShiftsToward(aspect: Aspect | undefined, axis: keyof OCFDU | undefined): boolean {
   return axis !== undefined && aspect?.shiftsToward === `+${axis}`
+}
+
+/** The one-line "leans {axis}, which you weighted highly" reason for an aspect, or undefined
+ * when the data does not support claiming one. One home for the sentence: the collapsed result
+ * row head and the expanded sibling list both render it, so they can never drift. */
+export function aspectLeanReason(aspect: Aspect | undefined, axis: keyof OCFDU | undefined): string | undefined {
+  return axis !== undefined && aspectShiftsToward(aspect, axis)
+    ? `leans ${AXIS_LABEL[axis]}, which you weighted highly`
+    : undefined
 }

@@ -4,6 +4,7 @@ import spiritsData from '../../data/spirits.json'
 import { EXPANSIONS, EVENT_CLASSES, FEAR_TAGS, type Spirit } from '../../domain/types'
 import { EXPANSION_COLOR, subtypeLabel } from '../tagColors'
 import App from '../../App'
+import { answersStore } from '../../domain/answersStore'
 import { collectionStore } from '../../domain/collectionStore'
 import { complexityStore } from '../../domain/complexityStore'
 import { gameLog } from '../../domain/gameLog'
@@ -17,7 +18,7 @@ import { FearImpactView } from '../FearImpactView'
 import { GameLog } from '../GameLog'
 import { GlossaryTab } from '../GlossaryTab'
 import { Homepage } from '../Homepage'
-import { RecommenderMain, RecommenderProvider, RecommenderSide } from '../Recommender'
+import { RecommenderMain, RecommenderProvider } from '../Recommender'
 import { Settings } from '../Settings'
 import { SpiritDetail } from '../SpiritDetail'
 import { SpiritTile } from '../SpiritTile'
@@ -192,7 +193,7 @@ describe('app smoke', () => {
     expect(html.match(/aria-label="Home"/g)!.length).toBe(2)
   })
 
-  it('Recommend phone disclosure: "Your answers" is a details element above the results, collapsed by default (mobile-panel)', () => {
+  it('Recommend: "Your answers" is a details element above the results, collapsed by default (recommender-results-polish #01)', () => {
     const html = renderToStaticMarkup(
       <RecommenderProvider initialPhase="board">
         <RecommenderMain />
@@ -222,11 +223,9 @@ describe('app smoke', () => {
     expect(hint).toContain('Change an answer and the ranking recomputes immediately.')
   })
 
-  it('parity: the board markup carries the "Your answers" disclosure with the knobs inside it (parity #08)', () => {
-    // Recommend renders RecommenderSide once, inside the phone disclosure (Recommender.tsx); on
-    // desktop the same knobs surface in the sidebar slot wired by App.tsx, outside this render.
-    // What the board markup alone can promise is that the disclosure and its knobs both exist —
-    // CSS shows the disclosure at phone width and hides it at desktop; dropping either fails here.
+  it('the board markup carries the "Your answers" disclosure with the knobs inside it (parity #08)', () => {
+    // One collapsible panel for both layouts — the board alone renders the answers (Recommender.tsx);
+    // there is no second rendering in the shell. Dropping the disclosure or the knobs fails here.
     const html = renderToStaticMarkup(
       <RecommenderProvider initialPhase="board">
         <RecommenderMain />
@@ -357,14 +356,24 @@ describe('app smoke', () => {
     expect(() => renderToStaticMarkup(<RecommenderMain />)).toThrow(/RecommenderProvider/)
   })
 
-  it('hides the live controls until the questionnaire is done', () => {
-    // Phase starts as "wizard", so the sidebar knobs must not render yet.
-    const html = renderToStaticMarkup(
+  it('hides the answers panel until the questionnaire is done (recommender-results-polish #01)', () => {
+    // Phase starts as "wizard", so the answers panel must not render yet.
+    const wizard = renderToStaticMarkup(
       <RecommenderProvider>
-        <RecommenderSide />
+        <RecommenderMain />
       </RecommenderProvider>,
     )
-    expect(html).toBe('')
+    expect(wizard).not.toContain('Your answers')
+    expect(wizard).not.toContain('deck-knobs')
+
+    // On the results board the panel is present.
+    const board = renderToStaticMarkup(
+      <RecommenderProvider initialPhase="board">
+        <RecommenderMain />
+      </RecommenderProvider>,
+    )
+    expect(board).toContain('Your answers')
+    expect(board).toContain('deck-knobs')
   })
 
   it('renders the spirit detail view for a spirit without throwing, even with no panel or card images present', () => {
@@ -612,14 +621,15 @@ describe('app smoke', () => {
       /printed <span class="term-wrap"><button[^>]*class="term"[^>]*>Complexity<\/button>/,
     )
 
-    // Recommender's complexity question caption and the session ceiling control.
-    const side = renderToStaticMarkup(
+    // Recommender's complexity question caption (in the board's answers panel) and the session
+    // ceiling control.
+    const board = renderToStaticMarkup(
       <RecommenderProvider initialPhase="board">
-        <RecommenderSide />
+        <RecommenderMain />
       </RecommenderProvider>,
     )
-    expect(side).toContain('class="term"')
-    expect(side).toContain('>complexity tolerance<')
+    expect(board).toContain('class="term"')
+    expect(board).toContain('>complexity tolerance<')
     const random = renderToStaticMarkup(<RecommenderProvider initialPhase="random"><RecommenderMain /></RecommenderProvider>)
     expect(random).toContain('Cap complexity at (session)')
     expect(random).toContain('aria-label="Cap complexity at (session)"')
@@ -1024,5 +1034,114 @@ describe('app smoke', () => {
       expansions: [otherTarget.expansion],
     })
     expect(otherNameAndExpansion.every((c) => c.expansion === otherTarget.expansion)).toBe(true)
+  })
+
+  it('recommender-results-polish #01: survey answers live on the board, not in the app shell', () => {
+    // The shell renders no side slot at all — survey state left the persistent chrome. The
+    // slot used to render in the shell at every tab, so its absence is a real pin.
+    const app = renderToStaticMarkup(<App />)
+    expect(app).not.toContain('deck-side-slot')
+  })
+
+  it('recommender-results-polish #02: the board offers "Redo survey" and "Start fresh"; "Start over" is gone', () => {
+    const board = renderToStaticMarkup(
+      <RecommenderProvider initialPhase="board">
+        <RecommenderMain />
+      </RecommenderProvider>,
+    )
+    expect(board).toContain('Redo survey')
+    expect(board).toContain('Start fresh')
+    // The hard wipe keeps its new name everywhere — the superseded label exists nowhere.
+    expect(board).not.toContain('Start over')
+    expect(board).not.toContain('Retake the questionnaire')
+  })
+
+  it('recommender-results-polish #02: the resume prompt says "Start fresh" and keeps the continue path', () => {
+    answersStore.save({ beatOpponents: 'force' })
+    try {
+      const resume = renderToStaticMarkup(
+        <RecommenderProvider>
+          <RecommenderMain />
+        </RecommenderProvider>,
+      )
+      expect(resume).toContain('Continue with my saved answers')
+      expect(resume).toContain('Start fresh')
+      expect(resume).not.toContain('Retake the questionnaire')
+      expect(resume).not.toContain('Start over')
+    } finally {
+      answersStore.clear()
+    }
+  })
+
+  it('recommender-results-polish #02: redo pre-fills the wizard — seeded answers render as pressed options', () => {
+    answersStore.save({ beatOpponents: 'force', gutReaction: 'brace' })
+    try {
+      const wizard = renderToStaticMarkup(
+        <RecommenderProvider initialPhase="wizard">
+          <RecommenderMain />
+        </RecommenderProvider>,
+      )
+      // The wizard shows one question at a time, starting at question 1: the answered option
+      // of the visible question carries aria-pressed="true" — the soft redo walkthrough shows
+      // the previous answers, not a blank questionnaire.
+      expect(wizard.match(/aria-pressed="true"/g)).toHaveLength(1)
+      expect(wizard).toContain('aria-pressed="true">Overwhelming force')
+      expect(wizard).toContain('aria-pressed="false">Outsmart them and control the board')
+    } finally {
+      answersStore.clear()
+    }
+  })
+
+  it('recommender-results-polish #03: the ownership control is a themed switch, default off, labelled from the Collection', () => {
+    const board = renderToStaticMarkup(
+      <RecommenderProvider initialPhase="board">
+        <RecommenderMain />
+      </RecommenderProvider>,
+    )
+    expect(board).toMatch(/role="switch"/)
+    expect(board).toContain('aria-checked="false"')
+    expect(board).toContain('Only recommend from my collection')
+    expect(board).not.toContain('Only recommend spirits I own')
+    // The checkbox is gone; the annotation and the collection link survive the restyle.
+    expect(board).not.toContain('type="checkbox"')
+    expect(board).toContain('Manage collection →')
+  })
+
+  it('recommender-results-polish #04: an aspect leaning the player\u2019s top-weighted-low axis earns a one-line reason; nothing is claimed otherwise', () => {
+    // Before any answers: no axis is weighted, so no row may claim a reason.
+    const plain = renderToStaticMarkup(
+      <RecommenderProvider initialPhase="board">
+        <RecommenderMain />
+      </RecommenderProvider>,
+    )
+    expect(plain).not.toContain('which you weighted highly')
+
+    // Seeded answers weight utility highest, and Lightning rates it low — its Wind aspect
+    // (shiftsToward: '+utility') lands in the shortlist, so the row says so (verified against
+    // the shipped data, not assumed — see the SIA Favorites list).
+    answersStore.save({
+      beatOpponents: 'force',
+      gutReaction: 'scare-off',
+      focusStyle: 'many-options',
+      turnStyle: 'steady',
+      tempo: 'fast',
+      boardControl: 'love',
+      complexityTolerance: 'simple',
+      experience: 'newcomer',
+      element: 'none',
+      powerVsFresh: 'power',
+    })
+    tierStore.setActiveListId('sia-favorites-fun-solo-2026')
+    try {
+      const board = renderToStaticMarkup(
+        <RecommenderProvider initialPhase="board">
+          <RecommenderMain />
+        </RecommenderProvider>,
+      )
+      expect(board).toContain('leans flexibility, which you weighted highly')
+    } finally {
+      answersStore.clear()
+      tierStore.setActiveListId('owners-board')
+    }
   })
 })

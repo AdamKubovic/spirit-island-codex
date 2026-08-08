@@ -7,7 +7,7 @@ import { GlossaryTab } from './components/GlossaryTab'
 import { Homepage } from './components/Homepage'
 import { fromConfigId } from './domain/configurations'
 import { spiritRoute, type Tab } from './domain/route'
-import { RecommenderMain, RecommenderProvider, RecommenderSide } from './components/Recommender'
+import { RecommenderMain, RecommenderProvider } from './components/Recommender'
 import { Settings } from './components/Settings'
 import { TierBoard } from './components/TierBoard'
 import { useRoute } from './useRoute'
@@ -49,7 +49,6 @@ function App({ offlineReady = false }: { offlineReady?: boolean } = {}) {
         current={tab}
         onNavigate={goToTab}
         onHome={() => goToTab('home')}
-        side={tab === 'recommender' ? <RecommenderSide /> : null}
       >
         {tab === 'home' && <Homepage onNavigate={goToTab} />}
         {tab === 'recommender' && <RecommenderMain onSelectConfiguration={goToConfiguration} />}

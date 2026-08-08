@@ -2,8 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import spiritsData from '../data/spirits.json'
 import { answersStore } from '../domain/answersStore'
 import type { Answers } from '../domain/answersToWeights'
-import { aspectShiftsToward, topWeightedLowAxis } from '../domain/aspectNudge'
-import { AXIS_LABEL } from '../domain/axisLabels'
+import { aspectLeanReason, topWeightedLowAxis } from '../domain/aspectNudge'
 import { collectionStore, isConfigurationOwned } from '../domain/collectionStore'
 import { complexityStore } from '../domain/complexityStore'
 import { expand, type Configuration } from '../domain/configurations'
@@ -136,22 +135,21 @@ function useRanking() {
   )
 }
 
-/* ------------------------------ sidebar ------------------------------ */
+/* ------------------------------ answers panel ------------------------------ */
 
 /** "beatOpponents" -> "beat opponents". The full prompt stays as the control's tooltip. */
 function shortLabel(id: string): string {
   return id.replace(/([A-Z])/g, ' $1').toLowerCase()
 }
 
-/** Live controls. Every change re-ranks the main pane immediately — no submit. */
-export function RecommenderSide() {
-  const { phase, answers, answer, restart } = useRecommender()
-  if (phase !== 'board') return null
+/** The 10 live answer selects. Rendered once, inside the results board's collapsible
+ * "Your answers" panel — the recommend experience is one surface (recommender-results-polish
+ * #01), and every change re-ranks the board immediately, no submit. */
+function AnswersPanel() {
+  const { answers, answer } = useRecommender()
 
   return (
     <div className="deck-knobs">
-      <div className="deck-knobs-title">Your answers</div>
-
       {QUESTIONS.map((question) =>
         // ux-discoverability #07: the complexity question's caption is a Term popover. A button
         // can't live inside a <label> (it would steal the label's association), so this field is
@@ -190,10 +188,6 @@ export function RecommenderSide() {
           </label>
         ),
       )}
-
-      <button type="button" className="deck-ghost deck-ghost-accent" onClick={restart}>
-        Start over
-      </button>
     </div>
   )
 }
@@ -228,7 +222,7 @@ function ResumePrompt() {
           Continue with my saved answers
         </button>
         <button type="button" className="deck-ghost" onClick={restart}>
-          Retake the questionnaire
+          Start fresh
         </button>
       </div>
     </section>
@@ -267,6 +261,10 @@ function ResultRow({
   const [open, setOpen] = useState(false)
   const { spirit, aspect } = config
   const hintAxis = topWeightedLowAxis(spirit, weights)
+  // recommender-results-polish #04: the aspect earns a reason only when the data supports it —
+  // its `shiftsToward` hint points at the player's top-weighted-low axis (provenance rule:
+  // never an invented nudge). Otherwise it stays a badge, exactly as before.
+  const aspectReason = aspectLeanReason(aspect, hintAxis)
   const siblings = CONFIGS_BY_SPIRIT[spirit.id].filter((c) => c.configId !== config.configId)
 
   return (
@@ -280,6 +278,7 @@ function ResultRow({
             {aspect ? <> — play the <strong>{aspect.name}</strong> aspect</> : null}
           </span>
           <span className="deck-why">{whyYou(spirit, weights)}</span>
+          {aspectReason && <span className="deck-aspect-reason">{aspectReason}</span>}
         </span>
         <HeatStrip ratings={spirit.ratings} weights={weights} />
         <span className="deck-score">{score.toFixed(2)}</span>
@@ -327,17 +326,17 @@ function ResultRow({
                 <p className="meta">Other configurations of {spirit.name}:</p>
                 <ul className="aspects">
                   {siblings.map((sibling) => {
-                    const leansTowardHint = aspectShiftsToward(sibling.aspect, hintAxis)
+                    const siblingReason = aspectLeanReason(sibling.aspect, hintAxis)
                     return (
-                      <li key={sibling.configId} className={leansTowardHint ? 'aspect-hint' : undefined}>
+                      <li key={sibling.configId} className={siblingReason ? 'aspect-hint' : undefined}>
                         <strong>{sibling.aspect ? sibling.aspect.name : 'Base'}:</strong>{' '}
                         {sibling.aspect?.delta ?? (sibling.aspect ? <em className="meta">effect not transcribed yet</em> : null)}
                         {' — tier '}
                         {tiers[sibling.configId] ?? 'not rated by this list'} · {sibling.effectiveComplexity}
-                        {leansTowardHint && hintAxis && (
+                        {siblingReason && (
                           <>
                             {' '}
-                            <em>leans {AXIS_LABEL[hintAxis]}, which you weighted highly</em>
+                            <em>{siblingReason}</em>
                           </>
                         )}
                       </li>
@@ -354,31 +353,56 @@ function ResultRow({
 }
 
 function ResultsBoard({ onSelectConfiguration }: { onSelectConfiguration?: (configId: string) => void }) {
-  const { setPhase, rerollWildcard, hardFilter, setHardFilter } = useRecommender()
+  const { setPhase, setStep, restart, rerollWildcard, hardFilter, setHardFilter } = useRecommender()
   const { weights, shortlist, wildcard, excluded } = useRanking()
   const tiers = tierStore.getAll()
 
   return (
     <>
-      {/* mobile-panel: on phone the sidebar (and its `side` slot) is hidden, so the same live
-       * controls surface here as a disclosure — collapsed by default so the recommendations
-       * lead. Desktop hides this via CSS and keeps the sidebar knobs; both render, one shows.
-       * Gating is unchanged: RecommenderSide itself returns null until phase === 'board'. */}
+      {/* recommender-results-polish #01: one collapsible answers panel for both layouts —
+       * collapsed by default so the top configurations lead; expanding shows the live selects,
+       * and changing one re-ranks the board immediately. The shell's side slot no longer
+       * carries survey state. */}
       <details className="deck-answers-disclosure">
         <summary>Your answers</summary>
-        <RecommenderSide />
+        <AnswersPanel />
       </details>
       <div className="deck-head">
         <h2>Your top {SHORTLIST_SIZE}</h2>
-        <button type="button" className="deck-ghost" onClick={() => setPhase('random')}>
-          Pick at random instead
-        </button>
+        <div className="deck-head-actions">
+          {/* recommender-results-polish #02: the soft redo — back into the wizard at question 1
+           * with the previous answers pre-filled; nothing is lost until overwritten. */}
+          <button
+            type="button"
+            onClick={() => {
+              setStep(() => 0)
+              setPhase('wizard')
+            }}
+          >
+            Redo survey
+          </button>
+          {/* The quiet hard wipe — same restart as ever, demoted and renamed. */}
+          <button type="button" className="deck-ghost" onClick={restart}>
+            Start fresh
+          </button>
+          <button type="button" className="deck-ghost" onClick={() => setPhase('random')}>
+            Pick at random instead
+          </button>
+        </div>
       </div>
       <p className="meta">Scored against: {tierStore.getActiveList().name}</p>
-      <label className="deck-field-inline">
-        <input type="checkbox" checked={hardFilter} onChange={(e) => setHardFilter(e.target.checked)} />
-        Only recommend spirits I own
-      </label>{' '}
+      {/* recommender-results-polish #03: the ownership control is a themed switch, same
+       * session-only hardFilter state, default off; unowned configurations stay annotated. */}
+      <button
+        type="button"
+        role="switch"
+        aria-checked={hardFilter}
+        className="deck-toggle"
+        onClick={() => setHardFilter(!hardFilter)}
+      >
+        <span className="deck-toggle-track" aria-hidden="true" />
+        Only recommend from my collection
+      </button>{' '}
       <ManageCollectionLink />
 
       <ol className="deck-rows">

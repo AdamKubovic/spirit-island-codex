@@ -6,23 +6,20 @@ export interface NavItem<T extends string> {
 }
 
 /**
- * The "command deck" shell: a persistent sidebar (brand, nav, live controls) beside a
- * dense main pane. The sidebar hosts whatever controls the active tab wants to keep
- * always-visible, so tweaking a control and watching the main pane react is the primary
- * interaction rather than a submit-and-wait form.
+ * The "command deck" shell: a persistent sidebar (brand, nav) beside a dense main pane.
  *
  * mobile-panel: at the phone breakpoint (≤640px, see deck.css) the shell instead shows a
  * sticky top bar (logo + hamburger) and the nav slides in as a drawer. The drawer is
  * CSS-off-canvas, never unmounted — the nav destinations stay in the rendered markup with
- * the drawer closed. The `side` slot never enters the drawer; on phone it is hidden and the
- * owning tab is responsible for surfacing its controls in the main pane.
+ * the drawer closed. Tabs own all their live controls in the main pane (recommender-results
+ * -polish #01: the recommend answers panel moved onto its results board, and the shell
+ * stopped carrying a `side` slot for survey state).
  */
 export function AppShell<T extends string>({
   nav,
   current,
   onNavigate,
   onHome,
-  side,
   children,
 }: {
   nav: NavItem<T>[]
@@ -30,7 +27,6 @@ export function AppShell<T extends string>({
   onNavigate: (id: T) => void
   /** The logo is the only route home (#01 decision 3) — there is no Home nav button. */
   onHome: () => void
-  side?: ReactNode
   children: ReactNode
 }) {
   const [drawerOpen, setDrawerOpen] = useState(false)
@@ -85,7 +81,6 @@ export function AppShell<T extends string>({
             </button>
           ))}
         </nav>
-        {side != null && <div className="deck-side-slot">{side}</div>}
       </aside>
       <div className="deck-drawer-backdrop" aria-hidden="true" onClick={() => setDrawerOpen(false)} />
       <main className="deck-main">{children}</main>
