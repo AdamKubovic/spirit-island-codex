@@ -1,6 +1,7 @@
 import { collectionStore } from '../domain/collectionStore'
 import { complexityStore } from '../domain/complexityStore'
 import { formatRoute, type Tab } from '../domain/route'
+import { WIKI_SITE } from '../domain/wiki'
 
 /**
  * The app's front door (ux-discoverability #01, variant A "command deck" folded from the
@@ -12,6 +13,8 @@ import { formatRoute, type Tab } from '../domain/route'
  */
 const OFFICIAL_SITE = 'https://shop.greaterthangames.com/pages/spirit-island'
 const FAN_CONTENT_TERMS = 'https://querki.net/u/darker/spirit-island-faq/#!Creating-your-own-game-elements'
+const SICK_SITE = 'https://sick.oberien.de/'
+const TTS_MOD = 'https://steamcommunity.com/sharedfiles/filedetails/?id=2104364163'
 const SETTINGS_HREF = formatRoute({ tab: 'settings' })
 
 const FEATURES: { tab: Tab; title: string; line: string }[] = [
@@ -85,6 +88,21 @@ function Footer() {
           3 Minute Board Games
         </a>
         , credited per list on the Tier list tab.
+      </p>
+      <p className="home-footer">
+        Imagery and data from the{' '}
+        <a href={WIKI_SITE} target="_blank" rel="noreferrer">
+          Spirit Island Wiki
+        </a>
+        ,{' '}
+        <a href={SICK_SITE} target="_blank" rel="noreferrer">
+          SICK — the Spirit Island Card Katalog
+        </a>{' '}
+        and the{' '}
+        <a href={TTS_MOD} target="_blank" rel="noreferrer">
+          Spirit Island TTS mod
+        </a>
+        , credited per asset.
       </p>
     </>
   )

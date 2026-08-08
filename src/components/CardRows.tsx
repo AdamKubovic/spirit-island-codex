@@ -12,7 +12,7 @@ import { cardKindColor, cardSpeedColor, expansionColorFor } from './tagColors'
  * one (OtherCardRows/AdversaryRows already showed it as plain text). Owner picked variant C
  * (solid chip): the column renders as a coloured pill, matching SpiritTile's chip idiom. */
 export function CardRows({ cards }: { cards: PowerCard[] }) {
-  const [enlarged, setEnlarged] = useState<{ src: string; alt: string } | null>(null)
+  const [enlarged, setEnlarged] = useState<{ src: string; alt: string; wikiTitle: string } | null>(null)
   const base = import.meta.env.BASE_URL
 
   return (
@@ -29,7 +29,7 @@ export function CardRows({ cards }: { cards: PowerCard[] }) {
         const color = expansionColorFor(card.expansion)
         return (
           <li key={card.name}>
-            <button type="button" className="card-row" onClick={() => setEnlarged({ src: `${base}${card.image}`, alt: card.name })}>
+            <button type="button" className="card-row" onClick={() => setEnlarged({ src: `${base}${card.image}`, alt: card.name, wikiTitle: card.name })}>
               <span className="card-row-type card-row-pill" style={{ background: cardKindColor(card.kind) }}>
                 {card.kind}
               </span>
@@ -56,7 +56,14 @@ export function CardRows({ cards }: { cards: PowerCard[] }) {
           </li>
         )
       })}
-      {enlarged && <CardViewer src={enlarged.src} alt={enlarged.alt} onClose={() => setEnlarged(null)} />}
+      {enlarged && (
+        <CardViewer
+          src={enlarged.src}
+          alt={enlarged.alt}
+          wikiTitle={enlarged.wikiTitle}
+          onClose={() => setEnlarged(null)}
+        />
+      )}
     </ul>
   )
 }

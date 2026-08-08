@@ -1,0 +1,17 @@
+The data and asset files in this repository (src/data/, public/, and images/)
+are licensed under the Creative Commons Attribution-NonCommercial-ShareAlike
+4.0 International License, matching the license of the Spirit Island Wiki
+content they derive from.
+
+https://creativecommons.org/licenses/by-nc-sa/4.0/
+
+Not every datum in `src/data/` originates with the wiki: card text and card data transcribed
+from SICK keep their source license (Apache-2.0/MIT), and panel/artwork derivatives sit under
+Greater Than Games' fan-content terms. The BY-NC-SA notice applies to wiki-derived content,
+app-authored data, and asset derivatives; per-source provenance is recorded in
+`images/manifest.json` and the README's Attribution section, and must be preserved in any
+redistribution (ADR 0003, ADR 0006).
+
+Artwork remains © Greater Than Games, LLC (and its licensees), reproduced here
+under the publisher's fan-content terms for free, non-commercial, unofficial
+fan projects; the code license in LICENSE does not extend to it.

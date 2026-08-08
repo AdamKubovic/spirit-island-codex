@@ -1,4 +1,4 @@
-# Spirit Island Recommender
+# Spirit Island Codex
 
 A local-first web app for browsing and recommending Spirit Island content. One context: the
 domain language below is used across data, stores, and UI.
@@ -185,3 +185,16 @@ width. Adaptation is not equality of pixels: a surface that cannot fit at phone 
 one.
 _Avoid_: same experience (that implies identical), responsive (that names the technique, not the
 promise)
+
+**Attribution**:
+The project's commitment to credit every content source it draws on — stated in the README,
+recorded per asset in `images/manifest.json` (ADR 0006), and surfaced in-app wherever the content
+came from (tier-list "ⓘ Source" disclosures, glossary source labels, wiki link-outs). It is a
+recorded commitment, not a thank-you.
+_Avoid_: credits, acknowledgements (each reads as marketing, not a recorded commitment)
+
+**Companion**:
+The project's stated relationship to the Spirit Island Wiki (ADR 0020): a different function —
+recommendation and judgment, where the wiki is reference — with every source credited per asset
+and traffic sent back to the wiki. Codex refuses the roles of alternative or replacement.
+_Avoid_: competitor, alternative, replacement (each asserts the overtaking Codex refuses)

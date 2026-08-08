@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { ADVERSARIES } from '../domain/adversaries'
 import { GLOSSARY } from '../domain/glossary'
+import { wikiLink } from '../domain/wiki'
 
 /**
  * ux-discoverability #03: three friendly groups — Fear cards (impact and fear tags together),
@@ -81,7 +82,12 @@ export function GlossaryTab() {
   return (
     <section className="glossary-tab">
       <h2>Glossary</h2>
-      <p className="meta">Every defined term in one place, grouped by category, each with its source.</p>
+      <p className="meta">
+        Every defined term in one place, grouped by category, each with its source.{' '}
+        <a href={wikiLink('Glossary')} target="_blank" rel="noreferrer">
+          Reference: the wiki's Glossary ↗
+        </a>
+      </p>
 
       <label className="search-field-label">
         Search

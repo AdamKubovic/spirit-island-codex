@@ -41,7 +41,7 @@ function SubtypeChips({ tags }: { tags: (FearTag | BlightTag | EventClass)[] }) 
  * (types.ts); that provenance is documented once at the filter panel (`OtherCardFilters.tsx`'s
  * "Sub-type (judgment - see #02)" label) rather than repeated identically on every blight row. */
 export function OtherCardRows({ cards }: { cards: OtherCard[] }) {
-  const [enlarged, setEnlarged] = useState<{ src: string; alt: string } | null>(null)
+  const [enlarged, setEnlarged] = useState<{ src: string; alt: string; wikiTitle: string } | null>(null)
   const base = import.meta.env.BASE_URL
   const showType = cards[0]?.kind !== 'blight'
 
@@ -57,7 +57,7 @@ export function OtherCardRows({ cards }: { cards: OtherCard[] }) {
         const color = expansionColorFor(card.expansion)
         return (
           <li key={card.name}>
-            <button type="button" className="card-row" onClick={() => setEnlarged({ src: `${base}${card.image}`, alt: card.name })}>
+            <button type="button" className="card-row" onClick={() => setEnlarged({ src: `${base}${card.image}`, alt: card.name, wikiTitle: card.name })}>
               {card.kind !== 'blight' && (
                 <span className="card-row-type" data-kind={card.kind}>
                   {card.kind}
@@ -75,7 +75,14 @@ export function OtherCardRows({ cards }: { cards: OtherCard[] }) {
           </li>
         )
       })}
-      {enlarged && <CardViewer src={enlarged.src} alt={enlarged.alt} onClose={() => setEnlarged(null)} />}
+      {enlarged && (
+        <CardViewer
+          src={enlarged.src}
+          alt={enlarged.alt}
+          wikiTitle={enlarged.wikiTitle}
+          onClose={() => setEnlarged(null)}
+        />
+      )}
     </ul>
   )
 }

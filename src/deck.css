@@ -2088,6 +2088,12 @@ a.unowned-note:hover {
   padding: 2rem;
   text-align: center;
 }
+.card-enlarge-backdrop .card-enlarge-wiki {
+  display: block;
+  margin-top: 1rem;
+  color: var(--deck-accent);
+  cursor: pointer;
+}
 
 /* --- Cards tab filters (v4 #12) --- */
 .card-filters {

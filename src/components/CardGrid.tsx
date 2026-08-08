@@ -7,7 +7,7 @@ import { CardViewer } from './CardViewer'
  *
  * archive-grouping #01: the expansion chip lives in the rows view only — tiles show art, clean. */
 export function CardGrid({ cards }: { cards: { name: string; image: string; expansion?: string }[] }) {
-  const [enlarged, setEnlarged] = useState<{ src: string; alt: string } | null>(null)
+  const [enlarged, setEnlarged] = useState<{ src: string; alt: string; wikiTitle: string } | null>(null)
   const base = import.meta.env.BASE_URL
 
   return (
@@ -17,12 +17,19 @@ export function CardGrid({ cards }: { cards: { name: string; image: string; expa
           key={card.name}
           type="button"
           className="card-grid-tile"
-          onClick={() => setEnlarged({ src: `${base}${card.image}`, alt: card.name })}
+          onClick={() => setEnlarged({ src: `${base}${card.image}`, alt: card.name, wikiTitle: card.name })}
         >
           <img src={`${base}${card.image}`} alt={card.name} loading="lazy" decoding="async" />
         </button>
       ))}
-      {enlarged && <CardViewer src={enlarged.src} alt={enlarged.alt} onClose={() => setEnlarged(null)} />}
+      {enlarged && (
+        <CardViewer
+          src={enlarged.src}
+          alt={enlarged.alt}
+          wikiTitle={enlarged.wikiTitle}
+          onClose={() => setEnlarged(null)}
+        />
+      )}
     </div>
   )
 }

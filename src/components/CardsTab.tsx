@@ -10,6 +10,7 @@ import { EMPTY_POWER_CARD_FILTER, type PowerCardFilterState } from '../domain/po
 import type { PowerGroup, PowerSort } from '../domain/powerCardArrange'
 import { SCENARIOS } from '../domain/scenarios'
 import type { OtherCard, PowerCard } from '../domain/types'
+import { SEGMENT_WIKI, wikiLink } from '../domain/wiki'
 import { subtypeGroupLabel } from './tagColors'
 import { AdversaryGrid } from './AdversaryGrid'
 import { AdversaryRows } from './AdversaryRows'
@@ -129,6 +130,12 @@ export function CardsTab() {
           </button>
         ))}
       </div>
+      <p className="meta">
+        Full catalog on the{' '}
+        <a href={wikiLink(SEGMENT_WIKI[segment])} target="_blank" rel="noreferrer">
+          Spirit Island Wiki ↗
+        </a>
+      </p>
 
       {segment === 'Powers' && (
         <>

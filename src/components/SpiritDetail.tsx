@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, type CSSProperties } from 'react'
 import { toConfigId } from '../domain/configurations'
 import { tierStore } from '../domain/tierStore'
 import type { Spirit } from '../domain/types'
+import { wikiLink } from '../domain/wiki'
 import { CardViewer } from './CardViewer'
 import { ComplexityDots } from './collectionAffordances'
 import { OcfduBars } from './OcfduBars'
@@ -166,6 +167,11 @@ export function SpiritDetail({
             <p className="meta spirit-detail-tier-line">
               Tier ({activeList.name}): <TierChip configId={spirit.id} />
             </p>
+            <p className="meta">
+              <a href={wikiLink(spirit.name)} target="_blank" rel="noreferrer">
+                Wiki page ↗
+              </a>
+            </p>
           </div>
         </div>
 
@@ -205,6 +211,14 @@ export function SpiritDetail({
                       <DetailImage spirit={spirit} src={src} alt={alt} />
                       <span className="spirit-detail-card-name">{cardName}</span>
                     </button>
+                    <a
+                      className="meta spirit-detail-card-wiki"
+                      href={wikiLink(cardName)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Wiki ↗
+                    </a>
                   </li>
                 )
               })}

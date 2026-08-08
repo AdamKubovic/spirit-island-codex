@@ -7,6 +7,17 @@ no accounts, no API keys — and deploys as a static site.
 The unit it reasons about is the **configuration**: a base spirit, or that spirit with exactly one
 aspect applied (37 spirits + 31 aspects = 68 configurations).
 
+## A companion to the community, not a replacement for the wiki
+
+Codex is built from community sources — the [Spirit Island Wiki](https://spiritislandwiki.com/),
+[SICK](https://sick.oberien.de/), and the [TTS mod](https://steamcommunity.com/sharedfiles/filedetails/?id=2104364163)
+— and says so per asset. It does not try to be the wiki: the wiki is the reference for what a
+spirit or card *does*, Codex is the recommendation layer — which one you'd enjoy, and the odds
+behind your deck. The wiki tells you what a spirit does; Codex tells you which one you'll enjoy —
+and sends you back to the wiki for the what. Every surface that re-presents wiki content links
+back to it (spirit and card pages, each Archive segment, the Glossary, and the footer), and the
+repo is dual-licensed to match its sources (ADR 0020).
+
 ## What's in it
 
 - **Browse** — every spirit as an art grid, filterable by expansion, complexity, OCFDU and tags,
@@ -111,6 +122,11 @@ free, non-commercial fan content that is not portrayed as an official product is
   published with Greater Than Games' permission
 - **Aspect cards, element icons and the logo** — the [Spirit Island Wiki](https://spiritislandwiki.com/),
   published by Greater Than Games (CC BY-NC-SA 4.0)
+
+The repo mirrors its sources' licenses (ADR 0020): **code** under MIT ([`LICENSE`](LICENSE)),
+**data and assets** under CC BY-NC-SA 4.0 ([`LICENSE-DATA`](LICENSE-DATA)). Where the app shows
+content the wiki also owns, it links back — see the in-app link-outs on spirit detail, card
+detail, the Archive, the Glossary and the homepage footer.
 
 **Tier lists** are transcribed community rankings, cited per list in the app's "ⓘ Source" disclosure:
 
