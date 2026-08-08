@@ -1021,7 +1021,7 @@ describe('app smoke', () => {
     const otherNameAndExpansion = filterOtherCards(otherCards, {
       ...EMPTY_OTHER_CARD_FILTER,
       name: otherTerm,
-      expansion: otherTarget.expansion,
+      expansions: [otherTarget.expansion],
     })
     expect(otherNameAndExpansion.every((c) => c.expansion === otherTarget.expansion)).toBe(true)
   })

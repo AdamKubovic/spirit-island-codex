@@ -515,6 +515,15 @@ button:disabled {
   letter-spacing: 0.06em;
   color: var(--deck-dim);
 }
+/* The Archive and Glossary wiki link-outs live in .meta; an anchor's default blue fails on the
+   dark theme, so links here take the accent, the same treatment as .home-footer a. */
+.meta a {
+  color: var(--deck-accent);
+  text-decoration: none;
+}
+.meta a:hover {
+  text-decoration: underline;
+}
 .notes {
   color: var(--deck-dim);
   font-size: 12px;
@@ -1816,6 +1825,12 @@ a.unowned-note:hover {
   line-height: 1.35;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
   pointer-events: none;
+}
+/* The popover opens above the term; when the term sits too close to the viewport top (Browse's
+   Complexity caption on a fresh load), Term.tsx measures and flips it below instead. */
+.term-popover-below {
+  bottom: auto;
+  top: calc(100% + 6px);
 }
 .rating-tile-dot {
   width: 10px;

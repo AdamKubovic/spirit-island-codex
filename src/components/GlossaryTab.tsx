@@ -11,6 +11,7 @@ import { wikiLink } from '../domain/wiki'
  * (it is canon-guarded data, never a duplicate).
  */
 const GROUPS: { label: string; test: (id: string) => boolean; table?: 'difficulty' }[] = [
+  { label: 'Card sub-type', test: (id) => id === 'subtype' },
   {
     label: 'Fear cards',
     test: (id) => id.startsWith('impact-') || id.startsWith('fear-tag-'),

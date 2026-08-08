@@ -26,7 +26,7 @@ describe('groupOtherCards by subtype — fear', () => {
   const removalAndWeaken = fearCard({ name: 'B', tags: ['removal', 'weaken'] })
   const untagged = fearCard({ name: 'C', tags: [] })
 
-  it('a multi-tag card appears under EVERY tag it carries; groups follow the canonical FEAR_TAGS order', () => {
+  it('a multi-tag card appears under EVERY tag it carries; groups are alphabetical by tag', () => {
     expect(groupOtherCards([removalAndWeaken, removalOnly], 'subtype')).toEqual([
       { label: 'removal', subtype: 'removal', cards: [removalAndWeaken, removalOnly] },
       { label: 'weaken', subtype: 'weaken', cards: [removalAndWeaken] },
@@ -54,8 +54,8 @@ describe('groupOtherCards by subtype — blight (judgment)', () => {
 
   it('a multi-tag card appears under EVERY tag it carries; group headers carry the raw key; the render layer adds the "(judgment)" note', () => {
     expect(groupOtherCards([presenceLossAndBoard, presenceLossOnly], 'subtype')).toEqual([
-      { label: 'presenceLoss', subtype: 'presenceLoss', cards: [presenceLossAndBoard, presenceLossOnly] },
       { label: 'boardChange', subtype: 'boardChange', cards: [presenceLossAndBoard] },
+      { label: 'presenceLoss', subtype: 'presenceLoss', cards: [presenceLossAndBoard, presenceLossOnly] },
     ])
   })
 
@@ -71,7 +71,7 @@ describe('groupOtherCards by subtype — event (single-valued, never judgment)',
   const choice = eventCard({ name: 'A', eventClass: 'choice' })
   const stage = eventCard({ name: 'B', eventClass: 'stage' })
 
-  it('groups follow the canonical EVENT_CLASSES order; no judgment note', () => {
+  it('groups are alphabetical by class; no judgment note', () => {
     expect(groupOtherCards([stage, choice], 'subtype')).toEqual([
       { label: 'choice', subtype: 'choice', cards: [choice] },
       { label: 'stage', subtype: 'stage', cards: [stage] },

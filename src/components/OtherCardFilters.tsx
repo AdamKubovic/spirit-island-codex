@@ -1,6 +1,7 @@
-import { BLIGHT_TAGS, EVENT_CLASSES, FEAR_TAGS, type BlightTag, type EventClass, type FearTag } from '../domain/types'
+import { BLIGHT_TAGS, EVENT_CLASSES, FEAR_TAGS, type BlightTag, type FearTag } from '../domain/types'
 import type { OtherCardFilterState } from '../domain/otherCardFilter'
 import { subtypeLabel } from './tagColors'
+import { Term } from './Term'
 
 type Segment = 'Fear' | 'Events' | 'Blight'
 
@@ -11,7 +12,9 @@ type Segment = 'Fear' | 'Events' | 'Blight'
  *
  * The sub-type control itself differs per segment (v5 #02/#03: "a fear bucket is not a blight
  * bucket") - fear and blight get a multi-select of their own tag set plus an explicit
- * "Unclassified" option; events get a single-select of their one upstream class. */
+ * "Unclassified" option; events get a single-select of their one upstream class. Expansion is a
+ * multi-select of chips, OR within the list (a card has exactly one expansion). Blight's tags are
+ * judgment (`tagsSource: 'judgment'`); the label's Term popover carries that provenance. */
 export function OtherCardFilters({
   segment,
   filter,
@@ -24,7 +27,7 @@ export function OtherCardFilters({
   expansions: string[]
 }) {
   const isCleared =
-    !filter.expansion && !filter.eventClass && !filter.fearTags?.length && !filter.blightTags?.length && !filter.name
+    !filter.expansions?.length && !filter.eventClass && !filter.fearTags?.length && !filter.blightTags?.length && !filter.name
 
   function toggleFearTag(tag: FearTag | 'unclassified') {
     const has = filter.fearTags?.includes(tag) ?? false
@@ -34,6 +37,14 @@ export function OtherCardFilters({
   function toggleBlightTag(tag: BlightTag | 'unclassified') {
     const has = filter.blightTags?.includes(tag) ?? false
     onChange({ ...filter, blightTags: has ? filter.blightTags!.filter((t) => t !== tag) : [...(filter.blightTags ?? []), tag] })
+  }
+
+  function toggleExpansion(exp: string) {
+    const has = filter.expansions?.includes(exp) ?? false
+    onChange({
+      ...filter,
+      expansions: has ? (filter.expansions ?? []).filter((e) => e !== exp) : [...(filter.expansions ?? []), exp],
+    })
   }
 
   return (
@@ -53,9 +64,11 @@ export function OtherCardFilters({
       </div>
       {segment === 'Fear' && (
         <div className="card-filters-row">
-          <span className="card-filters-label">Sub-type</span>
+          <span className="card-filters-label">
+            <Term id="subtype">Sub-type</Term>
+          </span>
           <div className="card-filters-kinds">
-            {FEAR_TAGS.map((tag) => (
+            {[...FEAR_TAGS].sort().map((tag) => (
               <button key={tag} type="button" aria-pressed={filter.fearTags?.includes(tag) ?? false} onClick={() => toggleFearTag(tag)}>
                 {subtypeLabel(tag)}
               </button>
@@ -69,9 +82,11 @@ export function OtherCardFilters({
 
       {segment === 'Blight' && (
         <div className="card-filters-row">
-          <span className="card-filters-label">Sub-type (judgment - see #02)</span>
+          <span className="card-filters-label">
+            <Term id="subtype">Sub-type</Term>
+          </span>
           <div className="card-filters-kinds">
-            {BLIGHT_TAGS.map((tag) => (
+            {[...BLIGHT_TAGS].sort().map((tag) => (
               <button key={tag} type="button" aria-pressed={filter.blightTags?.includes(tag) ?? false} onClick={() => toggleBlightTag(tag)}>
                 {subtypeLabel(tag)}
               </button>
@@ -84,37 +99,35 @@ export function OtherCardFilters({
       )}
 
       {segment === 'Events' && (
-        <div className="card-filters-row filters">
-          <label>
-            Class
-            <select
-              value={filter.eventClass ?? ''}
-              onChange={(e) => onChange({ ...filter, eventClass: (e.target.value || undefined) as EventClass | undefined })}
-            >
-              <option value="">Any</option>
-              {EVENT_CLASSES.map((cls) => (
-                <option key={cls} value={cls}>
-                  {subtypeLabel(cls)}
-                </option>
-              ))}
-            </select>
-          </label>
+        <div className="card-filters-row">
+          <span className="card-filters-label">
+            <Term id="subtype">Sub-type</Term>
+          </span>
+          <div className="card-filters-kinds">
+            {[...EVENT_CLASSES].sort().map((cls) => (
+              <button
+                key={cls}
+                type="button"
+                aria-pressed={filter.eventClass === cls}
+                onClick={() => onChange({ ...filter, eventClass: filter.eventClass === cls ? undefined : cls })}
+              >
+                {subtypeLabel(cls)}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
-      <div className="card-filters-row filters">
-        <label>
-          Expansion
-          <select value={filter.expansion ?? ''} onChange={(e) => onChange({ ...filter, expansion: e.target.value || undefined })}>
-            <option value="">Any</option>
-            {expansions.map((exp) => (
-              <option key={exp} value={exp}>
-                {exp}
-              </option>
-            ))}
-          </select>
-        </label>
-        <button type="button" disabled={isCleared} onClick={() => onChange({})}>
+      <div className="card-filters-row">
+        <span className="card-filters-label">Expansion</span>
+        <div className="card-filters-kinds">
+          {expansions.map((exp) => (
+            <button key={exp} type="button" aria-pressed={filter.expansions?.includes(exp) ?? false} onClick={() => toggleExpansion(exp)}>
+              {exp}
+            </button>
+          ))}
+        </div>
+        <button type="button" className="card-filters-clear" disabled={isCleared} onClick={() => onChange({})}>
           Clear filters
         </button>
       </div>

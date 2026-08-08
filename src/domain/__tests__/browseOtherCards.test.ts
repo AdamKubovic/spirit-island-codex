@@ -31,7 +31,7 @@ const CARDS = [fearA, blightX, eventY, fearB, fearUntagged]
 
 describe('browseOtherCards', () => {
   it('slices to one kind, then filters, when grouping is off', () => {
-    const result = browseOtherCards(CARDS, 'fear', { expansion: 'Base' }, 'none')
+    const result = browseOtherCards(CARDS, 'fear', { expansions: ['Base'] }, 'none')
     // slice keeps the three fear cards; the Base filter drops Fear B.
     expect(result.cards.map((c) => c.name)).toEqual(['Fear A', 'Fear C'])
     expect(result.segmented.map((c) => c.name)).toEqual(['Fear A', 'Fear B', 'Fear C'])

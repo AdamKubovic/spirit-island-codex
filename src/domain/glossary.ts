@@ -117,6 +117,14 @@ export const GLOSSARY: Record<string, GlossaryEntry> = {
     source: 'context',
   },
 
+  // Card sub-type — CONTEXT.md "Card sub-type": the descriptive bucket(s) a fear, event or blight
+  // card falls into. One entry shared by the Archive's three Sub-type filter labels.
+  subtype: {
+    label: 'Sub-type',
+    text: 'What a fear, event or blight card does — never how good it is. Fear cards carry any of five keyword-derived tags (Removal, Defensive, Weaken, Disruption, Displacement), multi-tag as terror level rises; blight cards carry four coarser tags (Presence loss, Board change, Damage bonus, Resource swing), read from the card effect by judgment — the same provenance as the app\u2019s other judgment fields; events carry exactly one of five upstream classes (Choice, Stage, Terror level, Healthy/blighted land, Adversary). A card that matches nothing is Unclassified, never forced into a nearest bucket.',
+    source: 'context',
+  },
+
   // Complexity — CONTEXT.md "Complexity": a spirit's printed rules load, distinct from
   // difficulty (adversary setup) and from a personal complexity override (the user's own read).
   complexity: {

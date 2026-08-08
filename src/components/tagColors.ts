@@ -1,9 +1,14 @@
-import { EXPANSIONS, type BlightTag, type EventClass, type ExpansionName, type FearTag } from '../domain/types'
+import { normalizeExpansion, type BlightTag, type EventClass, type FearTag } from '../domain/types'
 import { COMPLEXITY_LEVEL } from '../domain/scoringPrimitives'
 
 /** Dot-meter position (●●○○) - ordinal, not a colour. The single home of the map is the
  * scoring-primitives domain module; this re-export keeps the render layer on the same source. */
 export { COMPLEXITY_LEVEL }
+
+// `EXPANSION_ALIASES` and `normalizeExpansion` moved to domain/types.ts (they are data mapping,
+// and the domain's `orderExpansions` needs them); this re-export keeps the render layer's
+// colour callers on the same source. The owner-call provenance lives with the table up there.
+export { normalizeExpansion }
 
 /**
  * v5 #08/#09: the spirit tile's colour scheme, decided via `/prototype` (variants A-H,
@@ -40,51 +45,6 @@ export const EXPANSION_COLOR: Record<string, string> = {
  * normalization. */
 export function expansionChipColor(name: string): string {
   return EXPANSION_COLOR[name]
-}
-
-/**
- * legibility-pass #01: `EXPANSION_COLOR` keys off the 7 canonical `ExpansionName` values, but the
- * card datasets (`other-cards.json`, `power-cards.json`, `adversaries.json`) transcribe expansion
- * as whatever string the source printed, e.g. `Basegame`, `Horizons of Spirit Island`. This maps
- * every raw string seen in those datasets onto the canonical set so colour resolves everywhere.
- * `expansionCanon.test.ts` is the tripwire: it fails loudly if a future record's raw string isn't
- * in this table, rather than silently falling back to no colour.
- *
- * `Promo2` / `Promo Pack 2 / Feather and Flame` both resolve to `Feather & Flame`. This is not a
- * clean rename — `adversaries.json`'s own transcription ties Promo Pack 2 to Feather & Flame
- * ("Scotland", expansion `Promo Pack 2 / Feather and Flame`), but the data disagrees with itself
- * on the spirit side: Downpour Drenches the World is `Promo` (Promo Pack 1) in `spirits.json`, yet
- * every one of its own power cards is tagged `Promo2` in `power-cards.json` — not an occasional
- * bonus card, its whole card set. That contradiction couldn't be resolved from the data alone, so
- * it was escalated; **owner call (legibility-pass #01, 2026-07-14): `Promo2` always resolves to
- * `Feather & Flame`**, Downpour's own `Promo` tag notwithstanding.
- *
- * **Owner call (qa-revision #02, 2026-07-21): bare `Promo` also resolves to `Feather & Flame` and
- * is no longer a canonical expansion.** Feather & Flame is the retail box combining Promo Packs 1
- * and 2 (wiki-verified: its four spirits are Heart of the Wildfire, Serpent Slumbering Beneath
- * the Island, Finder of Paths Unseen, Downpour Drenches the World), so a separate Promo category
- * duplicated it.
- */
-const EXPANSION_ALIASES: Record<string, ExpansionName> = {
-  // Every canonical name is already its own alias (`spirits.json` uses these verbatim).
-  ...Object.fromEntries(EXPANSIONS.map((name) => [name, name])),
-  Basegame: 'Base',
-  'Base Game': 'Base',
-  'Branch and Claw': 'Branch & Claw',
-  'Horizons of Spirit Island': 'Horizons',
-  Promo: 'Feather & Flame',
-  Promo2: 'Feather & Flame',
-  'Promo Pack 2 / Feather and Flame': 'Feather & Flame',
-  // legibility-pass #02: scenarios.json transcribes the wiki's own "Part of Promo Pack 2" line
-  // verbatim. Same shape as the Promo2 case above, not a fresh ambiguity — the wiki category-tags
-  // Promo Pack 2 content as Feather and Flame (the retail box that absorbed it), matching the
-  // adversary record's own pairing. Carries forward the #01 owner call rather than re-escalating.
-  'Promo Pack 2': 'Feather & Flame',
-}
-
-/** Absent means the raw string isn't in `EXPANSION_ALIASES` — never a guessed fallback. */
-export function normalizeExpansion(raw: string): ExpansionName | undefined {
-  return EXPANSION_ALIASES[raw]
 }
 
 /** legibility-pass #05: the one place raw expansion strings become a colour. Undefined for a raw

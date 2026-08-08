@@ -23,7 +23,7 @@ describe('filterOtherCards', () => {
   })
 
   it('expansion narrows to an exact match', () => {
-    expect(filterOtherCards(CARDS, { expansion: 'Branch & Claw' })).toEqual([event])
+    expect(filterOtherCards(CARDS, { expansions: ['Branch & Claw'] })).toEqual([event])
   })
 
   it('fearTags is OR within the list and only ever matches fear cards', () => {
@@ -51,8 +51,18 @@ describe('filterOtherCards', () => {
     expect(filterOtherCards(CARDS, { eventClass: 'stage' })).toEqual([])
   })
 
+  it('expansions is OR within the list', () => {
+    expect(filterOtherCards(CARDS, { expansions: ['Branch & Claw', 'Basegame'] }).map((c) => c.name)).toEqual([
+      'A Fear Card',
+      'Another Fear Card',
+      'A Blank Fear Card',
+      'An Event Card',
+      'A Blight Card',
+    ])
+  })
+
   it('a filter can match nothing', () => {
-    expect(filterOtherCards(CARDS, { expansion: 'Jagged Earth' })).toEqual([])
+    expect(filterOtherCards(CARDS, { expansions: ['Jagged Earth'] })).toEqual([])
   })
 
   it('has no field for elements/cost/speed on its filter state (compile-time enforced, asserted here in spirit)', () => {

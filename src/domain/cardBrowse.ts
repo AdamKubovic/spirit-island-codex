@@ -1,4 +1,4 @@
-import { EXPANSIONS } from './types'
+import { EXPANSIONS, normalizeExpansion } from './types'
 
 /** Shared internals of the card browse pipelines — the blocks the power and other-card modules
  * used to copy from each other live here once. */
@@ -11,9 +11,22 @@ export function matchName(name: string | undefined, cardName: string): boolean {
   return cardName.toLowerCase().includes(needle)
 }
 
-/** Groups items by their expansion string, canonical `EXPANSIONS` first, then any raw string
- * outside the canonical set under its own label — never dropped. The near-verbatim block
- * `groupPowerCards` and `groupOtherCards` both hand-rolled. */
+/** Orders a set of raw expansion strings for display: canonical `EXPANSIONS` in their own
+ * (release) order first, then any raw string the aliases can't place, alphabetically. Raw
+ * strings like `Basegame`/`Promo2` rank by the canonical name they resolve to, so every
+ * expansion list reads in release order — the one place filter chips/selects/group headers
+ * get their order from. */
+export function orderExpansions(raw: Iterable<string>): string[] {
+  const rank = (s: string): number => {
+    const canonical = normalizeExpansion(s)
+    return canonical ? EXPANSIONS.indexOf(canonical) : Number.MAX_SAFE_INTEGER
+  }
+  return [...new Set(raw)].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b))
+}
+
+/** Groups items by their expansion string, in `orderExpansions` order — canonical release
+ * order first, then any raw string outside the alias table under its own label, alphabetically.
+ * Never drops a label. */
 export function groupByExpansion<T extends { expansion: string }>(items: T[]): { label: string; cards: T[] }[] {
   const byExpansion = new Map<string, T[]>()
   for (const card of items) {
@@ -21,13 +34,5 @@ export function groupByExpansion<T extends { expansion: string }>(items: T[]): {
     if (bucket) bucket.push(card)
     else byExpansion.set(card.expansion, [card])
   }
-  const canonicalSet: ReadonlySet<string> = new Set(EXPANSIONS)
-  const canonical = EXPANSIONS.filter((exp) => byExpansion.has(exp)).map((exp) => ({
-    label: exp,
-    cards: byExpansion.get(exp)!,
-  }))
-  const raw = [...byExpansion.keys()]
-    .filter((label) => !canonicalSet.has(label))
-    .map((label) => ({ label, cards: byExpansion.get(label)! }))
-  return [...canonical, ...raw]
+  return orderExpansions(byExpansion.keys()).map((label) => ({ label, cards: byExpansion.get(label)! }))
 }

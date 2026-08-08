@@ -34,10 +34,14 @@ export function groupOtherCards(cards: OtherCard[], group: Exclude<OtherGroup, '
   // `groupPowerCards` makes about its own input.
   const kind = cards[0]?.kind
   if (kind === undefined) return []
-  const canonicalOrder: readonly (FearTag | BlightTag | EventClass)[] =
-    kind === 'fear' ? FEAR_TAGS : kind === 'blight' ? BLIGHT_TAGS : EVENT_CLASSES
+  // Alphabetical by raw key, which matches the human labels' alphabetical order for all three
+  // tag sets (owner ask: sub-type reads alphabetical, everywhere, not in the canonical order
+  // the tag constants happen to be declared in).
+  const tagOrder: readonly (FearTag | BlightTag | EventClass)[] = [
+    ...(kind === 'fear' ? FEAR_TAGS : kind === 'blight' ? BLIGHT_TAGS : EVENT_CLASSES),
+  ].sort()
 
-  const groups: OtherCardGroup[] = canonicalOrder
+  const groups: OtherCardGroup[] = tagOrder
     .map((tag) => ({
       label: tag,
       subtype: tag,

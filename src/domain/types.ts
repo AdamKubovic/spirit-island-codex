@@ -74,9 +74,63 @@ export interface OCFDU {
  * qa-revision #02 (owner call, 2026-07-21): `Promo` is no longer canonical. Feather & Flame is
  * the retail box that combined Promo Packs 1 and 2 (wiki-verified), so promo content lives under
  * it; the raw string `Promo` now resolves via `EXPANSION_ALIASES`, like every other promo spelling.
+ *
+ * This array is also the display order everywhere expansions are listed (group-by headers,
+ * filter chips, selects, sort-by-expansion, collection checkboxes) — release order, not
+ * alphabetical: Base, then Branch & Claw ("the first Expansion for Spirit Island" —
+ * spiritislandwiki.com), then Jagged Earth, Horizons (2022), Feather & Flame (2022), Nature
+ * Incarnate (2023), per the wiki's product pages.
  */
-export const EXPANSIONS = ['Base', 'Branch & Claw', 'Feather & Flame', 'Horizons', 'Jagged Earth', 'Nature Incarnate'] as const
+export const EXPANSIONS = ['Base', 'Branch & Claw', 'Jagged Earth', 'Horizons', 'Feather & Flame', 'Nature Incarnate'] as const
 export type ExpansionName = (typeof EXPANSIONS)[number]
+
+/**
+ * legibility-pass #01: `EXPANSION_COLOR` keys off the canonical `ExpansionName` values, but the
+ * card datasets (`other-cards.json`, `power-cards.json`, `adversaries.json`) transcribe expansion
+ * as whatever string the source printed, e.g. `Basegame`, `Horizons of Spirit Island`. This maps
+ * every raw string seen in those datasets onto the canonical set. `expansionCanon.test.ts` is the
+ * tripwire: it fails loudly if a future record's raw string isn't in this table.
+ *
+ * `Promo2` / `Promo Pack 2 / Feather and Flame` both resolve to `Feather & Flame`. This is not a
+ * clean rename — `adversaries.json`'s own transcription ties Promo Pack 2 to Feather & Flame
+ * ("Scotland", expansion `Promo Pack 2 / Feather and Flame`), but the data disagrees with itself
+ * on the spirit side: Downpour Drenches the World is `Promo` (Promo Pack 1) in `spirits.json`, yet
+ * every one of its own power cards is tagged `Promo2` in `power-cards.json` — not an occasional
+ * bonus card, its whole card set. That contradiction couldn't be resolved from the data alone, so
+ * it was escalated; **owner call (legibility-pass #01, 2026-07-14): `Promo2` always resolves to
+ * `Feather & Flame`**, Downpour's own `Promo` tag notwithstanding.
+ *
+ * **Owner call (qa-revision #02, 2026-07-21): bare `Promo` also resolves to `Feather & Flame` and
+ * is no longer a canonical expansion.** Feather & Flame is the retail box combining Promo Packs 1
+ * and 2 (wiki-verified: its four spirits are Heart of the Wildfire, Serpent Slumbering Beneath
+ * the Island, Finder of Paths Unseen, Downpour Drenches the World), so a separate Promo category
+ * duplicated it.
+ *
+ * Lived in `components/tagColors.ts` until the domain's expansion ordering (`orderExpansions`)
+ * needed the same resolution; it is data mapping, so the table and normalizer belong beside
+ * `EXPANSIONS` here, and `tagColors` re-exports `normalizeExpansion` for its colour callers.
+ */
+export const EXPANSION_ALIASES: Record<string, ExpansionName> = {
+  // Every canonical name is already its own alias (`spirits.json` uses these verbatim).
+  ...Object.fromEntries(EXPANSIONS.map((name) => [name, name])),
+  Basegame: 'Base',
+  'Base Game': 'Base',
+  'Branch and Claw': 'Branch & Claw',
+  'Horizons of Spirit Island': 'Horizons',
+  Promo: 'Feather & Flame',
+  Promo2: 'Feather & Flame',
+  'Promo Pack 2 / Feather and Flame': 'Feather & Flame',
+  // legibility-pass #02: scenarios.json transcribes the wiki's own "Part of Promo Pack 2" line
+  // verbatim. Same shape as the Promo2 case above, not a fresh ambiguity — the wiki category-tags
+  // Promo Pack 2 content as Feather and Flame (the retail box that absorbed it), matching the
+  // adversary record's own pairing. Carries forward the #01 owner call rather than re-escalating.
+  'Promo Pack 2': 'Feather & Flame',
+}
+
+/** Absent means the raw string isn't in `EXPANSION_ALIASES` — never a guessed fallback. */
+export function normalizeExpansion(raw: string): ExpansionName | undefined {
+  return EXPANSION_ALIASES[raw]
+}
 
 /** Printed on the aspect card as an up/level/down arrow. */
 export type ComplexityDelta = 'up' | 'same' | 'down'

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import spiritsData from '../data/spirits.json'
 import { filterSpirits } from '../domain/browserFilter'
+import { orderExpansions } from '../domain/cardBrowse'
 import { collectionStore } from '../domain/collectionStore'
 import { toConfigId } from '../domain/configurations'
 import { resolveAspectName } from '../domain/route'
@@ -16,7 +17,7 @@ const spirits = spiritsData as Spirit[]
 
 const COMPLEXITIES: Complexity[] = ['Low', 'Moderate', 'High', 'Very High']
 
-const EXPANSIONS = [...new Set(spirits.map((s) => s.expansion))].sort()
+const EXPANSIONS = orderExpansions(spirits.map((s) => s.expansion))
 const TAGS = [...new Set(spirits.flatMap((s) => s.tags))].sort()
 
 // OCFDU is a filter axis, not a sort axis (nobody lands on Browse and sorts by Offense).

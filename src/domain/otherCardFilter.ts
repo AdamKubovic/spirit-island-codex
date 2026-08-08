@@ -18,7 +18,9 @@ import type { BlightTag, EventClass, FearTag, OtherCard } from './types'
  * `BlightTag` - keeps "no rule matched" from being confused with a bucket this repo invented.
  */
 export interface OtherCardFilterState {
-  expansion?: string
+  /** OR-within-the-list, same convention as the tag multi-selects: a card matches if it belongs
+   * to any selected expansion (a card has exactly one). */
+  expansions?: string[]
   fearTags?: (FearTag | 'unclassified')[]
   blightTags?: (BlightTag | 'unclassified')[]
   eventClass?: EventClass
@@ -34,7 +36,9 @@ function matchesTags<T extends string>(cardTags: T[], selected: (T | 'unclassifi
 
 export function filterOtherCards(cards: OtherCard[], filter: OtherCardFilterState): OtherCard[] {
   return cards.filter((card) => {
-    if (filter.expansion && card.expansion !== filter.expansion) return false
+    if (filter.expansions && filter.expansions.length > 0) {
+      if (!filter.expansions.includes(card.expansion)) return false
+    }
     if (filter.fearTags && filter.fearTags.length > 0) {
       if (card.kind !== 'fear' || !matchesTags(card.tags, filter.fearTags)) return false
     }

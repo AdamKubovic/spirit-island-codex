@@ -4,6 +4,7 @@ import otherCardsData from '../data/other-cards.json'
 import powerCardsData from '../data/power-cards.json'
 import { browseOtherCards } from '../domain/browseOtherCards'
 import { browsePowerCards } from '../domain/browsePowerCards'
+import { orderExpansions } from '../domain/cardBrowse'
 import { EMPTY_OTHER_CARD_FILTER, type OtherCardFilterState } from '../domain/otherCardFilter'
 import type { OtherCardGroup, OtherGroup } from '../domain/otherCardArrange'
 import { EMPTY_POWER_CARD_FILTER, type PowerCardFilterState } from '../domain/powerCardFilter'
@@ -24,8 +25,10 @@ import { ScenarioRows } from './ScenarioRows'
 
 const powerCards = powerCardsData as PowerCard[]
 const otherCards = otherCardsData as OtherCard[]
-const POWER_EXPANSIONS = [...new Set(powerCards.map((c) => c.expansion))].sort()
-const ADVERSARY_EXPANSIONS = [...new Set(ADVERSARIES.map((a) => a.expansion))].sort()
+// Release order via `orderExpansions` (canonical first, raw strings after) — the group-by
+// headers and filter chips read the same order as the rest of the app.
+const POWER_EXPANSIONS = orderExpansions(powerCards.map((c) => c.expansion))
+const ADVERSARY_EXPANSIONS = orderExpansions(ADVERSARIES.map((a) => a.expansion))
 
 const SEGMENTS = ['Powers', 'Fear', 'Events', 'Blight', 'Adversaries', 'Scenarios'] as const
 type Segment = (typeof SEGMENTS)[number]
@@ -95,7 +98,7 @@ export function CardsTab() {
   const shownOtherCards = otherResult?.cards ?? []
   const otherGroups = otherResult?.groups ?? null
   const otherExpansions = useMemo(
-    () => (otherResult ? [...new Set(otherResult.segmented.map((c) => c.expansion))].sort() : []),
+    () => (otherResult ? orderExpansions(otherResult.segmented.map((c) => c.expansion)) : []),
     [otherResult],
   )
 
@@ -182,19 +185,21 @@ export function CardsTab() {
       )}
       {segment === 'Adversaries' && (
         <div className="card-filters">
-          <div className="card-filters-row filters">
-            <label>
-              Expansion
-              <select value={adversaryExpansion} onChange={(e) => setAdversaryExpansion(e.target.value)}>
-                <option value="">Any</option>
-                {ADVERSARY_EXPANSIONS.map((exp) => (
-                  <option key={exp} value={exp}>
-                    {exp}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button type="button" disabled={!adversaryExpansion} onClick={() => setAdversaryExpansion('')}>
+          <div className="card-filters-row">
+            <span className="card-filters-label">Expansion</span>
+            <div className="card-filters-kinds">
+              {ADVERSARY_EXPANSIONS.map((exp) => (
+                <button
+                  key={exp}
+                  type="button"
+                  aria-pressed={adversaryExpansion === exp}
+                  onClick={() => setAdversaryExpansion(adversaryExpansion === exp ? '' : exp)}
+                >
+                  {exp}
+                </button>
+              ))}
+            </div>
+            <button type="button" className="card-filters-clear" disabled={!adversaryExpansion} onClick={() => setAdversaryExpansion('')}>
               Clear filters
             </button>
           </div>
